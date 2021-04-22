@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { UserAlbum } from './userAlbum.entity';
 
 export enum Gender {
   MEN = 'men',
@@ -32,9 +33,12 @@ export class User {
   })
   gender: Gender;
 
-  @Column({ type: 'timestamp', default: () => 'now()' })
-  register_date: Date;
+  @Column({ type: 'timestamp', default: () => 'now()', name: 'register_date' })
+  timestamp: Date;
 
   @Column()
   level: number;
+
+  @OneToMany(() => UserAlbum, (album) => album.user)
+  albums: UserAlbum[];
 }

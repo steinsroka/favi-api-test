@@ -1,0 +1,16 @@
+http:
+  port: 3000
+
+database:
+  port: 3306
+  database: 'favi_test'
+  host: 'localhost'
+  type: 'mysql'
+  username: 'root'
+  password: 'root'
+  synchronize: true
+  autoLoadEntities: true
+
+auth:
+  hashiter: 56178
+  auth_jwtsecret: 'arcaneservicemurekabackendbyskeep194'
