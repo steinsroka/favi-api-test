@@ -4,8 +4,8 @@ import { join } from 'path';
 
 const YAML_CONFIG_FILENAME =
   process.env.NODE_ENV === 'production'
-    ? 'productionConfig.yml'
-    : 'developConfig.yml';
+    ? 'production.config.yml'
+    : 'develop.config.yml';
 
 export default () => {
   return yaml.load(

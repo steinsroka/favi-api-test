@@ -18,4 +18,13 @@ export class UserService {
   deleteUserFromId(id: number): Promise<DeleteResult> {
     return this.userRepository.delete({ id: id });
   }
+  saveUser(user: User): Promise<User> {
+    return this.userRepository.save(user);
+  }
+  async isExistUserFromId(id: number): Promise<boolean> {
+    return await this.userRepository.count({where: {id: id}}) > 0;
+  }
+  async isExistUserFromEmail(email: string): Promise<boolean> {
+    return await this.userRepository.count({where: {email: email}}) > 0;
+  }
 }

@@ -1,5 +1,5 @@
 http:
-  port: 3000
+  port: 80
 
 database:
   port: 3306
@@ -12,5 +12,5 @@ database:
   autoLoadEntities: true
 
 auth:
-  hashiter: 56178
-  auth_jwtsecret: 'arcaneservicemurekabackendbyskeep194'
+  hashIter: 56178
+  jwtSecret: 'arcaneservicemurekabackendbyskeep194'

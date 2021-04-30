@@ -1,5 +1,8 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import * as cors from 'cors';
+import * as helmet from 'helmet';
 
 async function bootstrap() {
   if (
@@ -12,6 +15,9 @@ async function bootstrap() {
     return;
   }
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+  app.useGlobalPipes(new ValidationPipe());
+  app.use(cors());
+  app.use(helmet());
+  await app.listen(80);
 }
 bootstrap();

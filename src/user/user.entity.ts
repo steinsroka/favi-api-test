@@ -9,10 +9,17 @@ export enum Gender {
 
 @Entity()
 export class User {
+  constructor(email: string, password: string) {
+    this.email = email;
+    this.password = password;
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    unique: true
+  })
   email: string;
 
   @Column()
@@ -21,22 +28,29 @@ export class User {
   @Column()
   pw_salt: string;
 
-  @Column()
+  @Column({
+    nullable: true
+  })
   name: string;
 
-  @Column()
+  @Column({
+    nullable: true
+  })
   age: number;
 
   @Column({
     type: 'enum',
     enum: Gender,
+    nullable: true
   })
   gender: Gender;
 
   @Column({ type: 'timestamp', default: () => 'now()', name: 'register_date' })
   timestamp: Date;
 
-  @Column()
+  @Column({
+    default: 1
+  })
   level: number;
 
   @OneToMany(() => UserAlbum, (album) => album.user)
