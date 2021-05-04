@@ -20,7 +20,7 @@ export class Music {
   @Column({ type: 'text' })
   lyrics: string;
 
-  @Column()
+  @Column({ type: 'timestamp', default: () => 'now()', name: 'dates' })
   dates: Date;
 
   @Column()

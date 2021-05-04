@@ -12,7 +12,7 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
   ) {
     this.hashIter = configService.get<AuthConfig>('auth').hashIter;
   }
@@ -29,7 +29,10 @@ export class AuthService {
 
   async validateUser(email: string, password: string): Promise<User> {
     const user = await this.userService.getUserFromEmail(email);
-    if(user === undefined || await this.saltHash(password, user.pw_salt) !== user.password) {
+    if (
+      user === undefined ||
+      (await this.saltHash(password, user.pw_salt)) !== user.password
+    ) {
       return null;
     }
     return user;
@@ -39,7 +42,7 @@ export class AuthService {
     const payload: JwtPayloadDto = { userId: user.id };
     return {
       message: 'success',
-      token: this.jwtService.sign(payload)
+      token: this.jwtService.sign(payload),
     };
   }
 }

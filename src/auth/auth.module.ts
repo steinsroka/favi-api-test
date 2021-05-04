@@ -9,7 +9,6 @@ import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { LocalStrategy } from './strategy/local.strategy';
 
-
 @Module({
   imports: [
     UserModule,
@@ -19,12 +18,12 @@ import { LocalStrategy } from './strategy/local.strategy';
       useFactory: (configService: ConfigService) => {
         return {
           secret: configService.get<AuthConfig>('auth').jwtSecret,
-          signOptions: { expiresIn: '30d' }
-        }
+          signOptions: { expiresIn: '30d' },
+        };
       },
-      inject: [ConfigService]
+      inject: [ConfigService],
     }),
-    ConfigModule
+    ConfigModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],

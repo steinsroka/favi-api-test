@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { UserAlbum } from './userAlbum.entity';
+import { Album } from './album/album.entity';
 
 export enum Gender {
   MEN = 'men',
@@ -18,7 +18,7 @@ export class User {
   id: number;
 
   @Column({
-    unique: true
+    unique: true,
   })
   email: string;
 
@@ -29,19 +29,19 @@ export class User {
   pw_salt: string;
 
   @Column({
-    nullable: true
+    nullable: true,
   })
   name: string;
 
   @Column({
-    nullable: true
+    nullable: true,
   })
   age: number;
 
   @Column({
     type: 'enum',
     enum: Gender,
-    nullable: true
+    nullable: true,
   })
   gender: Gender;
 
@@ -49,10 +49,10 @@ export class User {
   timestamp: Date;
 
   @Column({
-    default: 1
+    default: 1,
   })
   level: number;
 
-  @OneToMany(() => UserAlbum, (album) => album.user)
-  albums: UserAlbum[];
+  @OneToMany(() => Album, (album) => album.user)
+  albums: Album[];
 }

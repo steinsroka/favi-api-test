@@ -7,7 +7,7 @@ import { User } from './user.entity';
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private userRepository: Repository<User>,
+    private readonly userRepository: Repository<User>,
   ) {}
   getUserFromId(id: number): Promise<User> {
     return this.userRepository.findOne({ where: { id: id } });
@@ -22,9 +22,9 @@ export class UserService {
     return this.userRepository.save(user);
   }
   async isExistUserFromId(id: number): Promise<boolean> {
-    return await this.userRepository.count({where: {id: id}}) > 0;
+    return (await this.userRepository.count({ where: { id: id } })) > 0;
   }
   async isExistUserFromEmail(email: string): Promise<boolean> {
-    return await this.userRepository.count({where: {email: email}}) > 0;
+    return (await this.userRepository.count({ where: { email: email } })) > 0;
   }
 }
