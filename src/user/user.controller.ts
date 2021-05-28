@@ -1,41 +1,50 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   HttpCode,
   Param,
-  Post,
-  Put,
+  Patch,
   Req,
-  Request,
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { UserIdGuard } from './guard/user-id.guard';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { UserRequest } from '../common/@types/user-request';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UserPartialDto } from './dto/user-partial.dto';
+import { UserAuthGuard } from './guard/user-auth.guard';
 import { ValidateUserIdPipe } from './pipe/validate-user-id.pipe';
-import { User } from './user.entity';
+import { User } from '../common/entity/user.entity';
 import { UserService } from './user.service';
 
 @Controller('user/:id')
 @UsePipes(ValidateUserIdPipe)
-@UseGuards(JwtAuthGuard, UserIdGuard)
+@UseGuards(JwtAuthGuard, UserAuthGuard)
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
   @Get()
-  getUserInfo(@Param('id') id: number): Promise<User> {
-    return this.userService.getUserFromId(id);
+  getUserInfo(@Param('id') id: number): Promise<UserPartialDto> {
+    return this.userService.getUser({ id: id });
   }
 
   @Delete()
   @HttpCode(204)
   deleteUserInfo(@Param('id') id: number): void {
-    this.userService.deleteUserFromId(id);
+    this.userService.deleteUser({ id: id });
   }
 
-  @Put()
-  updateUserInfo(@Request() req): Promise<User> {
-    return this.userService.saveUser(req.user);
+  @Patch()
+  async updateUserInfo(
+    @Req() req: UserRequest,
+    @Body() user: UpdateUserDto,
+  ): Promise<UserPartialDto> {
+    for (const key of Object.keys(user)) {
+      req.user[key] = user[key];
+    }
+    await this.userService.saveUser(req.user);
+    return this.userService.getUser({ id: req.user.id });
   }
 }

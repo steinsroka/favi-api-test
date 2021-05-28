@@ -1,4 +1,4 @@
-import { Music } from 'src/music/music.entity';
+import { Music } from './music.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -6,25 +6,25 @@ import {
   ManyToOne,
   ManyToMany,
   JoinTable,
-  PrimaryColumn,
+  CreateDateColumn,
 } from 'typeorm';
-import { User } from '../user.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class Album {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @PrimaryColumn()
+  @Column()
   name: string;
 
   @Column({ default: true })
-  public: boolean;
+  isPublic: boolean;
 
-  @Column({ type: 'timestamp', default: () => 'now()', name: 'dates' })
+  @CreateDateColumn()
   timestamp: Date;
 
-  @ManyToOne(() => User, (user) => user.albums)
+  @ManyToOne(() => User, (user) => user.albums, { primary: true })
   user: User;
 
   @ManyToMany(() => Music, { cascade: true })

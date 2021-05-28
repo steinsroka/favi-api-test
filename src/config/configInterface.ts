@@ -3,6 +3,6 @@ export interface AuthConfig {
   jwtSecret: string;
 }
 
-export interface httpConfig {
+export interface HttpConfig {
   port: number;
 }

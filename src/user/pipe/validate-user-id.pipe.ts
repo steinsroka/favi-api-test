@@ -5,7 +5,9 @@ import {
   NotFoundException,
   HttpStatus,
 } from '@nestjs/common';
-import { UserService } from 'src/user/user.service';
+import { ErrorString } from 'src/common/const/error-string';
+import { ErrorMessage } from '../../common/class/error-message';
+import { UserService } from '../../user/user.service';
 
 @Injectable()
 export class ValidateUserIdPipe implements PipeTransform {
@@ -13,11 +15,13 @@ export class ValidateUserIdPipe implements PipeTransform {
 
   async transform(value: number, metadata: ArgumentMetadata) {
     if (metadata.type === 'param' && metadata.data === 'id') {
-      if (!(await this.userService.isExistUserFromId(value))) {
-        throw new NotFoundException({
-          status: HttpStatus.NOT_FOUND,
-          error: `user id ${value} is not exist.`,
-        });
+      if (!(await this.userService.isExistUser({ id: value }))) {
+        throw new NotFoundException(
+          new ErrorMessage(
+            `user id ${value} is not exist.`,
+            ErrorString.FAIL_EXIST,
+          ),
+        );
       }
     }
     return value;

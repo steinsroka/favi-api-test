@@ -9,7 +9,12 @@
     "target": "ESnext",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
-    "incremental": true
+    "baseUrl": ".",
+    "incremental": true,
+    "plugins": [
+      { 
+        "transform": "ts-transformer-keys/transformer"
+      }
+    ]
   }
 }

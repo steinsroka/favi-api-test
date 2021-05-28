@@ -1,12 +1,13 @@
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
-import { User } from 'src/user/user.entity';
-import { UserService } from 'src/user/user.service';
+import { User } from '../common/entity/user.entity';
+import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { randomBytes } from 'crypto';
 import { ExistUserIdPipe } from './pipe/exist-user-id.pipe';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -17,7 +18,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req) {
+  async login(@Request() req, @Body() loginDto: LoginDto) {
     return this.authService.login(req.user);
   }
 
@@ -31,7 +32,7 @@ export class AuthController {
         (salt = randomBytes(64).toString('base64')),
       ),
     );
-    user.pw_salt = salt;
+    user.pwSalt = salt;
     return this.userService.saveUser(user);
   }
 }

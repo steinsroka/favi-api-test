@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { createHash } from 'crypto';
-import { AuthConfig } from 'src/config/configInterface';
-import { User } from 'src/user/user.entity';
+import { AuthConfig } from '../config/configInterface';
+import { User } from '../common/entity/user.entity';
 import { UserService } from '../user/user.service';
 import { JwtPayloadDto } from './dto/jwt-payload.dto';
 
@@ -28,10 +28,11 @@ export class AuthService {
   }
 
   async validateUser(email: string, password: string): Promise<User> {
-    const user = await this.userService.getUserFromEmail(email);
+    const user = await this.userService.getUserAllInfo({ email: email });
+    console.log(email);
     if (
       user === undefined ||
-      (await this.saltHash(password, user.pw_salt)) !== user.password
+      (await this.saltHash(password, user.pwSalt)) !== user.password
     ) {
       return null;
     }

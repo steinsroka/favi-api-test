@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { keys } from 'ts-transformer-keys';
 import { Repository, DeleteResult } from 'typeorm';
-import { User } from './user.entity';
+import { UserPartialDto } from './dto/user-partial.dto';
+import { User, UserExceptRelations } from '../common/entity/user.entity';
 
 @Injectable()
 export class UserService {
@@ -9,22 +11,22 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
-  getUserFromId(id: number): Promise<User> {
-    return this.userRepository.findOne({ where: { id: id } });
+  getUser(userPartial: UserPartialDto): Promise<UserPartialDto> {
+    return this.userRepository.findOne({ where: userPartial });
   }
-  getUserFromEmail(email: string): Promise<User> {
-    return this.userRepository.findOne({ where: { email: email } });
+  deleteUser(userPartial: UserPartialDto): Promise<DeleteResult> {
+    return this.userRepository.delete(userPartial);
   }
-  deleteUserFromId(id: number): Promise<DeleteResult> {
-    return this.userRepository.delete({ id: id });
+  getUserAllInfo(userPartial: UserPartialDto): Promise<User> {
+    return this.userRepository.findOne({
+      where: userPartial,
+      select: keys<UserExceptRelations>(),
+    });
   }
   saveUser(user: User): Promise<User> {
     return this.userRepository.save(user);
   }
-  async isExistUserFromId(id: number): Promise<boolean> {
-    return (await this.userRepository.count({ where: { id: id } })) > 0;
-  }
-  async isExistUserFromEmail(email: string): Promise<boolean> {
-    return (await this.userRepository.count({ where: { email: email } })) > 0;
+  async isExistUser(userPartial: UserPartialDto): Promise<boolean> {
+    return (await this.userRepository.count({ where: userPartial })) > 0;
   }
 }
