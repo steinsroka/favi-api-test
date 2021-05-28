@@ -44,30 +44,38 @@ export class MusicController {
   }
 
   @Get(':id/comment')
-  getMusicComments(@Param('id') id: string, @Query('index') index?: number): Promise<MusicComment[]> {
+  getMusicComments(
+    @Param('id') id: string,
+    @Query('index') index?: number,
+  ): Promise<MusicComment[]> {
     return this.musicService.getMusicComments(id, index);
   }
 
   @Post(':id/comment')
-  addMusicComment(@Request() req: UserRequest, @Param('id') id: string, @Body() addMusicCommentDto: AddMusicCommentDto): Message {
+  addMusicComment(
+    @Request() req: UserRequest,
+    @Param('id') id: string,
+    @Body() addMusicCommentDto: AddMusicCommentDto,
+  ): Message {
     this.musicService.addMusicComment(id, req.user, addMusicCommentDto.comment);
     return new Message('success');
   }
 
   @Delete(':id/comment/:comment_id')
   @HttpCode(204)
-  deleteMusicComment(
-    @Param('comment_id') commentId: number,
-  ): void {
+  deleteMusicComment(@Param('comment_id') commentId: number): void {
     this.musicService.deleteMusicComment(commentId);
   }
 
   @Patch(':id/comment/:comment_id')
   editMusicComment(
     @Param('comment_id') commentId: number,
-    @Body() editMusicCommentDto: EditMusicCommentDto
+    @Body() editMusicCommentDto: EditMusicCommentDto,
   ): Promise<MusicComment> {
-    return this.musicService.updateMusicComment(commentId, editMusicCommentDto.newComment);
+    return this.musicService.updateMusicComment(
+      commentId,
+      editMusicCommentDto.newComment,
+    );
   }
 
   @Put(':id/comment/:comment_id/like')

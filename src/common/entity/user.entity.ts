@@ -105,5 +105,5 @@ export class UserExceptRelations extends OmitType(User, [
   'albums',
   'musicComments',
   'musicLikes',
-  'musicTag'
+  'musicTag',
 ]) {}

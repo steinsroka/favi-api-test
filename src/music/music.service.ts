@@ -20,7 +20,7 @@ export class MusicService {
   ) {}
 
   getMusic(id: string): Promise<MusicInfo> {
-    return this.musicInfoRepository.findOne({ where: {id: id} });
+    return this.musicInfoRepository.findOne({ where: { id: id } });
   }
 
   async addMusicLike(id: string, user: User): Promise<Music> {
@@ -57,43 +57,64 @@ export class MusicService {
       .getMany();
   }
 
-  async addMusicComment(id: string, user: User, comment: string): Promise<Music> {
-    const music = await this.musicRepository.findOne({relations: ['comments'], where: {id: id}});
-    const musicComment = this.musicCommentRepository.create({comment: comment, user: user});
+  async addMusicComment(
+    id: string,
+    user: User,
+    comment: string,
+  ): Promise<Music> {
+    const music = await this.musicRepository.findOne({
+      relations: ['comments'],
+      where: { id: id },
+    });
+    const musicComment = this.musicCommentRepository.create({
+      comment: comment,
+      user: user,
+    });
     music.comments.push(musicComment);
     return this.musicRepository.save(music);
   }
 
   async deleteMusicComment(id: number): Promise<Music> {
-    const music = await this.musicRepository.findOne({relations: ['comments'], where: {id: id}});
+    const music = await this.musicRepository.findOne({
+      relations: ['comments'],
+      where: { id: id },
+    });
     music.comments = music.comments.filter((comment) => {
       comment.id !== id;
     });
     return this.musicRepository.save(music);
   }
 
-  async updateMusicComment(id: number, newComment: string): Promise<MusicComment> {
-    const musicComment = await this.musicCommentRepository.findOne({where: {id: id}});
+  async updateMusicComment(
+    id: number,
+    newComment: string,
+  ): Promise<MusicComment> {
+    const musicComment = await this.musicCommentRepository.findOne({
+      where: { id: id },
+    });
     musicComment.comment = newComment;
     return this.musicCommentRepository.save(musicComment);
   }
 
   async addMusicCommentLike(id: number, user: User): Promise<MusicComment> {
-    const musicComment = await this.musicCommentRepository.findOne({relations: ['likedUsers'], where: {id: id}});
+    const musicComment = await this.musicCommentRepository.findOne({
+      relations: ['likedUsers'],
+      where: { id: id },
+    });
     musicComment.likedUsers.push(user);
     return this.musicCommentRepository.save(musicComment);
   }
 
   async deleteMusicCommentLike(id: number): Promise<MusicComment> {
-    const musicComment = await this.musicCommentRepository.findOne({relations: ['likedUsers'], where: {id: id}});
+    const musicComment = await this.musicCommentRepository.findOne({
+      relations: ['likedUsers'],
+      where: { id: id },
+    });
     musicComment.likedUsers = musicComment.likedUsers.filter((comment) => {
-      comment.id !== id
-    })
+      comment.id !== id;
+    });
     return this.musicCommentRepository.save(musicComment);
   }
 
-  async getMusicTag(id: string) {
-    
-  }
+  async getMusicTag(id: string) {}
 }
- 

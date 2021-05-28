@@ -1,8 +1,13 @@
-import { CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { MusicComment } from "./music-comment.entity";
-import { MusicTagValue } from "./music-tag-value.entity";
-import { Music } from "./music.entity";
-import { User } from "./user.entity";
+import {
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { MusicComment } from './music-comment.entity';
+import { MusicTagValue } from './music-tag-value.entity';
+import { Music } from './music.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class MusicTag {
