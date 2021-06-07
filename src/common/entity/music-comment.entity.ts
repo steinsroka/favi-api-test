@@ -4,11 +4,10 @@ import {
   Column,
   CreateDateColumn,
   ManyToOne,
-  ManyToMany,
-  JoinTable,
   OneToMany,
+  PrimaryColumn,
 } from 'typeorm';
-import { MusicTagValue } from './music-tag-value.entity';
+import { MusicCommentLike } from './music-comment-like.entity';
 import { MusicTag } from './music-tag.entity';
 import { Music } from './music.entity';
 import { User } from './user.entity';
@@ -24,15 +23,15 @@ export class MusicComment {
   @CreateDateColumn()
   timestamp: Date;
 
-  @ManyToOne(() => Music, (music) => music.comments)
+  @ManyToOne(() => Music, (music) => music.musicComments, {nullable: false})
   music: Music;
 
-  @ManyToOne(() => User, (user) => user.musicComments)
+  @ManyToOne(() => User, (user) => user.musicComments, {nullable: false})
   user: User;
 
-  @ManyToMany(() => User, (user) => user.musicCommentLikes)
-  likedUsers: User[];
+  @OneToMany(() => MusicCommentLike, (musicCommentLike) => musicCommentLike.musicComment)
+  musicCommentLikes: MusicCommentLike[];
 
   @OneToMany(() => MusicTag, (musicTag) => musicTag.music)
-  musicTag: MusicTag[];
+  musicTags: MusicTag[];
 }

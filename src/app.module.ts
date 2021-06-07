@@ -7,6 +7,8 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import configuration from './config/configuration';
 import { MusicModule } from './music/music.module';
+import { APP_FILTER } from '@nestjs/core';
+import { AllExceptionsFilter } from './common/exception-filter/all-exceptions.filter';
 
 @Module({
   imports: [
@@ -27,6 +29,6 @@ import { MusicModule } from './music/music.module';
     MusicModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, {provide: APP_FILTER, useClass: AllExceptionsFilter}],
 })
 export class AppModule {}

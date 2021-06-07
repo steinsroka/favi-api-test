@@ -1,4 +1,4 @@
-import { OmitType } from '@nestjs/mapped-types';
+import { OmitType, PickType } from '@nestjs/mapped-types';
 import {
   IsBase64,
   IsDate,
@@ -6,6 +6,7 @@ import {
   IsEnum,
   IsNumber,
   IsString,
+  IsUUID,
 } from 'class-validator';
 import {
   Entity,
@@ -17,7 +18,9 @@ import {
   JoinTable,
 } from 'typeorm';
 import { Album } from './album.entity';
+import { MusicCommentLike } from './music-comment-like.entity';
 import { MusicComment } from './music-comment.entity';
+import { MusicLike } from './music-like.entity';
 import { MusicTag } from './music-tag.entity';
 import { Music } from './music.entity';
 
@@ -34,9 +37,9 @@ export class User {
     this.password = password;
   }
 
-  @IsNumber()
-  @PrimaryGeneratedColumn()
-  id: number;
+  @IsUUID()
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @IsEmail()
   @Column({
@@ -90,20 +93,24 @@ export class User {
   @OneToMany(() => MusicComment, (musicComment) => musicComment.user)
   musicComments: MusicComment[];
 
-  @ManyToMany(() => Music, (music) => music.likedUsers)
-  @JoinTable()
-  musicLikes: Music[];
+  @OneToMany(() => MusicLike, (musicLike) => musicLike.user)
+  musicLikes: MusicLike[];
 
-  @ManyToMany(() => MusicComment, (musicComment) => musicComment.likedUsers)
-  musicCommentLikes: MusicComment[];
+  @OneToMany(() => MusicCommentLike, (musicCommentLike) => musicCommentLike.user)
+  musicCommentLikes: MusicCommentLike[];
 
   @OneToMany(() => MusicTag, (musicTag) => musicTag.music)
-  musicTag: MusicTag[];
+  musicTags: MusicTag[];
 }
 
-export class UserExceptRelations extends OmitType(User, [
-  'albums',
-  'musicComments',
-  'musicLikes',
-  'musicTag',
+export class UserExceptRelations extends PickType(User, [
+  'id',
+  'email',
+  'password',
+  'pwSalt',
+  'name',
+  'birth',
+  'gender',
+  'timestamp',
+  'level'
 ]) {}

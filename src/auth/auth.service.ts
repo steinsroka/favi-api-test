@@ -29,7 +29,6 @@ export class AuthService {
 
   async validateUser(email: string, password: string): Promise<User> {
     const user = await this.userService.getUserAllInfo({ email: email });
-    console.log(email);
     if (
       user === undefined ||
       (await this.saltHash(password, user.pwSalt)) !== user.password

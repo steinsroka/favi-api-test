@@ -19,7 +19,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req, @Body() loginDto: LoginDto) {
-    return this.authService.login(req.user);
+    return await this.authService.login(req.user);
   }
 
   @Post('register')
@@ -33,6 +33,6 @@ export class AuthController {
       ),
     );
     user.pwSalt = salt;
-    return this.userService.saveUser(user);
+    return await this.userService.saveUser(user);
   }
 }

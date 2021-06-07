@@ -1,4 +1,5 @@
 import {
+  Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
@@ -14,18 +15,30 @@ export class MusicTag {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column('uuid')
+  musicId: string;
+
+  @Column()
+  musicCommentId: number;
+
+  @Column('uuid')
+  userId: string;
+
+  @Column()
+  musicTagValueId: number;
+
   @CreateDateColumn()
   timestamp: Date;
 
-  @ManyToOne(() => Music, (music) => music.musicTag)
+  @ManyToOne(() => Music, (music) => music.musicTags)
   music: Music;
 
-  @ManyToOne(() => MusicComment, (musicComment) => musicComment.musicTag)
-  musicComment!: MusicComment;
+  @ManyToOne(() => MusicComment, (musicComment) => musicComment.musicTags)
+  musicComment: MusicComment;
 
-  @ManyToOne(() => User, (user) => user.musicTag)
+  @ManyToOne(() => User, (user) => user.musicTags)
   user: User;
 
-  @ManyToOne(() => MusicTagValue, (musicTagValue) => musicTagValue.musicTag)
+  @ManyToOne(() => MusicTagValue, (musicTagValue) => musicTagValue.musicTags)
   musicTagValue: MusicTagValue;
 }

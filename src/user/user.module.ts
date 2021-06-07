@@ -7,7 +7,7 @@ import { Album } from '../common/entity/album.entity';
 import { JwtStrategy } from '../auth/strategy/jwt.strategy';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([User, Album])],
   providers: [UserService, JwtStrategy],
   controllers: [UserController],
   exports: [TypeOrmModule, UserService],

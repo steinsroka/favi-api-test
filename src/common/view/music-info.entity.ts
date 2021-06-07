@@ -21,7 +21,8 @@ import { User } from '../entity/user.entity';
         'like',
       )
       .from(Music, 'music')
-      .leftJoin('music.likedUsers', 'user')
+      .leftJoin('music.musicLikes', 'musicLike')
+      .leftJoin('musicLike.user', 'user')
       .groupBy('music.id'),
 })
 export class MusicInfo {

@@ -13,7 +13,7 @@ import { UserService } from '../../user/user.service';
 export class ValidateUserIdPipe implements PipeTransform {
   constructor(private readonly userService: UserService) {}
 
-  async transform(value: number, metadata: ArgumentMetadata) {
+  async transform(value: any, metadata: ArgumentMetadata) {
     if (metadata.type === 'param' && metadata.data === 'id') {
       if (!(await this.userService.isExistUser({ id: value }))) {
         throw new NotFoundException(

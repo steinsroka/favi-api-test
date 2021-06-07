@@ -6,6 +6,7 @@ import {
   ManyToMany,
 } from 'typeorm';
 import { MusicComment } from './music-comment.entity';
+import { MusicLike } from './music-like.entity';
 import { MusicTag } from './music-tag.entity';
 import { User } from './user.entity';
 
@@ -41,12 +42,12 @@ export class Music {
   @Column({ type: 'boolean' })
   valid: boolean;
 
-  @OneToMany(() => MusicComment, (musicComment) => musicComment.music)
-  comments: MusicComment[];
+  @OneToMany(() => MusicComment, (musicComment) => musicComment.music, {cascade: true})
+  musicComments: MusicComment[];
+  
+  @OneToMany(() => MusicLike, (musicLike) => musicLike.music, {cascade: true})
+  musicLikes: MusicLike[];
 
-  @ManyToMany(() => User, (user) => user.musicLikes)
-  likedUsers: User[];
-
-  @OneToMany(() => MusicTag, (musicTag) => musicTag.music)
-  musicTag: MusicTag[];
+  @OneToMany(() => MusicTag, (musicTag) => musicTag.music, {cascade: true})
+  musicTags: MusicTag[];
 }
