@@ -61,7 +61,7 @@ export class MusicTagValue {
   @Column()
   tag: Tag;
 
-  @Column()
+  @Column({nullable: true})
   subTag!: string;
 
   @Column({

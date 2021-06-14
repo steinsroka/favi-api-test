@@ -17,8 +17,8 @@ export class MusicComment {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  comment: string;
+  @Column({nullable: true})
+  comment!: string;
 
   @CreateDateColumn()
   timestamp: Date;
@@ -29,9 +29,9 @@ export class MusicComment {
   @ManyToOne(() => User, (user) => user.musicComments, {nullable: false})
   user: User;
 
-  @OneToMany(() => MusicCommentLike, (musicCommentLike) => musicCommentLike.musicComment)
+  @OneToMany(() => MusicCommentLike, (musicCommentLike) => musicCommentLike.musicComment, {cascade: true})
   musicCommentLikes: MusicCommentLike[];
 
-  @OneToMany(() => MusicTag, (musicTag) => musicTag.music)
+  @OneToMany(() => MusicTag, (musicTag) => musicTag.musicComment, {cascade: true})
   musicTags: MusicTag[];
 }

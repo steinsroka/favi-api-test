@@ -1,3 +1,4 @@
+import { TagCountDto } from '../../music/dto/tag-count.dto';
 import { ViewEntity, ViewColumn, Connection } from 'typeorm';
 import { MusicTagValue } from '../entity/music-tag-value.entity';
 import { Music } from '../entity/music.entity';
@@ -11,10 +12,6 @@ import { User } from '../entity/user.entity';
       .addSelect('music.title', 'title')
       .addSelect('music.composer', 'composer')
       .addSelect('music.lyricist', 'lyricist')
-      .addSelect('music.album', 'album')
-      .addSelect('music.lyrics', 'lyrics')
-      .addSelect('music.dates', 'dates')
-      .addSelect('music.country', 'country')
       .addSelect('music.link', 'link')
       .addSelect(
         'CASE WHEN user.id is null then 0 ELSE COUNT(music.id) END',
@@ -27,7 +24,7 @@ import { User } from '../entity/user.entity';
 })
 export class MusicInfo {
   @ViewColumn()
-  id: number;
+  id: string;
 
   @ViewColumn()
   title: string;
@@ -37,22 +34,12 @@ export class MusicInfo {
 
   @ViewColumn()
   lyricist: string;
-
-  @ViewColumn()
-  album: string;
-
-  @ViewColumn()
-  lyrics: string;
-
-  @ViewColumn()
-  dates: Date;
-
-  @ViewColumn()
-  country: string;
-
+  
   @ViewColumn()
   link: string;
 
   @ViewColumn()
   like: number;
+
+  tags: TagCountDto[];
 }

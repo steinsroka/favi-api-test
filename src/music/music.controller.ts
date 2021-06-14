@@ -11,6 +11,7 @@ import {
   Query,
   Request,
   UseGuards,
+  UsePipes,
 } from '@nestjs/common';
 import { Message } from '../common/class/message';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
@@ -22,21 +23,28 @@ import { MusicComment } from '../common/entity/music-comment.entity';
 import { EditMusicCommentDto } from './dto/edit-music-comment.dto';
 import { VoteMusicTagDto } from './dto/vote-music-tag.dto';
 import { Tag } from '../common/entity/music-tag-value.entity';
+import { InsertResult } from 'typeorm';
+import { MusicCommentInfo } from 'src/common/view/music-comment-info.entity';
+import { MusicCommentAuthGuard } from './guard/music-comment-auth.guard';
+import { ValidateMusicPipe } from './pipe/validate-music.pipe';
 
 @Controller('music')
 @UseGuards(JwtAuthGuard)
+@UsePipes(ValidateMusicPipe)
 export class MusicController {
   constructor(private readonly musicService: MusicService) {}
 
   @Get(':id')
   async getMusicInfo(@Param('id') id: string): Promise<MusicInfo> {
-    return await this.musicService.getMusic(id);
+    const music = await this.musicService.getMusic(id);
+    music.tags = await this.musicService.getMusicTags(id);
+    return music;
   }
 
   @Put(':id/like')
-  async likeMusic(@Request() req: UserRequest, @Param('id') id: string): Promise<Message> {
+  @HttpCode(204)
+  async likeMusic(@Request() req: UserRequest, @Param('id') id: string): Promise<void> {
     await this.musicService.addMusicLike(id, req.user);
-    return new Message('success');
   }
 
   @Delete(':id/like')
@@ -49,8 +57,12 @@ export class MusicController {
   async getMusicComments(
     @Param('id') id: string,
     @Query('index') index?: number,
-  ): Promise<MusicComment[]> {
-    return await this.musicService.getMusicComments(id, index);
+  ): Promise<MusicCommentInfo[]> {
+    const musicComments = await this.musicService.getMusicComments(id, index);
+    for(let i = 0;i < musicComments.length; i++) {
+      musicComments[i].tags = await this.musicService.getMusicCommentTags(musicComments[i].id);
+    }
+    return musicComments;
   }
 
   @Post(':id/comment')
@@ -60,17 +72,19 @@ export class MusicController {
     @Body() addMusicCommentDto: AddMusicCommentDto,
   ): Promise<Message> {
     const comment = await this.musicService.addMusicComment(id, req.user, addMusicCommentDto.comment);
-    addMusicCommentDto.tags?.map((value: Tag) => {this.musicService.addMusicTag(id, value, req.user, comment.id)});
-    // addMusicCommentDto.tags?.forEach(async (value: Tag) => {await this.musicService.addMusicTag(id, value, req.user, comment.id)});
+    const addMusicPromise: Promise<InsertResult>[] | undefined = addMusicCommentDto.tags?.map((value: Tag) => this.musicService.addMusicTag(id, value, req.user, comment.id));
+    await Promise.all(addMusicPromise ?? []);
     return new Message('success');
   }
 
+  @UseGuards(MusicCommentAuthGuard)
   @Delete(':id/comment/:comment_id')
   @HttpCode(204)
-  async deleteMusicComment(@Param('comment_id') commentId: number): Promise<void> {
-    await this.musicService.deleteMusicComment(commentId);
+  async deleteMusicComment(@Param('id') id: string, @Param('comment_id') commentId: number): Promise<void> {
+    await this.musicService.deleteMusicComment(commentId, id);
   }
 
+  @UseGuards(MusicCommentAuthGuard)
   @Patch(':id/comment/:comment_id')
   async editMusicComment(
     @Param('comment_id') commentId: number,
@@ -83,11 +97,12 @@ export class MusicController {
   }
 
   @Put(':id/comment/:comment_id/like')
+  @HttpCode(204)
   async likeMusicComment(
     @Request() req: UserRequest,
     @Param('comment_id') commentId: number,
-  ) {
-    return await this.musicService.addMusicCommentLike(commentId, req.user);
+  ): Promise<void> {
+    await this.musicService.addMusicCommentLike(commentId, req.user);
   }
 
   @Delete(':id/comment/:comment_id/like')
@@ -101,14 +116,14 @@ export class MusicController {
 
   @Get(':id/tag')
   async getMusicTag(@Param('id') id: string) {
-    return await this.musicService.getMusicTag(id);
+    return await this.musicService.getMusicTags(id);
   }
 
-  @Post(':id/tag')
+  @Put(':id/tag')
   async voteMusicTag(@Request() req: UserRequest, @Param('id') id: string, @Body() voteMusicTagDto: VoteMusicTagDto) {
-    return await this.musicService.addMusicTag(id, voteMusicTagDto.tag, req.user, voteMusicTagDto.musicCommentId);
+    return await this.musicService.addMusicTag(id, voteMusicTagDto.tag, req.user);
   }
 
   @Post(':id/play')
   logMusicPlay(@Param('id') id: string) {}
- }
+}

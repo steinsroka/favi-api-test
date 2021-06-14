@@ -9,10 +9,11 @@ import { MusicService } from './music.service';
 import { MusicTag } from '../common/entity/music-tag.entity';
 import { MusicLike } from '../common/entity/music-like.entity';
 import { MusicCommentLike } from '../common/entity/music-comment-like.entity';
+import { MusicCommentInfo } from '../common/view/music-comment-info.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Music, MusicComment, MusicTagValue, MusicInfo, MusicTag, MusicLike, MusicCommentLike]),
+    TypeOrmModule.forFeature([Music, MusicComment, MusicTagValue, MusicInfo, MusicCommentInfo, MusicTag, MusicLike, MusicCommentLike]),
   ],
   exports: [TypeOrmModule],
   controllers: [MusicController],

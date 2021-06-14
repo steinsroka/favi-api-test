@@ -11,6 +11,7 @@ database:
   synchronize: true
   autoLoadEntities: true
   logging: true
+  bigNumberStrings: false
 
 auth:
   hashIter: 56178

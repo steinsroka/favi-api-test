@@ -25,22 +25,7 @@ export class Music {
   lyricist: string;
 
   @Column()
-  album: string;
-
-  @Column({ type: 'text' })
-  lyrics: string;
-
-  @Column({ type: 'timestamp' })
-  dates: Date;
-
-  @Column()
-  country: string;
-
-  @Column()
   link: string;
-
-  @Column({ type: 'boolean' })
-  valid: boolean;
 
   @OneToMany(() => MusicComment, (musicComment) => musicComment.music, {cascade: true})
   musicComments: MusicComment[];

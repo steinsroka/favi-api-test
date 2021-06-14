@@ -1,4 +1,4 @@
-import { IsArray, IsEnum, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { Tag } from '../../common/entity/music-tag-value.entity';
 
 export class AddMusicCommentDto {
@@ -6,5 +6,6 @@ export class AddMusicCommentDto {
   comment: string;
 
   @IsEnum(Tag, {each: true})
+  @IsOptional()
   tags?: Tag[];
 }
