@@ -43,13 +43,19 @@ export class MusicController {
 
   @Put(':id/like')
   @HttpCode(204)
-  async likeMusic(@Request() req: UserRequest, @Param('id') id: string): Promise<void> {
+  async likeMusic(
+    @Request() req: UserRequest,
+    @Param('id') id: string,
+  ): Promise<void> {
     await this.musicService.addMusicLike(id, req.user);
   }
 
   @Delete(':id/like')
   @HttpCode(204)
-  async hateMusic(@Request() req: UserRequest, @Param('id') id: string): Promise<void> {
+  async hateMusic(
+    @Request() req: UserRequest,
+    @Param('id') id: string,
+  ): Promise<void> {
     await this.musicService.deleteMusicLike(id, req.user);
   }
 
@@ -59,8 +65,10 @@ export class MusicController {
     @Query('index') index?: number,
   ): Promise<MusicCommentInfo[]> {
     const musicComments = await this.musicService.getMusicComments(id, index);
-    for(let i = 0;i < musicComments.length; i++) {
-      musicComments[i].tags = await this.musicService.getMusicCommentTags(musicComments[i].id);
+    for (let i = 0; i < musicComments.length; i++) {
+      musicComments[i].tags = await this.musicService.getMusicCommentTags(
+        musicComments[i].id,
+      );
     }
     return musicComments;
   }
@@ -71,8 +79,16 @@ export class MusicController {
     @Param('id') id: string,
     @Body() addMusicCommentDto: AddMusicCommentDto,
   ): Promise<Message> {
-    const comment = await this.musicService.addMusicComment(id, req.user, addMusicCommentDto.comment);
-    const addMusicPromise: Promise<InsertResult>[] | undefined = addMusicCommentDto.tags?.map((value: Tag) => this.musicService.addMusicTag(id, value, req.user, comment.id));
+    const comment = await this.musicService.addMusicComment(
+      id,
+      req.user,
+      addMusicCommentDto.comment,
+    );
+    const addMusicPromise:
+      | Promise<InsertResult>[]
+      | undefined = addMusicCommentDto.tags?.map((value: Tag) =>
+      this.musicService.addMusicTag(id, value, req.user, comment.id),
+    );
     await Promise.all(addMusicPromise ?? []);
     return new Message('success');
   }
@@ -80,7 +96,10 @@ export class MusicController {
   @UseGuards(MusicCommentAuthGuard)
   @Delete(':id/comment/:comment_id')
   @HttpCode(204)
-  async deleteMusicComment(@Param('id') id: string, @Param('comment_id') commentId: number): Promise<void> {
+  async deleteMusicComment(
+    @Param('id') id: string,
+    @Param('comment_id') commentId: number,
+  ): Promise<void> {
     await this.musicService.deleteMusicComment(commentId, id);
   }
 
@@ -120,8 +139,16 @@ export class MusicController {
   }
 
   @Put(':id/tag')
-  async voteMusicTag(@Request() req: UserRequest, @Param('id') id: string, @Body() voteMusicTagDto: VoteMusicTagDto) {
-    return await this.musicService.addMusicTag(id, voteMusicTagDto.tag, req.user);
+  async voteMusicTag(
+    @Request() req: UserRequest,
+    @Param('id') id: string,
+    @Body() voteMusicTagDto: VoteMusicTagDto,
+  ) {
+    return await this.musicService.addMusicTag(
+      id,
+      voteMusicTagDto.tag,
+      req.user,
+    );
   }
 
   @Post(':id/play')

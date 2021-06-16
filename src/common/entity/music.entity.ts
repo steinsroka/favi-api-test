@@ -27,12 +27,14 @@ export class Music {
   @Column()
   link: string;
 
-  @OneToMany(() => MusicComment, (musicComment) => musicComment.music, {cascade: true})
+  @OneToMany(() => MusicComment, (musicComment) => musicComment.music, {
+    cascade: true,
+  })
   musicComments: MusicComment[];
-  
-  @OneToMany(() => MusicLike, (musicLike) => musicLike.music, {cascade: true})
+
+  @OneToMany(() => MusicLike, (musicLike) => musicLike.music, { cascade: true })
   musicLikes: MusicLike[];
 
-  @OneToMany(() => MusicTag, (musicTag) => musicTag.music, {cascade: true})
+  @OneToMany(() => MusicTag, (musicTag) => musicTag.music, { cascade: true })
   musicTags: MusicTag[];
 }

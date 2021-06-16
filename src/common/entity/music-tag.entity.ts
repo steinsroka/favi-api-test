@@ -18,7 +18,7 @@ export class MusicTag {
   @Column('uuid')
   musicId: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   musicCommentId: number;
 
   @Column('uuid')

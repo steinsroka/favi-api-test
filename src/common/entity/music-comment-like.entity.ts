@@ -1,10 +1,10 @@
-import { CreateDateColumn, Entity, ManyToOne, PrimaryColumn } from "typeorm";
-import { MusicComment } from "./music-comment.entity";
-import { User } from "./user.entity";
+import { CreateDateColumn, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { MusicComment } from './music-comment.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class MusicCommentLike {
-  @PrimaryColumn('uuid', {length: 36})
+  @PrimaryColumn('uuid', { length: 36 })
   userId: string;
 
   @PrimaryColumn()
@@ -13,7 +13,10 @@ export class MusicCommentLike {
   @ManyToOne(() => User, (user) => user.musicCommentLikes)
   user: User;
 
-  @ManyToOne(() => MusicComment, (musicComment) => musicComment.musicCommentLikes)
+  @ManyToOne(
+    () => MusicComment,
+    (musicComment) => musicComment.musicCommentLikes,
+  )
   musicComment: MusicComment;
 
   @CreateDateColumn()

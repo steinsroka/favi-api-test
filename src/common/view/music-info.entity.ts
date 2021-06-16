@@ -34,7 +34,7 @@ export class MusicInfo {
 
   @ViewColumn()
   lyricist: string;
-  
+
   @ViewColumn()
   link: string;
 

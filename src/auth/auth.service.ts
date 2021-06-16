@@ -6,6 +6,9 @@ import { AuthConfig } from '../config/configInterface';
 import { User } from '../common/entity/user.entity';
 import { UserService } from '../user/user.service';
 import { JwtPayloadDto } from './dto/jwt-payload.dto';
+import { createTransport } from 'nodemailer';
+import SMTPTransport from 'nodemailer/lib/smtp-transport';
+import userVerifyCode from '../common/class/user-verify-code';
 
 @Injectable()
 export class AuthService {
@@ -28,7 +31,7 @@ export class AuthService {
   }
 
   async validateUser(email: string, password: string): Promise<User> {
-    const user = await this.userService.getUserAllInfo({ email: email });
+    const user = await this.userService.getUserAuthInfo({ email: email });
     if (
       user === undefined ||
       (await this.saltHash(password, user.pwSalt)) !== user.password
@@ -44,5 +47,18 @@ export class AuthService {
       message: 'success',
       token: this.jwtService.sign(payload),
     };
+  }
+
+  async sendVerifyEmail(email: string, method: string) {
+    const verifyInfo = await userVerifyCode.setCode(email, method);
+    const transporter = createTransport(
+      this.configService.get<SMTPTransport.Options>('mail'),
+    );
+    await transporter.sendMail({
+      from: `arcane`,
+      to: email,
+      subject: 'arcane auth number',
+      text: `your auth code is ${verifyInfo.code}`,
+    });
   }
 }

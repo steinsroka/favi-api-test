@@ -29,6 +29,9 @@ import { AllExceptionsFilter } from './common/exception-filter/all-exceptions.fi
     MusicModule,
   ],
   controllers: [AppController],
-  providers: [AppService, {provide: APP_FILTER, useClass: AllExceptionsFilter}],
+  providers: [
+    AppService,
+    { provide: APP_FILTER, useClass: AllExceptionsFilter },
+  ],
 })
 export class AppModule {}

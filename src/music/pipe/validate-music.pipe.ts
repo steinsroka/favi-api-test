@@ -16,24 +16,24 @@ export class ValidateMusicPipe implements PipeTransform {
 
   async transform(value: any, metadata: ArgumentMetadata) {
     if (metadata.type === 'param') {
-      switch(metadata.data) {
+      switch (metadata.data) {
         case 'id':
-          if(!(await this.musicService.isExistMusic(value))) {
+          if (!(await this.musicService.isExistMusic(value))) {
             throw new NotFoundException(
               new ErrorMessage(
                 `music id ${value} is not exist`,
                 ErrorString.FAIL_EXIST,
-              )
+              ),
             );
           }
           break;
         case 'comment_id':
-          if(!(await this.musicService.isExistMusicComment(value))) {
+          if (!(await this.musicService.isExistMusicComment(value))) {
             throw new NotFoundException(
               new ErrorMessage(
                 `music comment id ${value} is not exist`,
                 ErrorString.FAIL_EXIST,
-              )
+              ),
             );
           }
           break;

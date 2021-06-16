@@ -14,7 +14,7 @@ export enum TagClass {
   INSTRUCTION = 'instruction',
   RHYTHM = 'rhythm_beat',
   VOCAL = 'vocal',
-  OTHER = 'other'
+  OTHER = 'other',
 }
 
 export enum Tag {
@@ -61,7 +61,7 @@ export class MusicTagValue {
   @Column()
   tag: Tag;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   subTag!: string;
 
   @Column({

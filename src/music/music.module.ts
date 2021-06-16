@@ -13,7 +13,16 @@ import { MusicCommentInfo } from '../common/view/music-comment-info.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Music, MusicComment, MusicTagValue, MusicInfo, MusicCommentInfo, MusicTag, MusicLike, MusicCommentLike]),
+    TypeOrmModule.forFeature([
+      Music,
+      MusicComment,
+      MusicTagValue,
+      MusicInfo,
+      MusicCommentInfo,
+      MusicTag,
+      MusicLike,
+      MusicCommentLike,
+    ]),
   ],
   exports: [TypeOrmModule],
   controllers: [MusicController],

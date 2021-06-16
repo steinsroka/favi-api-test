@@ -1,13 +1,19 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn } from "typeorm";
-import { Music } from "./music.entity";
-import { User } from "./user.entity";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryColumn,
+} from 'typeorm';
+import { Music } from './music.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class MusicLike {
-  @PrimaryColumn('uuid', {length: 36})
+  @PrimaryColumn('uuid', { length: 36 })
   userId: string;
 
-  @PrimaryColumn('uuid', {length: 36})
+  @PrimaryColumn('uuid', { length: 36 })
   musicId: string;
 
   @ManyToOne(() => User, (user) => user.musicLikes)

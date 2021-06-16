@@ -16,17 +16,17 @@ import { MusicService } from '../music.service';
 export class MusicCommentAuthGuard implements CanActivate {
   constructor(private readonly musicService: MusicService) {}
 
-  async canActivate(
-    context: ExecutionContext,
-  ): Promise<boolean> {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: UserRequest = context.switchToHttp().getRequest();
-    const musicComment = await this.musicService.getMusicComment(parseInt(request.params.comment_id));
-    if(musicComment.userId !== request.user.id) {
+    const musicComment = await this.musicService.getMusicComment(
+      parseInt(request.params.comment_id),
+    );
+    if (musicComment.userId !== request.user.id) {
       throw new NotFoundException(
         new ErrorMessage(
           `music id ${request.params.id} not has music comment id ${request.params.comment_id}`,
-          ErrorString.FAIL_EXIST
-        )
+          ErrorString.FAIL_EXIST,
+        ),
       );
     }
     return true;

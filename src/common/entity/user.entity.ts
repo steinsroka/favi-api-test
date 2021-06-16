@@ -96,14 +96,17 @@ export class User {
   @OneToMany(() => MusicLike, (musicLike) => musicLike.user)
   musicLikes: MusicLike[];
 
-  @OneToMany(() => MusicCommentLike, (musicCommentLike) => musicCommentLike.user)
+  @OneToMany(
+    () => MusicCommentLike,
+    (musicCommentLike) => musicCommentLike.user,
+  )
   musicCommentLikes: MusicCommentLike[];
 
   @OneToMany(() => MusicTag, (musicTag) => musicTag.music)
   musicTags: MusicTag[];
 }
 
-export class UserExceptRelations extends PickType(User, [
+export class UserAuthInfo extends PickType(User, [
   'id',
   'email',
   'password',
@@ -112,5 +115,5 @@ export class UserExceptRelations extends PickType(User, [
   'birth',
   'gender',
   'timestamp',
-  'level'
+  'level',
 ]) {}

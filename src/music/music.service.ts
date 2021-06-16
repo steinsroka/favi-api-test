@@ -1,4 +1,9 @@
-import { HttpException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, InsertResult, Repository } from 'typeorm';
 import { Music } from '../common/entity/music.entity';
@@ -32,7 +37,7 @@ export class MusicService {
     @InjectRepository(MusicTag)
     private readonly musicTagRepository: Repository<MusicTag>,
     @InjectRepository(MusicTagValue)
-    private readonly musicTagValueRepository: Repository<MusicTagValue>
+    private readonly musicTagValueRepository: Repository<MusicTagValue>,
   ) {}
 
   getMusic(id: string): Promise<MusicInfo> {
@@ -40,35 +45,46 @@ export class MusicService {
   }
 
   async isExistMusic(id: string): Promise<boolean> {
-    return await this.musicInfoRepository.count({ id: id }) > 0;
+    return (await this.musicInfoRepository.count({ id: id })) > 0;
   }
 
   addMusicLike(id: string, user: User) {
-    const musicLike = this.musicLikeRepository.create({userId: user.id, musicId: id});
+    const musicLike = this.musicLikeRepository.create({
+      userId: user.id,
+      musicId: id,
+    });
     return this.musicLikeRepository.save(musicLike);
   }
 
   deleteMusicLike(id: string, user: User) {
-    return this.musicLikeRepository.delete({musicId: id, userId: user.id});
+    return this.musicLikeRepository.delete({ musicId: id, userId: user.id });
   }
 
   async isExistMusicLike(id: string, user: User) {
-    return await this.musicLikeRepository.count({musicId: id, userId: user.id}) > 0;
+    return (
+      (await this.musicLikeRepository.count({ musicId: id, userId: user.id })) >
+      0
+    );
   }
 
   async getMusicComment(id: number): Promise<MusicCommentInfo> {
-    return this.musicCommentInfoRepository.findOneOrFail({id: id});
+    return this.musicCommentInfoRepository.findOneOrFail({ id: id });
   }
 
   async getMusicComments(musicId: string, index?: number) {
     const musicCommentIndex = isDefined(index) ? 10 : 2;
     index = index ?? 0;
     let limit = musicCommentIndex;
-    return this.musicCommentInfoRepository.find({where: {musicId: musicId}, order: {timestamp: 'DESC'}, skip: index * musicCommentIndex, take: limit});
+    return this.musicCommentInfoRepository.find({
+      where: { musicId: musicId },
+      order: { timestamp: 'DESC' },
+      skip: index * musicCommentIndex,
+      take: limit,
+    });
   }
 
   async isExistMusicComment(id: number) {
-    return await this.musicCommentRepository.count({id: id}) > 0;
+    return (await this.musicCommentRepository.count({ id: id })) > 0;
   }
 
   async addMusicComment(
@@ -105,16 +121,22 @@ export class MusicService {
   }
 
   addMusicCommentLike(id: number, user: User) {
-    const musicCommentLike = this.musicCommentLikeRepository.create({musicCommentId: id, userId: user.id});
+    const musicCommentLike = this.musicCommentLikeRepository.create({
+      musicCommentId: id,
+      userId: user.id,
+    });
     return this.musicCommentLikeRepository.save(musicCommentLike);
   }
 
   deleteMusicCommentLike(id: number, user: User): Promise<DeleteResult> {
-    return this.musicCommentLikeRepository.delete({musicCommentId: id, userId: user.id});
+    return this.musicCommentLikeRepository.delete({
+      musicCommentId: id,
+      userId: user.id,
+    });
   }
 
   async getMusicTags(id: string): Promise<TagCountDto[]> {
-    return (await this.musicTagRepository
+    return await this.musicTagRepository
       .createQueryBuilder('musicTag')
       .select('value.tag', 'tag')
       .addSelect('value.class', 'class')
@@ -123,11 +145,11 @@ export class MusicService {
       .where('musicId = :id', { id })
       .groupBy('value.tag')
       .orderBy('count', 'DESC')
-      .getRawMany());
+      .getRawMany();
   }
 
   async getMusicCommentTags(id: number): Promise<TagCountDto[]> {
-    return (await this.musicTagRepository
+    return await this.musicTagRepository
       .createQueryBuilder('musicTag')
       .select('value.tag', 'tag')
       .addSelect('value.class', 'class')
@@ -136,11 +158,23 @@ export class MusicService {
       .where('musicCommentId = :id', { id })
       .groupBy('value.tag')
       .orderBy('count', 'DESC')
-      .getRawMany());
+      .getRawMany();
   }
 
-  async addMusicTag(id: string, tag: Tag, user: User, commentId?: number): Promise<InsertResult> {
-    const musicTagValue = await this.musicTagValueRepository.findOneOrFail({where: {tag: tag}});
-    return this.musicTagRepository.insert({musicId: id, musicCommentId: commentId, userId: user.id, musicTagValueId: musicTagValue.id});
+  async addMusicTag(
+    id: string,
+    tag: Tag,
+    user: User,
+    commentId?: number,
+  ): Promise<InsertResult> {
+    const musicTagValue = await this.musicTagValueRepository.findOneOrFail({
+      where: { tag: tag },
+    });
+    return this.musicTagRepository.insert({
+      musicId: id,
+      musicCommentId: commentId,
+      userId: user.id,
+      musicTagValueId: musicTagValue.id,
+    });
   }
 }

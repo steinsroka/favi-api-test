@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { keys } from 'ts-transformer-keys';
 import { Repository, DeleteResult } from 'typeorm';
 import { UserPartialDto } from './dto/user-partial.dto';
-import { User, UserExceptRelations } from '../common/entity/user.entity';
+import { User, UserAuthInfo } from '../common/entity/user.entity';
 
 @Injectable()
 export class UserService {
@@ -11,16 +11,16 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
-  getUser(userPartial: UserPartialDto): Promise<UserPartialDto> {
+  getUser(userPartial: UserPartialDto): Promise<User> {
     return this.userRepository.findOne({ where: userPartial });
   }
   deleteUser(userPartial: UserPartialDto): Promise<DeleteResult> {
     return this.userRepository.delete(userPartial);
   }
-  getUserAllInfo(userPartial: UserPartialDto): Promise<User> {
+  getUserAuthInfo(userPartial: UserPartialDto): Promise<User> {
     return this.userRepository.findOne({
       where: userPartial,
-      select: keys<UserExceptRelations>(),
+      select: keys<UserAuthInfo>(),
     });
   }
   saveUser(user: User): Promise<User> {

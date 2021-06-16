@@ -26,14 +26,14 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  getUserInfo(@Param('id') id: string): Promise<UserPartialDto> {
-    return this.userService.getUser({ id: id });
+  async getUserInfo(@Param('id') id: string): Promise<UserPartialDto> {
+    return await this.userService.getUser({ id: id });
   }
 
   @Delete()
   @HttpCode(204)
-  deleteUserInfo(@Param('id') id: string): void {
-    this.userService.deleteUser({ id: id });
+  async deleteUserInfo(@Param('id') id: string): Promise<void> {
+    await this.userService.deleteUser({ id: id });
   }
 
   @Patch()
