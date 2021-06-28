@@ -11,7 +11,7 @@ import { MusicLike } from '../common/entity/music-like.entity';
 import { Music } from '../common/entity/music.entity';
 import { MusicSmallInfoDto } from '../music/dto/music-small-info.dto';
 import { Tag, TagClass } from '../common/entity/music-tag-value.entity';
-import { MusicTagInfo } from 'src/common/view/music-tag-info.entity';
+import { MusicTagInfo } from '../common/view/music-tag-info.entity';
 
 @Injectable()
 export class UserService {
@@ -70,8 +70,8 @@ export class UserService {
     .select('music.id', 'id')
     .addSelect('music.title', 'title')
     .addSelect('music.composer', 'composer')
-    .leftJoin(MusicTagInfo, 'musicTagInfo', 'music_like.musicId = music_tag_info.musicId')
-    .leftJoin(Music,'music','music_like.musicId = music.id')
+    .leftJoin(MusicTagInfo, 'musicTagInfo', 'musicLike.musicId = musicTagInfo.musicId')
+    .leftJoin(Music,'music','musicLike.musicId = music.id')
     .where('musicLike.userId = :userId', {userId : userId})
     .andWhere('musicTagInfo.rank <= 3')
     .andWhere('musicTagInfo.name = :tag', {tag:tag})

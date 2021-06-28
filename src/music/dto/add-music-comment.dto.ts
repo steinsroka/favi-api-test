@@ -14,4 +14,8 @@ export class AddMusicCommentDto {
   @IsEnum(Tag, { each: true })
   @IsOptional()
   tags?: Tag[];
+
+  @IsString()
+  @IsOptional()
+  parent: number;
 }

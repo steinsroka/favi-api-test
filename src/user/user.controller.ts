@@ -36,7 +36,7 @@ export class UserController {
     return user;
   }
 
-  @Get('likes')
+  @Get('liked_musics')
   async getUserLikedMusics(
     @Param('id') id: number,
     @Query('class') tag?: Tag,
