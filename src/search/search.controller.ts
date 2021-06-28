@@ -13,13 +13,8 @@ export class SearchController {
     return await this.searchService.getMusicsMatchedTag(tagSearchDto.tags, parseInt(tagSearchDto.seed), parseInt(tagSearchDto.index));
   }
 
-<<<<<<< HEAD
   @Get('name')
   async searchMusicWithName(@Query('name') name: string) {
 
   }
-=======
-  @Get('music/name')
-  async searchMusicWithName(@Query('name') name: string) {}
->>>>>>> 334e009cb09db7fdf76170de515fc2bc364af4d5
 }
