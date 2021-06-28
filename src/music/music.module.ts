@@ -23,7 +23,7 @@ import { MusicTagInfo } from '../common/view/music-tag-info.entity';
       MusicTag,
       MusicLike,
       MusicCommentLike,
-      MusicTagInfo
+      MusicTagInfo,
     ]),
   ],
   exports: [TypeOrmModule],

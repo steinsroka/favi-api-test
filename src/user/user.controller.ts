@@ -37,9 +37,11 @@ export class UserController {
   }
 
   @Get('likes')
-  async getUserLikedMusics(@Param('id') id: number, @Query('class') tagClass?: TagClass) {
-    if(isDefined(tagClass)) {
-      
+  async getUserLikedMusics(
+    @Param('id') id: number,
+    @Query('class') tagClass?: TagClass,
+  ) {
+    if (isDefined(tagClass)) {
     }
     return await this.userService.getUserAllLikedMusic(id);
   }

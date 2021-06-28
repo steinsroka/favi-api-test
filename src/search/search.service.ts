@@ -9,7 +9,7 @@ import { TagSearchResultDto } from './dto/tag-search-result.dto';
 export class SearchService {
   constructor(
     @InjectRepository(MusicTagInfo)
-    private readonly musicTagInfoRepository: Repository<MusicTagInfo>
+    private readonly musicTagInfoRepository: Repository<MusicTagInfo>,
   ) {}
 
   getMusicsMatchedTag(tags: Tag[], seed: number, index: number): Promise<TagSearchResultDto[]> {

@@ -144,11 +144,7 @@ export class MusicController {
     @Param('id') id: number,
     @Body() voteMusicTagDto: VoteMusicTagDto,
   ) {
-    await this.musicService.addMusicTag(
-      id,
-      voteMusicTagDto.tag,
-      req.user,
-    );
+    await this.musicService.addMusicTag(id, voteMusicTagDto.tag, req.user);
     return new Message('success');
   }
 

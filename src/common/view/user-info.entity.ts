@@ -6,25 +6,29 @@ import { MusicComment } from '../entity/music-comment.entity';
 import { UserTagInfo } from './user-tag-info.entity';
 
 @ViewEntity({
-  expression: (connection: Connection) => 
+  expression: (connection: Connection) =>
     connection
       .createQueryBuilder()
       .select('user.id', 'id')
       .addSelect('user.name', 'name')
       .addSelect('user.email', 'email')
-      .addSelect((qb) =>
-        qb.select('COUNT(*)')
-          .from(MusicLike, 'musicLike')
-          .where('musicLike.userId = user.id'),
-        'likedMusicCount'
+      .addSelect(
+        (qb) =>
+          qb
+            .select('COUNT(*)')
+            .from(MusicLike, 'musicLike')
+            .where('musicLike.userId = user.id'),
+        'likedMusicCount',
       )
-      .addSelect((qb) =>
-        qb.select('COUNT(*)')
-          .from(MusicComment, 'musicComment')
-          .where('musicComment.userId = user.id'),
-        'commentCount'
+      .addSelect(
+        (qb) =>
+          qb
+            .select('COUNT(*)')
+            .from(MusicComment, 'musicComment')
+            .where('musicComment.userId = user.id'),
+        'commentCount',
       )
-      .from(User, 'user')
+      .from(User, 'user'),
 })
 export class UserInfo {
   @ViewColumn()

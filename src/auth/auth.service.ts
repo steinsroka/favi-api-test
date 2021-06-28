@@ -9,6 +9,7 @@ import { JwtPayloadDto } from './dto/jwt-payload.dto';
 import { createTransport } from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import userVerifyCode from '../common/class/user-verify-code';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -60,5 +61,27 @@ export class AuthService {
       subject: 'arcane auth number',
       text: `your auth code is ${verifyInfo.code}`,
     });
+  }
+
+  async resetUserPassword(
+    user: User,
+    beforePassword: string,
+    afterPassword: string,
+  ) {
+    const cipherBefore = await this.saltHash(beforePassword, user.pwSalt);
+    if (cipherBefore === user.password) {
+      //TODO:Check AfterPassword is satisfied our condition
+      let salt: string;
+      const cipherAfter = await this.saltHash(
+        afterPassword,
+        (salt = randomBytes(64).toString('base64')),
+      );
+      user.pwSalt = salt;
+      user.password = cipherAfter;
+      this.userService.saveUser(user);
+      return true;
+    } else {
+      return false;
+    }
   }
 }
