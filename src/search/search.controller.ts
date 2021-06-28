@@ -12,7 +12,5 @@ export class SearchController {
   }
 
   @Get('music/name')
-  async searchMusicWithName(@Query('name') name: string) {
-
-  }
+  async searchMusicWithName(@Query('name') name: string) {}
 }

@@ -8,12 +8,16 @@ import { MusicTagInfo } from '../common/view/music-tag-info.entity';
 export class SearchService {
   constructor(
     @InjectRepository(MusicTagInfo)
-    private readonly musicTagInfoRepository: Repository<MusicTagInfo>
+    private readonly musicTagInfoRepository: Repository<MusicTagInfo>,
   ) {}
 
   getMusicsMatchedTag(tags: Tag[], seed: number, index: number) {
-    return this.musicTagInfoRepository.createQueryBuilder()
-      .select(`SUM(CASE WHEN name IN(${tags.join(',')}) THEN 1 ELSE 0 END)`, 'match')
+    return this.musicTagInfoRepository
+      .createQueryBuilder()
+      .select(
+        `SUM(CASE WHEN name IN(${tags.join(',')}) THEN 1 ELSE 0 END)`,
+        'match',
+      )
       .addSelect('musicId', 'musicId')
       .where('rank <= 3')
       .groupBy('musicId')

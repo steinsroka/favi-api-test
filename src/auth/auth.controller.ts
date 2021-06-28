@@ -1,7 +1,9 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   HttpCode,
+  Patch,
   Post,
   Request,
   UseGuards,
@@ -18,6 +20,8 @@ import { LoginDto } from './dto/login.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import userVerifyCode from '../common/class/user-verify-code';
 import { VerifyEmailCodeGuard } from './guard/verify-email-code.guard';
+import { ResetPasswordDto } from './dto/resetPassword.dto';
+import { UserRequest } from '../common/@types/user-request';
 
 @Controller('auth')
 export class AuthController {
@@ -54,5 +58,24 @@ export class AuthController {
       verifyEmailDto.email,
       verifyEmailDto.method,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('resetPassword')
+  async retsetPassword(
+    @Request() req: UserRequest,
+    @Body() resetPasswordDto: ResetPasswordDto,
+  ) {
+    let res: boolean = await this.authService.resetUserPassword(
+      req.user,
+      resetPasswordDto.beforePassword,
+      resetPasswordDto.afterPassword,
+    );
+
+    if (res) {
+      return { message: 'success' };
+    } else {
+      throw new BadRequestException();
+    }
   }
 }

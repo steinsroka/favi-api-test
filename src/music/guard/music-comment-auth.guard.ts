@@ -22,7 +22,7 @@ export class MusicCommentAuthGuard implements CanActivate {
     const musicComment = await this.musicService.getMusicComment(
       parseInt(request.params.comment_id),
     );
-    if(!isDefined(musicComment)) {
+    if (!isDefined(musicComment)) {
       return true;
     }
     if (musicComment.userId !== request.user.id) {

@@ -19,15 +19,15 @@ export class UserService {
     @InjectRepository(UserInfo)
     private readonly userInfoRepository: Repository<UserInfo>,
     @InjectRepository(UserTagInfo)
-    private readonly userTagInfoRepository: Repository<UserTagInfo>
+    private readonly userTagInfoRepository: Repository<UserTagInfo>,
   ) {}
 
   getUserInfo(userId: number): Promise<UserInfo> {
-    return this.userInfoRepository.findOneOrFail({id: userId});
+    return this.userInfoRepository.findOneOrFail({ id: userId });
   }
 
   async getUserTags(userId: number): Promise<UserTagInfo[]> {
-    return await this.userTagInfoRepository.find({where: {userId: userId}});
+    return await this.userTagInfoRepository.find({ where: { userId: userId } });
   }
 
   deleteUser(userId: number): Promise<DeleteResult> {
@@ -36,7 +36,7 @@ export class UserService {
 
   getUserAuthInfo(userPartial: UserPartialDto): Promise<User> {
     return this.userRepository.findOneOrFail({
-      where: userPartial
+      where: userPartial,
     });
   }
 
@@ -56,7 +56,7 @@ export class UserService {
       .addSelect('music.composer', 'composer')
       .innerJoin('user.musicLikes', 'musicLikes')
       .leftJoin('musicLikes.music', 'music')
-      .where('user.id = :userId', {userId: userId})
+      .where('user.id = :userId', { userId: userId })
       .getRawMany();
   }
 }

@@ -14,7 +14,11 @@ import { isDefined } from 'class-validator';
 import { MusicLike } from '../common/entity/music-like.entity';
 import { MusicCommentLike } from '../common/entity/music-comment-like.entity';
 import { MusicTag } from '../common/entity/music-tag.entity';
-import { MusicTagValue, Tag, TagClass } from '../common/entity/music-tag-value.entity';
+import {
+  MusicTagValue,
+  Tag,
+  TagClass,
+} from '../common/entity/music-tag-value.entity';
 import { Message } from '../common/class/message';
 import { MusicCommentInfo } from '../common/view/music-comment-info.entity';
 import { MusicCommentTagDto } from './dto/music-comment-tag.dto';
@@ -40,7 +44,7 @@ export class MusicService {
     @InjectRepository(MusicTagValue)
     private readonly musicTagValueRepository: Repository<MusicTagValue>,
     @InjectRepository(MusicTagInfo)
-    private readonly musicTagInfoRepository: Repository<MusicTagInfo>
+    private readonly musicTagInfoRepository: Repository<MusicTagInfo>,
   ) {}
 
   getMusic(musicId: number): Promise<MusicInfo> {
@@ -60,13 +64,18 @@ export class MusicService {
   }
 
   deleteMusicLike(musicId: number, user: User) {
-    return this.musicLikeRepository.delete({ musicId: musicId, userId: user.id });
+    return this.musicLikeRepository.delete({
+      musicId: musicId,
+      userId: user.id,
+    });
   }
 
   async isExistMusicLike(musicId: number, user: User) {
     return (
-      (await this.musicLikeRepository.count({ musicId: musicId, userId: user.id })) >
-      0
+      (await this.musicLikeRepository.count({
+        musicId: musicId,
+        userId: user.id,
+      })) > 0
     );
   }
 
@@ -87,7 +96,9 @@ export class MusicService {
   }
 
   async isExistMusicComment(musicCommentId: number) {
-    return (await this.musicCommentRepository.count({ id: musicCommentId })) > 0;
+    return (
+      (await this.musicCommentRepository.count({ id: musicCommentId })) > 0
+    );
   }
 
   async addMusicComment(
@@ -131,18 +142,26 @@ export class MusicService {
     return this.musicCommentLikeRepository.save(musicCommentLike);
   }
 
-  deleteMusicCommentLike(musicCommentId: number, user: User): Promise<DeleteResult> {
+  deleteMusicCommentLike(
+    musicCommentId: number,
+    user: User,
+  ): Promise<DeleteResult> {
     return this.musicCommentLikeRepository.delete({
       musicCommentId: musicCommentId,
       userId: user.id,
     });
   }
 
-  async getMusicTags(musicId: number, tagClass?: TagClass): Promise<MusicTagInfo[]> {
-    return await this.musicTagInfoRepository.find({musicId: musicId});
+  async getMusicTags(
+    musicId: number,
+    tagClass?: TagClass,
+  ): Promise<MusicTagInfo[]> {
+    return await this.musicTagInfoRepository.find({ musicId: musicId });
   }
 
-  async getMusicCommentTags(musicCommentId: number): Promise<MusicCommentTagDto[]> {
+  async getMusicCommentTags(
+    musicCommentId: number,
+  ): Promise<MusicCommentTagDto[]> {
     return await this.musicTagRepository
       .createQueryBuilder('musicTag')
       .select('value.name', 'name')

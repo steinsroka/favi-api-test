@@ -19,12 +19,18 @@ export class VerifyEmailCodeGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
     const methodKey = context.getHandler().name;
-    if(!userVerifyCode.verifyCode(request.body.email, methodKey, request.headers.authorization)) {
+    if (
+      !userVerifyCode.verifyCode(
+        request.body.email,
+        methodKey,
+        request.headers.authorization,
+      )
+    ) {
       throw new UnauthorizedException(
         new ErrorMessage(
           'email verification code failed',
-          ErrorString.FAIL_NOT_AUTHORIZED
-        )
+          ErrorString.FAIL_NOT_AUTHORIZED,
+        ),
       );
     }
     return true;
