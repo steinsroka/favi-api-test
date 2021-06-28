@@ -12,8 +12,8 @@ import { User } from './user.entity';
 
 @Entity()
 export class Music {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   title: string;

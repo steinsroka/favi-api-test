@@ -3,7 +3,7 @@ http:
 
 database:
   port: 3306
-  database: 'favi_test3'
+  database: 'favi_test'
   host: 'localhost'
   type: 'mysql'
   username: 'root'

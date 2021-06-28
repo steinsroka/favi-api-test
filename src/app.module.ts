@@ -9,6 +9,9 @@ import configuration from './config/configuration';
 import { MusicModule } from './music/music.module';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './common/exception-filter/all-exceptions.filter';
+import { SearchController } from './search/search.controller';
+import { SearchService } from './search/search.service';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -27,11 +30,13 @@ import { AllExceptionsFilter } from './common/exception-filter/all-exceptions.fi
     UserModule,
     AuthModule,
     MusicModule,
+    SearchModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, SearchController],
   providers: [
     AppService,
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
+    SearchService,
   ],
 })
 export class AppModule {}

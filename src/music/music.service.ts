@@ -14,10 +14,11 @@ import { isDefined } from 'class-validator';
 import { MusicLike } from '../common/entity/music-like.entity';
 import { MusicCommentLike } from '../common/entity/music-comment-like.entity';
 import { MusicTag } from '../common/entity/music-tag.entity';
-import { MusicTagValue, Tag } from '../common/entity/music-tag-value.entity';
+import { MusicTagValue, Tag, TagClass } from '../common/entity/music-tag-value.entity';
 import { Message } from '../common/class/message';
 import { MusicCommentInfo } from '../common/view/music-comment-info.entity';
-import { TagCountDto } from './dto/tag-count.dto';
+import { MusicCommentTagDto } from './dto/music-comment-tag.dto';
+import { MusicTagInfo } from '../common/view/music-tag-info.entity';
 
 @Injectable()
 export class MusicService {
@@ -38,40 +39,42 @@ export class MusicService {
     private readonly musicTagRepository: Repository<MusicTag>,
     @InjectRepository(MusicTagValue)
     private readonly musicTagValueRepository: Repository<MusicTagValue>,
+    @InjectRepository(MusicTagInfo)
+    private readonly musicTagInfoRepository: Repository<MusicTagInfo>
   ) {}
 
-  getMusic(id: string): Promise<MusicInfo> {
-    return this.musicInfoRepository.findOneOrFail({ id: id });
+  getMusic(musicId: number): Promise<MusicInfo> {
+    return this.musicInfoRepository.findOneOrFail({ id: musicId });
   }
 
-  async isExistMusic(id: string): Promise<boolean> {
-    return (await this.musicInfoRepository.count({ id: id })) > 0;
+  async isExistMusic(musicId: number): Promise<boolean> {
+    return (await this.musicInfoRepository.count({ id: musicId })) > 0;
   }
 
-  addMusicLike(id: string, user: User) {
+  addMusicLike(musicId: number, user: User) {
     const musicLike = this.musicLikeRepository.create({
       userId: user.id,
-      musicId: id,
+      musicId: musicId,
     });
     return this.musicLikeRepository.save(musicLike);
   }
 
-  deleteMusicLike(id: string, user: User) {
-    return this.musicLikeRepository.delete({ musicId: id, userId: user.id });
+  deleteMusicLike(musicId: number, user: User) {
+    return this.musicLikeRepository.delete({ musicId: musicId, userId: user.id });
   }
 
-  async isExistMusicLike(id: string, user: User) {
+  async isExistMusicLike(musicId: number, user: User) {
     return (
-      (await this.musicLikeRepository.count({ musicId: id, userId: user.id })) >
+      (await this.musicLikeRepository.count({ musicId: musicId, userId: user.id })) >
       0
     );
   }
 
-  async getMusicComment(id: number): Promise<MusicCommentInfo> {
-    return this.musicCommentInfoRepository.findOneOrFail({ id: id });
+  async getMusicComment(musicId: number): Promise<MusicCommentInfo> {
+    return this.musicCommentInfoRepository.findOne({ id: musicId });
   }
 
-  async getMusicComments(musicId: string, index?: number) {
+  async getMusicComments(musicId: number, index?: number) {
     const musicCommentIndex = isDefined(index) ? 10 : 2;
     index = index ?? 0;
     let limit = musicCommentIndex;
@@ -83,18 +86,18 @@ export class MusicService {
     });
   }
 
-  async isExistMusicComment(id: number) {
-    return (await this.musicCommentRepository.count({ id: id })) > 0;
+  async isExistMusicComment(musicCommentId: number) {
+    return (await this.musicCommentRepository.count({ id: musicCommentId })) > 0;
   }
 
   async addMusicComment(
-    id: string,
+    musicId: number,
     user: User,
     comment: string,
   ): Promise<MusicComment> {
     const music = await this.musicRepository.findOneOrFail({
       relations: ['musicComments'],
-      where: { id: id },
+      where: { id: musicId },
     });
     const musicComment = this.musicCommentRepository.create({
       comment: comment,
@@ -105,74 +108,64 @@ export class MusicService {
     return newMusic.musicComments.pop();
   }
 
-  async deleteMusicComment(id: number, musicId: string): Promise<DeleteResult> {
-    return this.musicCommentRepository.delete(id);
+  async deleteMusicComment(musicCommentId: number): Promise<DeleteResult> {
+    return this.musicCommentRepository.delete(musicCommentId);
   }
 
   async updateMusicComment(
-    id: number,
+    musicCommentId: number,
     newComment: string,
   ): Promise<MusicComment> {
     const musicComment = await this.musicCommentRepository.findOneOrFail({
-      where: { id: id },
+      where: { id: musicCommentId },
     });
     musicComment.comment = newComment;
     return this.musicCommentRepository.save(musicComment);
   }
 
-  addMusicCommentLike(id: number, user: User) {
+  addMusicCommentLike(musicCommentId: number, user: User) {
     const musicCommentLike = this.musicCommentLikeRepository.create({
-      musicCommentId: id,
+      musicCommentId: musicCommentId,
       userId: user.id,
     });
     return this.musicCommentLikeRepository.save(musicCommentLike);
   }
 
-  deleteMusicCommentLike(id: number, user: User): Promise<DeleteResult> {
+  deleteMusicCommentLike(musicCommentId: number, user: User): Promise<DeleteResult> {
     return this.musicCommentLikeRepository.delete({
-      musicCommentId: id,
+      musicCommentId: musicCommentId,
       userId: user.id,
     });
   }
 
-  async getMusicTags(id: string): Promise<TagCountDto[]> {
-    return await this.musicTagRepository
-      .createQueryBuilder('musicTag')
-      .select('value.tag', 'tag')
-      .addSelect('value.class', 'class')
-      .addSelect('count(value.tag)', 'count')
-      .leftJoin('musicTag.musicTagValue', 'value')
-      .where('musicId = :id', { id })
-      .groupBy('value.tag')
-      .orderBy('count', 'DESC')
-      .getRawMany();
+  async getMusicTags(musicId: number, tagClass?: TagClass): Promise<MusicTagInfo[]> {
+    return await this.musicTagInfoRepository.find({musicId: musicId});
   }
 
-  async getMusicCommentTags(id: number): Promise<TagCountDto[]> {
+  async getMusicCommentTags(musicCommentId: number): Promise<MusicCommentTagDto[]> {
     return await this.musicTagRepository
       .createQueryBuilder('musicTag')
-      .select('value.tag', 'tag')
+      .select('value.name', 'name')
       .addSelect('value.class', 'class')
-      .addSelect('count(value.tag)', 'count')
+      .addSelect('value.parent', 'parent')
       .leftJoin('musicTag.musicTagValue', 'value')
-      .where('musicCommentId = :id', { id })
-      .groupBy('value.tag')
-      .orderBy('count', 'DESC')
+      .where('musicCommentId = :id', { id: musicCommentId })
+      .groupBy('value.name')
       .getRawMany();
   }
 
   async addMusicTag(
-    id: string,
+    musicId: number,
     tag: Tag,
     user: User,
-    commentId?: number,
+    musicCommentId?: number,
   ): Promise<InsertResult> {
     const musicTagValue = await this.musicTagValueRepository.findOneOrFail({
-      where: { tag: tag },
+      where: { name: tag },
     });
     return this.musicTagRepository.insert({
-      musicId: id,
-      musicCommentId: commentId,
+      musicId: musicId,
+      musicCommentId: musicCommentId,
       userId: user.id,
       musicTagValueId: musicTagValue.id,
     });

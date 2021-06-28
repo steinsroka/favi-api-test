@@ -37,9 +37,9 @@ export class User {
     this.password = password;
   }
 
-  @IsUUID()
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @IsNumber()
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @IsEmail()
   @Column({
@@ -48,11 +48,11 @@ export class User {
   email: string;
 
   @IsBase64()
-  @Column({ select: false })
+  @Column()
   password: string;
 
   @IsBase64()
-  @Column({ select: false, name: 'pw_salt' })
+  @Column({ name: 'pw_salt' })
   pwSalt: string;
 
   @IsString()
@@ -105,15 +105,3 @@ export class User {
   @OneToMany(() => MusicTag, (musicTag) => musicTag.music)
   musicTags: MusicTag[];
 }
-
-export class UserAuthInfo extends PickType(User, [
-  'id',
-  'email',
-  'password',
-  'pwSalt',
-  'name',
-  'birth',
-  'gender',
-  'timestamp',
-  'level',
-]) {}

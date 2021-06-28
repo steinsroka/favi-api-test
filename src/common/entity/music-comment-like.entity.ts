@@ -4,8 +4,8 @@ import { User } from './user.entity';
 
 @Entity()
 export class MusicCommentLike {
-  @PrimaryColumn('uuid', { length: 36 })
-  userId: string;
+  @PrimaryColumn()
+  userId: number;
 
   @PrimaryColumn()
   musicCommentId: number;

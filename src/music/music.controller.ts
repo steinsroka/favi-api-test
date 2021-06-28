@@ -35,7 +35,7 @@ export class MusicController {
   constructor(private readonly musicService: MusicService) {}
 
   @Get(':id')
-  async getMusicInfo(@Param('id') id: string): Promise<MusicInfo> {
+  async getMusicInfo(@Param('id') id: number): Promise<MusicInfo> {
     const music = await this.musicService.getMusic(id);
     music.tags = await this.musicService.getMusicTags(id);
     return music;
@@ -45,7 +45,7 @@ export class MusicController {
   @HttpCode(204)
   async likeMusic(
     @Request() req: UserRequest,
-    @Param('id') id: string,
+    @Param('id') id: number,
   ): Promise<void> {
     await this.musicService.addMusicLike(id, req.user);
   }
@@ -54,14 +54,14 @@ export class MusicController {
   @HttpCode(204)
   async hateMusic(
     @Request() req: UserRequest,
-    @Param('id') id: string,
+    @Param('id') id: number,
   ): Promise<void> {
     await this.musicService.deleteMusicLike(id, req.user);
   }
 
   @Get(':id/comment')
   async getMusicComments(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Query('index') index?: number,
   ): Promise<MusicCommentInfo[]> {
     const musicComments = await this.musicService.getMusicComments(id, index);
@@ -76,7 +76,7 @@ export class MusicController {
   @Post(':id/comment')
   async addMusicComment(
     @Request() req: UserRequest,
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() addMusicCommentDto: AddMusicCommentDto,
   ): Promise<Message> {
     const comment = await this.musicService.addMusicComment(
@@ -97,10 +97,10 @@ export class MusicController {
   @Delete(':id/comment/:comment_id')
   @HttpCode(204)
   async deleteMusicComment(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Param('comment_id') commentId: number,
   ): Promise<void> {
-    await this.musicService.deleteMusicComment(commentId, id);
+    await this.musicService.deleteMusicComment(commentId);
   }
 
   @UseGuards(MusicCommentAuthGuard)
@@ -134,23 +134,24 @@ export class MusicController {
   }
 
   @Get(':id/tag')
-  async getMusicTag(@Param('id') id: string) {
+  async getMusicTag(@Param('id') id: number) {
     return await this.musicService.getMusicTags(id);
   }
 
   @Put(':id/tag')
   async voteMusicTag(
     @Request() req: UserRequest,
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() voteMusicTagDto: VoteMusicTagDto,
   ) {
-    return await this.musicService.addMusicTag(
+    await this.musicService.addMusicTag(
       id,
       voteMusicTagDto.tag,
       req.user,
     );
+    return new Message('success');
   }
 
   @Post(':id/play')
-  logMusicPlay(@Param('id') id: string) {}
+  logMusicPlay(@Param('id') id: number) {}
 }

@@ -59,10 +59,10 @@ export class MusicTagValue {
   id: number;
 
   @Column()
-  tag: Tag;
+  name: Tag;
 
   @Column({ nullable: true })
-  subTag!: string;
+  parent!: string;
 
   @Column({
     type: 'enum',

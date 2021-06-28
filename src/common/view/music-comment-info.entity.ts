@@ -1,9 +1,10 @@
-import { TagCountDto } from '../../music/dto/tag-count.dto';
+import { MusicCommentTagDto } from '../../music/dto/music-comment-tag.dto';
 import { ViewEntity, ViewColumn, Connection } from 'typeorm';
 import { MusicComment } from '../entity/music-comment.entity';
 import { MusicTagValue } from '../entity/music-tag-value.entity';
 import { Music } from '../entity/music.entity';
 import { User } from '../entity/user.entity';
+import { MusicTagInfo } from './music-tag-info.entity';
 
 @ViewEntity({
   expression: (connection: Connection) =>
@@ -29,10 +30,10 @@ export class MusicCommentInfo {
   id: number;
 
   @ViewColumn()
-  userId: string;
+  userId: number;
 
   @ViewColumn()
-  musicId: string;
+  musicId: number;
 
   @ViewColumn()
   comment: string;
@@ -46,5 +47,5 @@ export class MusicCommentInfo {
   @ViewColumn()
   userName: string;
 
-  tags: TagCountDto[];
+  tags: MusicCommentTagDto[];
 }

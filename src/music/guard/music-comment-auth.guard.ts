@@ -6,6 +6,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { isDefined } from 'class-validator';
 import { Observable } from 'rxjs';
 import { UserRequest } from '../../common/@types/user-request';
 import { ErrorMessage } from '../../common/class/error-message';
@@ -21,11 +22,14 @@ export class MusicCommentAuthGuard implements CanActivate {
     const musicComment = await this.musicService.getMusicComment(
       parseInt(request.params.comment_id),
     );
+    if(!isDefined(musicComment)) {
+      return true;
+    }
     if (musicComment.userId !== request.user.id) {
-      throw new NotFoundException(
+      throw new UnauthorizedException(
         new ErrorMessage(
-          `music id ${request.params.id} not has music comment id ${request.params.comment_id}`,
-          ErrorString.FAIL_EXIST,
+          `user id ${request.user.id} not has music comment id ${request.params.comment_id}`,
+          ErrorString.FAIL_NOT_AUTHORIZED,
         ),
       );
     }

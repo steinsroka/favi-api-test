@@ -1,8 +1,8 @@
-import { TagCountDto } from '../../music/dto/tag-count.dto';
 import { ViewEntity, ViewColumn, Connection } from 'typeorm';
 import { MusicTagValue } from '../entity/music-tag-value.entity';
 import { Music } from '../entity/music.entity';
 import { User } from '../entity/user.entity';
+import { MusicTagInfo } from './music-tag-info.entity';
 
 @ViewEntity({
   expression: (connection: Connection) =>
@@ -15,7 +15,7 @@ import { User } from '../entity/user.entity';
       .addSelect('music.link', 'link')
       .addSelect(
         'CASE WHEN user.id is null then 0 ELSE COUNT(music.id) END',
-        'like',
+        'likedUserCount',
       )
       .from(Music, 'music')
       .leftJoin('music.musicLikes', 'musicLike')
@@ -24,7 +24,7 @@ import { User } from '../entity/user.entity';
 })
 export class MusicInfo {
   @ViewColumn()
-  id: string;
+  id: number;
 
   @ViewColumn()
   title: string;
@@ -39,7 +39,7 @@ export class MusicInfo {
   link: string;
 
   @ViewColumn()
-  like: number;
+  likedUserCount: number;
 
-  tags: TagCountDto[];
+  tags: MusicTagInfo[];
 }

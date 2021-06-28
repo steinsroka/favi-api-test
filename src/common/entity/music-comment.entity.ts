@@ -20,6 +20,12 @@ export class MusicComment {
   @Column({ nullable: true })
   comment!: string;
 
+  @ManyToOne(() => MusicComment, musicComment => musicComment.children)
+  parent: MusicComment;
+
+  @OneToMany(() => MusicComment, musicComment => musicComment.parent)
+  children: MusicComment[];
+
   @CreateDateColumn()
   timestamp: Date;
 

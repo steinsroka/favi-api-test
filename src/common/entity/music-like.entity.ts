@@ -10,11 +10,11 @@ import { User } from './user.entity';
 
 @Entity()
 export class MusicLike {
-  @PrimaryColumn('uuid', { length: 36 })
-  userId: string;
+  @PrimaryColumn()
+  userId: number;
 
-  @PrimaryColumn('uuid', { length: 36 })
-  musicId: string;
+  @PrimaryColumn()
+  musicId: number;
 
   @ManyToOne(() => User, (user) => user.musicLikes)
   user: User;

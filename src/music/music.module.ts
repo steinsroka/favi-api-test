@@ -10,6 +10,7 @@ import { MusicTag } from '../common/entity/music-tag.entity';
 import { MusicLike } from '../common/entity/music-like.entity';
 import { MusicCommentLike } from '../common/entity/music-comment-like.entity';
 import { MusicCommentInfo } from '../common/view/music-comment-info.entity';
+import { MusicTagInfo } from '../common/view/music-tag-info.entity';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { MusicCommentInfo } from '../common/view/music-comment-info.entity';
       MusicTag,
       MusicLike,
       MusicCommentLike,
+      MusicTagInfo
     ]),
   ],
   exports: [TypeOrmModule],

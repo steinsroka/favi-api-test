@@ -15,14 +15,14 @@ export class MusicTag {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('uuid')
-  musicId: string;
+  @Column()
+  musicId: number;
 
   @Column({ nullable: true })
   musicCommentId: number;
 
-  @Column('uuid')
-  userId: string;
+  @Column()
+  userId: number;
 
   @Column()
   musicTagValueId: number;
