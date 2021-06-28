@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Tag } from '../common/entity/music-tag-value.entity';
 import { Repository } from 'typeorm';
 import { MusicTagInfo } from '../common/view/music-tag-info.entity';
+import { TagSearchResultDto } from './dto/tag-search-result.dto';
 
 @Injectable()
 export class SearchService {
@@ -11,14 +12,16 @@ export class SearchService {
     private readonly musicTagInfoRepository: Repository<MusicTagInfo>
   ) {}
 
-  getMusicsMatchedTag(tags: Tag[], seed: number, index: number) {
+  getMusicsMatchedTag(tags: Tag[], seed: number, index: number): Promise<TagSearchResultDto[]> {
     return this.musicTagInfoRepository.createQueryBuilder()
-      .select(`SUM(CASE WHEN name IN(${tags.join(',')}) THEN 1 ELSE 0 END)`, 'match')
+      .select(`SUM(CASE WHEN name IN("${tags.join('","')}") THEN 1 ELSE 0 END)`, 'match')
       .addSelect('musicId', 'musicId')
       .where('rank <= 3')
       .groupBy('musicId')
-      .orderBy('match', 'DESC')
+      .orderBy('`match`', 'DESC')
       .addOrderBy(`RAND(${seed})`)
+      .take(5)
+      .skip(index * 5)
       .getRawMany();
   }
 }
