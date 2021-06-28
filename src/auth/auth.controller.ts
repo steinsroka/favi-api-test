@@ -61,7 +61,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch('resetPassword')
+  @Patch('reset_password')
   async retsetPassword(
     @Request() req: UserRequest,
     @Body() resetPasswordDto: ResetPasswordDto,
