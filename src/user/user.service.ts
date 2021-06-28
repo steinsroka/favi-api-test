@@ -10,6 +10,8 @@ import { UserTagInfo } from '../common/view/user-tag-info.entity';
 import { MusicLike } from '../common/entity/music-like.entity';
 import { Music } from '../common/entity/music.entity';
 import { MusicSmallInfoDto } from '../music/dto/music-small-info.dto';
+import { Tag, TagClass } from '../common/entity/music-tag-value.entity';
+import { MusicTagInfo } from 'src/common/view/music-tag-info.entity';
 
 @Injectable()
 export class UserService {
@@ -20,6 +22,8 @@ export class UserService {
     private readonly userInfoRepository: Repository<UserInfo>,
     @InjectRepository(UserTagInfo)
     private readonly userTagInfoRepository: Repository<UserTagInfo>,
+    @InjectRepository(MusicLike)
+    private readonly userMusicLikeRepository: Repository<MusicLike>
   ) {}
 
   getUserInfo(userId: number): Promise<UserInfo> {
@@ -48,7 +52,7 @@ export class UserService {
     return (await this.userRepository.count({ where: userPartial })) > 0;
   }
 
-  getUserAllLikedMusic(userId: number): Promise<MusicSmallInfoDto[]> {
+  getUserLikedAllMusic(userId: number): Promise<MusicSmallInfoDto[]> {
     return this.userRepository
       .createQueryBuilder('user')
       .select('music.id', 'id')
@@ -58,5 +62,19 @@ export class UserService {
       .leftJoin('musicLikes.music', 'music')
       .where('user.id = :userId', { userId: userId })
       .getRawMany();
+  }
+
+  async getUserLikedTagMusic(userId: number, tag: Tag): Promise<MusicSmallInfoDto[]> {
+    return this.userMusicLikeRepository
+    .createQueryBuilder('musicLike')
+    .select('music.id', 'id')
+    .addSelect('music.title', 'title')
+    .addSelect('music.composer', 'composer')
+    .leftJoin(MusicTagInfo, 'musicTagInfo', 'music_like.musicId = music_tag_info.musicId')
+    .leftJoin(Music,'music','music_like.musicId = music.id')
+    .where('musicLike.userId = :userId', {userId : userId})
+    .andWhere('musicTagInfo.rank <= 3')
+    .andWhere('musicTagInfo.name = :tag', {tag:tag})
+    .getRawMany();
   }
 }
