@@ -18,7 +18,7 @@ export class MusicComment {
   id: number;
 
   @Column({ nullable: true })
-  comment!: string;
+  comment: string;
 
   @ManyToOne(() => MusicComment, (musicComment) => musicComment.children)
   parent: MusicComment;

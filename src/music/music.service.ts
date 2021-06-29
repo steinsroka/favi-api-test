@@ -105,14 +105,20 @@ export class MusicService {
     musicId: number,
     user: User,
     comment: string,
+    parent: number
   ): Promise<MusicComment> {
     const music = await this.musicRepository.findOneOrFail({
       relations: ['musicComments'],
       where: { id: musicId },
     });
+    let parentMusicComment = null;
+    if (isDefined(parent)) {
+      parentMusicComment = this.getMusicComment(parent);
+    }
     const musicComment = this.musicCommentRepository.create({
       comment: comment,
       user: user,
+      parent: parentMusicComment
     });
     music.musicComments.push(musicComment);
     const newMusic = await this.musicRepository.save(music);

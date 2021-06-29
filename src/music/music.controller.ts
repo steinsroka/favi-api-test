@@ -83,6 +83,7 @@ export class MusicController {
       id,
       req.user,
       addMusicCommentDto.comment,
+      addMusicCommentDto.parent
     );
     const addMusicPromise:
       | Promise<InsertResult>[]

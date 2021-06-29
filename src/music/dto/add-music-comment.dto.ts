@@ -1,6 +1,7 @@
 import {
   IsArray,
   IsEnum,
+  IsInt,
   IsNumber,
   IsOptional,
   IsString,
@@ -15,7 +16,7 @@ export class AddMusicCommentDto {
   @IsOptional()
   tags?: Tag[];
 
-  @IsString()
+  @IsInt()
   @IsOptional()
-  parent: number;
+  parent?: number;
 }
