@@ -9,6 +9,6 @@ export class Artist {
   @Column()
   name: string;
 
-  @ManyToMany(() => Music, music => music.artists)
+  @ManyToMany(() => Music, (music) => music.artists)
   musics: Music[];
 }

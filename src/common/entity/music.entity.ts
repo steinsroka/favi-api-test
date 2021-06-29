@@ -12,29 +12,17 @@ import { MusicTag } from './music-tag.entity';
 import { User } from './user.entity';
 
 //TODO: fill enum value
-export enum VocalType {
+export enum VocalType {}
 
-}
+export enum Language {}
 
-export enum Language {
+export enum RhythmBeat {}
 
-}
+export enum BPM {}
 
-export enum RhythmBeat {
+export enum MelodyScale {}
 
-}
-
-export enum BPM {
-
-}
-
-export enum MelodyScale {
-
-}
-
-export enum Copyright {
-
-}
+export enum Copyright {}
 
 @Entity()
 export class Music {
@@ -50,31 +38,31 @@ export class Music {
   @Column()
   lyricist: string;
 
-  @Column({type: 'text'})
+  @Column({ type: 'text' })
   lyrics: string;
 
-  @Column({type: 'date'})
+  @Column({ type: 'date' })
   dates: Date;
 
   @Column()
   album: string;
 
-  @Column({type: 'enum', enum: VocalType})
+  @Column({ type: 'enum', enum: VocalType })
   vocalType: VocalType;
 
-  @Column({type: 'enum', enum: Language})
+  @Column({ type: 'enum', enum: Language })
   language: Language;
 
-  @Column({type: 'enum', enum: RhythmBeat})
+  @Column({ type: 'enum', enum: RhythmBeat })
   rhythmBeat: RhythmBeat;
 
-  @Column({type: 'enum', enum: BPM})
+  @Column({ type: 'enum', enum: BPM })
   bpm: BPM;
 
-  @Column({type: 'enum', enum: MelodyScale})
+  @Column({ type: 'enum', enum: MelodyScale })
   melodyScale: MelodyScale;
 
-  @Column({type: 'enum', enum: Copyright})
+  @Column({ type: 'enum', enum: Copyright })
   copyright: Copyright;
 
   @Column()
@@ -91,6 +79,6 @@ export class Music {
   @OneToMany(() => MusicTag, (musicTag) => musicTag.music, { cascade: true })
   musicTags: MusicTag[];
 
-  @ManyToMany(() => Artist, artist => artist.musics)
+  @ManyToMany(() => Artist, (artist) => artist.musics)
   artists: Artist[];
 }

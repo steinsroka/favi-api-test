@@ -9,12 +9,16 @@ export class SearchController {
   constructor(private readonly searchService: SearchService) {}
 
   @Get('music/tag')
-  async searchMusicWithTags(@Query() tagSearchDto: TagSearchDto): Promise<TagSearchResultDto[]> {
-    return await this.searchService.getMusicsMatchedTag(tagSearchDto.tags, parseInt(tagSearchDto.seed), parseInt(tagSearchDto.index));
+  async searchMusicWithTags(
+    @Query() tagSearchDto: TagSearchDto,
+  ): Promise<TagSearchResultDto[]> {
+    return await this.searchService.getMusicsMatchedTag(
+      tagSearchDto.tags,
+      parseInt(tagSearchDto.seed),
+      parseInt(tagSearchDto.index),
+    );
   }
 
   @Get('name')
-  async searchMusicWithName(@Query('name') name: string) {
-
-  }
+  async searchMusicWithName(@Query('name') name: string) {}
 }

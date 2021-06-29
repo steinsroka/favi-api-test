@@ -83,7 +83,7 @@ export class MusicController {
       id,
       req.user,
       addMusicCommentDto.comment,
-      addMusicCommentDto.parent
+      addMusicCommentDto.parent,
     );
     const addMusicPromise:
       | Promise<InsertResult>[]
@@ -151,4 +151,9 @@ export class MusicController {
 
   @Post(':id/play')
   logMusicPlay(@Param('id') id: number) {}
+
+  @Get(':id/users')
+  async getUserDistribution(@Param('id') id: number) {
+    return await this.musicService.getUserDistributionInMusic(id);
+  }
 }

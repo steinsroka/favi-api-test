@@ -20,7 +20,7 @@ import { ValidateUserIdPipe } from './pipe/validate-user-id.pipe';
 import { User } from '../common/entity/user.entity';
 import { UserService } from './user.service';
 import { UserInfo } from '../common/view/user-info.entity';
-import { Tag,TagClass } from '../common/entity/music-tag-value.entity';
+import { Tag, TagClass } from '../common/entity/music-tag-value.entity';
 import { isDefined } from 'class-validator';
 
 @Controller('user/:id')
@@ -37,10 +37,7 @@ export class UserController {
   }
 
   @Get('liked_musics')
-  async getUserLikedMusics(
-    @Param('id') id: number,
-    @Query('tag') tag?: Tag,
-  ) {
+  async getUserLikedMusics(@Param('id') id: number, @Query('tag') tag?: Tag) {
     if (isDefined(tag)) {
       return await this.userService.getUserLikedTagMusic(id, tag);
     }

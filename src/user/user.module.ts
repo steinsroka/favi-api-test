@@ -11,7 +11,9 @@ import { MusicTagInfo } from '../common/view/music-tag-info.entity';
 import { MusicLike } from '../common/entity/music-like.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Album, UserInfo, UserTagInfo, MusicLike])],
+  imports: [
+    TypeOrmModule.forFeature([User, Album, UserInfo, UserTagInfo, MusicLike]),
+  ],
   providers: [UserService, JwtStrategy],
   controllers: [UserController],
   exports: [TypeOrmModule, UserService],
