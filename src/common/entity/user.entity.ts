@@ -7,6 +7,7 @@ import {
   IsNumber,
   IsString,
   IsUUID,
+  Matches,
 } from 'class-validator';
 import {
   Entity,
@@ -61,13 +62,9 @@ export class User {
   })
   name: string;
 
-  @IsDate()
-  @Column({
-    type: 'timestamp',
-    nullable: true,
-    name: 'age',
-  })
-  birth: Date;
+  @Matches(/10+20+30+40+50/)
+  @Column({nullable: true})
+  age: number;
 
   @IsEnum(Gender)
   @Column({
