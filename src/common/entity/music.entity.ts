@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { Artist } from './artist.entity';
 import { MusicComment } from './music-comment.entity';
@@ -12,17 +13,29 @@ import { MusicTag } from './music-tag.entity';
 import { User } from './user.entity';
 
 //TODO: fill enum value
-export enum VocalType {}
+export enum VocalType {
+  T = 't'
+}
 
-export enum Language {}
+export enum Language {
+  T = 't'
+}
 
-export enum RhythmBeat {}
+export enum RhythmBeat {
+  T = 't'
+}
 
-export enum BPM {}
+export enum BPM {
+  T = 't'
+}
 
-export enum MelodyScale {}
+export enum MelodyScale {
+  T = 't'
+}
 
-export enum Copyright {}
+export enum Copyright {
+  T = 't'
+}
 
 @Entity()
 export class Music {
@@ -79,6 +92,7 @@ export class Music {
   @OneToMany(() => MusicTag, (musicTag) => musicTag.music, { cascade: true })
   musicTags: MusicTag[];
 
-  @ManyToMany(() => Artist, (artist) => artist.musics)
+  @ManyToMany(() => Artist, artist => artist.musics)
+  @JoinTable()
   artists: Artist[];
 }

@@ -19,6 +19,8 @@ export class SearchController {
     );
   }
 
-  @Get('name')
-  async searchMusicWithName(@Query('name') name: string) {}
+  @Get()
+  async searchMusicQuery(@Query('query') query: string, @Query('index') index: number = 0) {
+    return await this.searchService.getMusicsQuery(query, index);
+  }
 }
