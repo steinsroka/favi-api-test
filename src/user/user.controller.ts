@@ -6,6 +6,7 @@ import {
   HttpCode,
   Param,
   Patch,
+  Post,
   Query,
   Req,
   UseGuards,
@@ -22,6 +23,10 @@ import { UserService } from './user.service';
 import { UserInfo } from '../common/view/user-info.entity';
 import { Tag, TagClass } from '../common/entity/music-tag-value.entity';
 import { isDefined } from 'class-validator';
+import { use } from 'passport';
+import { AddAlbumDto } from './dto/add-album.dto';
+import { get } from 'node:http';
+import { Album } from 'src/common/entity/album.entity';
 
 @Controller('user/:id')
 @UsePipes(ValidateUserIdPipe)
@@ -61,4 +66,20 @@ export class UserController {
     await this.userService.saveUser(req.user);
     return await this.userService.getUserInfo(req.user.id);
   }
+
+  @Post('album')
+  async addAlbum(
+    @Param('id') userId: number,
+    @Body() addAlbumDto: AddAlbumDto,
+  ){
+    return await this.userService.addAlbum(userId,addAlbumDto.name,addAlbumDto.isPublic);
+  }
+
+  @Get('album')
+  async getAlbum(
+    @Param('id') id: number
+  ): Promise<Album[]>{
+   return await this.userService.getAlbums(id); 
+  }
+
 }
