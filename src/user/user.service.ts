@@ -12,6 +12,7 @@ import { Music } from '../common/entity/music.entity';
 import { MusicSmallInfoDto } from '../music/dto/music-small-info.dto';
 import { Tag, TagClass } from '../common/entity/music-tag-value.entity';
 import { MusicTagInfo } from '../common/view/music-tag-info.entity';
+import { Album } from '../common/entity/album.entity';
 
 @Injectable()
 export class UserService {
@@ -24,6 +25,8 @@ export class UserService {
     private readonly userTagInfoRepository: Repository<UserTagInfo>,
     @InjectRepository(MusicLike)
     private readonly userMusicLikeRepository: Repository<MusicLike>,
+    @InjectRepository(Album)
+    private readonly userAlbumRepository: Repository<Album>
   ) {}
 
   getUserInfo(userId: number): Promise<UserInfo> {
@@ -84,4 +87,28 @@ export class UserService {
       .andWhere('musicTagInfo.name = :tag', { tag: tag })
       .getRawMany();
   }
+
+
+  async addAlbum(
+    userId : number,
+    albumName : string,
+    isPublic: boolean
+  ){
+    const user:User = await this.userRepository.findOne({id : userId});
+    const album = this.userAlbumRepository.create({
+        name : albumName,
+        isPublic : isPublic,
+        user : user
+    });
+
+    return this.userAlbumRepository.save(album);
+  }
+
+  async getAlbums(
+    userId:number
+  ){
+    const user = await this.userRepository.findOne({id : userId});
+    return user.albums;
+  }
+
 }
