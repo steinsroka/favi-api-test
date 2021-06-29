@@ -105,7 +105,7 @@ export class MusicService {
     musicId: number,
     user: User,
     comment: string,
-    parent: number
+    parent: number,
   ): Promise<MusicComment> {
     const music = await this.musicRepository.findOneOrFail({
       relations: ['musicComments'],
@@ -118,7 +118,7 @@ export class MusicService {
     const musicComment = this.musicCommentRepository.create({
       comment: comment,
       user: user,
-      parent: parentMusicComment
+      parent: parentMusicComment,
     });
     music.musicComments.push(musicComment);
     const newMusic = await this.musicRepository.save(music);
@@ -194,5 +194,64 @@ export class MusicService {
       userId: user.id,
       musicTagValueId: musicTagValue.id,
     });
+  }
+
+  async getUserDistributionInMusic(id: number) {
+    const ratioAge = this.musicLikeRepository
+      .createQueryBuilder('ratioAge')
+      .select('musicId', 'musicId')
+      .addSelect(
+        'COUNT(case when user.age = 10 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+        '10',
+      )
+      .addSelect(
+        'COUNT(case when user.age = 20 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+        '20',
+      )
+      .addSelect(
+        'COUNT(case when user.age = 30 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+        '30',
+      )
+      .addSelect(
+        'COUNT(case when user.age = 40 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+        '40',
+      )
+      .addSelect(
+        'COUNT(case when user.age = 50 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+        '50',
+      )
+      .leftJoin(User, 'user')
+      .where('ratioAge.musicId = :id', { id: id })
+      .getRawOne();
+
+    const ratioGender = this.musicLikeRepository
+      .createQueryBuilder('ratioAge')
+      .select('musicId', 'musicId')
+      .addSelect(
+        'COUNT(case when user.gender = "men" then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+        'men',
+      )
+      .addSelect(
+        'COUNT(case when user.gender = "women" then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+        'women',
+      )
+      .addSelect(
+        'COUNT(case when user.gender = "default" then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+        'other',
+      )
+      .leftJoin(User, 'user')
+      .where('ratioAge.musicId = :id', { id: id })
+      .getRawOne();
+
+    return [
+      {
+        type: 'age',
+        result: ratioAge,
+      },
+      {
+        type: 'gender',
+        result: ratioGender,
+      },
+    ];
   }
 }

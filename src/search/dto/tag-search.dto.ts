@@ -1,4 +1,12 @@
-import { IsEnum, IsInt, IsNumber, IsNumberString, IsOptional, IsString, Matches } from 'class-validator';
+import {
+  IsEnum,
+  IsInt,
+  IsNumber,
+  IsNumberString,
+  IsOptional,
+  IsString,
+  Matches,
+} from 'class-validator';
 import { Tag } from '../../common/entity/music-tag-value.entity';
 
 export class TagSearchDto {
@@ -6,7 +14,7 @@ export class TagSearchDto {
   seed: string;
 
   @IsOptional()
-  @IsEnum(Tag, {each: true})
+  @IsEnum(Tag, { each: true })
   tags: Tag[] = [];
 
   @Matches(/^[1-9][0-9]*$/)

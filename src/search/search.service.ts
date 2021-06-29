@@ -16,9 +16,17 @@ export class SearchService {
     private readonly musicRepository: Repository<Music>
   ) {}
 
-  getMusicsMatchedTag(tags: Tag[], seed: number, index: number): Promise<TagSearchResultDto[]> {
-    return this.musicTagInfoRepository.createQueryBuilder()
-      .select(`SUM(CASE WHEN name IN("${tags.join('","')}") THEN 1 ELSE 0 END)`, 'match')
+  getMusicsMatchedTag(
+    tags: Tag[],
+    seed: number,
+    index: number,
+  ): Promise<TagSearchResultDto[]> {
+    return this.musicTagInfoRepository
+      .createQueryBuilder()
+      .select(
+        `SUM(CASE WHEN name IN("${tags.join('","')}") THEN 1 ELSE 0 END)`,
+        'match',
+      )
       .addSelect('musicId', 'musicId')
       .where('rank <= 3')
       .groupBy('musicId')

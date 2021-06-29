@@ -51,31 +51,31 @@ export class Music {
   @Column()
   lyricist: string;
 
-  @Column({type: 'text'})
+  @Column({ type: 'text' })
   lyrics: string;
 
-  @Column({type: 'date'})
+  @Column({ type: 'date' })
   dates: Date;
 
   @Column()
   album: string;
 
-  @Column({type: 'enum', enum: VocalType})
+  @Column({ type: 'enum', enum: VocalType })
   vocalType: VocalType;
 
-  @Column({type: 'enum', enum: Language})
+  @Column({ type: 'enum', enum: Language })
   language: Language;
 
-  @Column({type: 'enum', enum: RhythmBeat})
+  @Column({ type: 'enum', enum: RhythmBeat })
   rhythmBeat: RhythmBeat;
 
-  @Column({type: 'enum', enum: BPM})
+  @Column({ type: 'enum', enum: BPM })
   bpm: BPM;
 
-  @Column({type: 'enum', enum: MelodyScale})
+  @Column({ type: 'enum', enum: MelodyScale })
   melodyScale: MelodyScale;
 
-  @Column({type: 'enum', enum: Copyright})
+  @Column({ type: 'enum', enum: Copyright })
   copyright: Copyright;
 
   @Column()

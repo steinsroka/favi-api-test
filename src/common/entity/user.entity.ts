@@ -63,7 +63,7 @@ export class User {
   name: string;
 
   @Matches(/10+20+30+40+50/)
-  @Column({nullable: true})
+  @Column({ nullable: true })
   age: number;
 
   @IsEnum(Gender)
