@@ -26,7 +26,8 @@ import { isDefined } from 'class-validator';
 import { use } from 'passport';
 import { AddAlbumDto } from './dto/add-album.dto';
 import { get } from 'node:http';
-import { Album } from 'src/common/entity/album.entity';
+import { Album } from '../common/entity/album.entity';
+import { Music } from '../common/entity/music.entity';
 
 @Controller('user/:id')
 @UsePipes(ValidateUserIdPipe)
@@ -82,4 +83,46 @@ export class UserController {
    return await this.userService.getAlbums(id); 
   }
 
+  //TODO:유저가 앨범을 가지고 있는지 Guard를 통해 걸러내야한다.
+  @Get('album/:album_id')
+  async getMusicInAlbum(
+    @Param('id') id:number,
+    @Param('album_id') albumId:number
+  ) : Promise<Music[]>{
+    return await this.userService.getMusicsInAlbum(id, albumId);
+  }
+
+  @Post('album/:album_id/:music_id')
+  async addMusicInAlbum(
+    @Param('album_id')  albumId:number,
+    @Param('music_id')  musicId:number 
+  ) {
+    return await this.userService.addMusicInAlbum(albumId, musicId);
+  }
+
+  @Patch('album/:album_id')
+  async updateAlbum(
+    @Param('album_id') albumId:number,
+    @Body() updateAlbumDto:AddAlbumDto
+  ){
+    return await this.userService.updateAlbum(
+      albumId, updateAlbumDto.name, updateAlbumDto.isPublic);
+  }
+
+  @Delete('album/:album_id')
+  @HttpCode(204)
+  async deleteAlbum(
+    @Param('album_id') albumId:number
+  ) : Promise<void> {
+    await this.userService.deleteAlbum(albumId);
+  }
+
+  @Delete('album/:album_id/:music_id')
+  @HttpCode(204)
+  async deleteMusicInAlbum(
+    @Param('album_id') albumId:number,
+    @Param('music_id') musicId:number
+  ) : Promise<void> {
+    await this.userService.deleteMusicInAlbum(albumId,musicId);
+  }
 }
