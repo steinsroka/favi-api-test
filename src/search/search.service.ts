@@ -13,7 +13,7 @@ export class SearchService {
     @InjectRepository(MusicTagInfo)
     private readonly musicTagInfoRepository: Repository<MusicTagInfo>,
     @InjectRepository(Music)
-    private readonly musicRepository: Repository<Music>
+    private readonly musicRepository: Repository<Music>,
   ) {}
 
   getMusicsMatchedTag(
@@ -37,17 +37,20 @@ export class SearchService {
       .getRawMany();
   }
 
-  async getMusicsQuery(query: string, index: number): Promise<MusicSmallInfoDto[]> {
+  async getMusicsQuery(
+    query: string,
+    index: number,
+  ): Promise<MusicSmallInfoDto[]> {
     return this.musicRepository.find({
       select: ['id', 'title', 'composer'],
       relations: ['artists'],
       where: (qb: SelectQueryBuilder<Music>) => {
-        qb
-          .where('Music.title LIKE :title', {title: `%${query}%`})
-          .orWhere('Music__artists.name LIKE :name', {name: `%${query}%`});
+        qb.where('Music.title LIKE :title', {
+          title: `%${query}%`,
+        }).orWhere('Music__artists.name LIKE :name', { name: `%${query}%` });
       },
       take: 5,
-      skip: index * 5
+      skip: index * 5,
     });
   }
 }
