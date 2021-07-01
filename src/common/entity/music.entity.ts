@@ -45,40 +45,40 @@ export class Music {
   @Column()
   title: string;
 
-  @Column()
+  @Column({ nullable: true })
   composer: string;
 
-  @Column()
+  @Column({ nullable: true })
   lyricist: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   lyrics: string;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'date', nullable: true })
   dates: Date;
 
-  @Column()
+  @Column({ nullable: true })
   album: string;
 
-  @Column({ type: 'enum', enum: VocalType })
+  @Column({ type: 'enum', enum: VocalType, nullable: true })
   vocalType: VocalType;
 
-  @Column({ type: 'enum', enum: Language })
+  @Column({ type: 'enum', enum: Language, nullable: true })
   language: Language;
 
-  @Column({ type: 'enum', enum: RhythmBeat })
+  @Column({ type: 'enum', enum: RhythmBeat, nullable: true })
   rhythmBeat: RhythmBeat;
 
-  @Column({ type: 'enum', enum: BPM })
+  @Column({ type: 'enum', enum: BPM, nullable: true })
   bpm: BPM;
 
-  @Column({ type: 'enum', enum: MelodyScale })
+  @Column({ type: 'enum', enum: MelodyScale, nullable: true })
   melodyScale: MelodyScale;
 
-  @Column({ type: 'enum', enum: Copyright })
+  @Column({ type: 'enum', enum: Copyright, nullable: true })
   copyright: Copyright;
 
-  @Column()
+  @Column({ nullable: true })
   link: string;
 
   @OneToMany(() => MusicComment, (musicComment) => musicComment.music, {
