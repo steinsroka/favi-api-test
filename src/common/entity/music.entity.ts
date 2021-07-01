@@ -14,27 +14,27 @@ import { User } from './user.entity';
 
 //TODO: fill enum value
 export enum VocalType {
-  T = 't'
+  T = 't',
 }
 
 export enum Language {
-  T = 't'
+  T = 't',
 }
 
 export enum RhythmBeat {
-  T = 't'
+  T = 't',
 }
 
 export enum BPM {
-  T = 't'
+  T = 't',
 }
 
 export enum MelodyScale {
-  T = 't'
+  T = 't',
 }
 
 export enum Copyright {
-  T = 't'
+  T = 't',
 }
 
 @Entity()
@@ -92,7 +92,7 @@ export class Music {
   @OneToMany(() => MusicTag, (musicTag) => musicTag.music, { cascade: true })
   musicTags: MusicTag[];
 
-  @ManyToMany(() => Artist, artist => artist.musics)
+  @ManyToMany(() => Artist, (artist) => artist.musics)
   @JoinTable()
   artists: Artist[];
 }

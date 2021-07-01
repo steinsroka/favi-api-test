@@ -25,7 +25,7 @@ import { Artist } from '../common/entity/artist.entity';
       MusicLike,
       MusicCommentLike,
       MusicTagInfo,
-      Artist
+      Artist,
     ]),
   ],
   exports: [TypeOrmModule],

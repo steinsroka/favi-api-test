@@ -1,3 +1,4 @@
+//nest js decorater
 import {
   Body,
   Controller,
@@ -12,22 +13,38 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+
+//nest?
 import { UserRequest } from '../common/@types/user-request';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { UserPartialDto } from './dto/user-partial.dto';
-import { UserAuthGuard } from './guard/user-auth.guard';
-import { ValidateUserIdPipe } from './pipe/validate-user-id.pipe';
-import { User } from '../common/entity/user.entity';
-import { UserService } from './user.service';
-import { UserInfo } from '../common/view/user-info.entity';
-import { Tag, TagClass } from '../common/entity/music-tag-value.entity';
 import { isDefined } from 'class-validator';
 import { use } from 'passport';
-import { AddAlbumDto } from './dto/add-album.dto';
 import { get } from 'node:http';
+
+//Pipe
+import { ValidateUserIdPipe } from './pipe/validate-user-id.pipe';
+import { ValidateAlbumIdPipe } from './pipe/validate-album-id.pipe';
+import { ValidateMusicPipe } from '../music/pipe/validate-music.pipe';
+
+//Guard
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { UserAuthGuard } from './guard/user-auth.guard';
+import { AlbumOwnerGuard } from './guard/album-owner.guard';
+
+//Dto
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UserPartialDto } from './dto/user-partial.dto';
+import { AddAlbumDto } from './dto/add-album.dto';
+
+//Entity
+import { UserInfo } from '../common/view/user-info.entity';
+import { Tag, TagClass } from '../common/entity/music-tag-value.entity';
+import { User } from '../common/entity/user.entity';
 import { Album } from '../common/entity/album.entity';
 import { Music } from '../common/entity/music.entity';
+
+//Service
+import { UserService } from './user.service';
+import { from } from 'rxjs';
 
 @Controller('user/:id')
 @UsePipes(ValidateUserIdPipe)
@@ -72,57 +89,69 @@ export class UserController {
   async addAlbum(
     @Param('id') userId: number,
     @Body() addAlbumDto: AddAlbumDto,
-  ){
-    return await this.userService.addAlbum(userId,addAlbumDto.name,addAlbumDto.isPublic);
+  ) {
+    return await this.userService.addAlbum(
+      userId,
+      addAlbumDto.name,
+      addAlbumDto.isPublic,
+    );
   }
 
   @Get('album')
-  async getAlbum(
-    @Param('id') id: number
-  ): Promise<Album[]>{
-   return await this.userService.getAlbums(id); 
+  async getAlbum(@Param('id') id: number): Promise<Album[]> {
+    return await this.userService.getAlbums(id);
   }
 
-  //TODO:유저가 앨범을 가지고 있는지 Guard를 통해 걸러내야한다.
   @Get('album/:album_id')
+  @UsePipes(ValidateAlbumIdPipe)
+  @UseGuards(AlbumOwnerGuard)
   async getMusicInAlbum(
-    @Param('id') id:number,
-    @Param('album_id') albumId:number
-  ) : Promise<Music[]>{
+    @Param('id') id: number,
+    @Param('album_id') albumId: number,
+  ): Promise<Music[]> {
     return await this.userService.getMusicsInAlbum(id, albumId);
   }
 
   @Post('album/:album_id/:music_id')
+  @UsePipes(ValidateAlbumIdPipe, ValidateMusicPipe)
+  @UseGuards(AlbumOwnerGuard)
   async addMusicInAlbum(
-    @Param('album_id')  albumId:number,
-    @Param('music_id')  musicId:number 
+    @Param('album_id') albumId: number,
+    @Param('music_id') musicId: number,
   ) {
     return await this.userService.addMusicInAlbum(albumId, musicId);
   }
 
   @Patch('album/:album_id')
+  @UsePipes(ValidateAlbumIdPipe)
+  @UseGuards(AlbumOwnerGuard)
   async updateAlbum(
-    @Param('album_id') albumId:number,
-    @Body() updateAlbumDto:AddAlbumDto
-  ){
+    @Param('album_id') albumId: number,
+    @Body() updateAlbumDto: AddAlbumDto,
+  ) {
     return await this.userService.updateAlbum(
-      albumId, updateAlbumDto.name, updateAlbumDto.isPublic);
+      albumId,
+      updateAlbumDto.name,
+      updateAlbumDto.isPublic,
+    );
   }
 
   @Delete('album/:album_id')
+  @UsePipes(ValidateAlbumIdPipe)
+  @UseGuards(AlbumOwnerGuard)
   @HttpCode(204)
-  async deleteAlbum(
-    @Param('album_id') albumId:number
-  ) : Promise<void> {
+  async deleteAlbum(@Param('album_id') albumId: number): Promise<void> {
     await this.userService.deleteAlbum(albumId);
   }
 
   @Delete('album/:album_id/:music_id')
+  @UsePipes(ValidateAlbumIdPipe, ValidateMusicPipe)
+  @UseGuards(AlbumOwnerGuard)
   @HttpCode(204)
   async deleteMusicInAlbum(
-    @Param('album_id') albumId:number,
-    @Param('music_id') musicId:number
-  ) : Promise<void> {
-    await this.userService.deleteMusicInAlbum(albumId,musicId);
+    @Param('album_id') albumId: number,
+    @Param('music_id') musicId: number,
+  ): Promise<void> {
+    await this.userService.deleteMusicInAlbum(albumId, musicId);
   }
 }
