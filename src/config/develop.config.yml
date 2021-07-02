@@ -14,7 +14,7 @@ database:
   bigNumberStrings: false
 
 auth:
-  hashIter: 56178
+  hashIter: 56718
   jwtSecret: 'arcaneservicemurekabackendbyskeep194'
 
 mail:

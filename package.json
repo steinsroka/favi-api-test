@@ -40,7 +40,6 @@
     "helmet": "^4.5.0",
     "js-yaml": "^3.14.1",
     "mysql2": "^2.2.5",
-    "node-ts-crypto-promise": "^0.1.2",
     "nodemailer": "^6.6.1",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
