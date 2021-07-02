@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { keys } from 'ts-transformer-keys';
 import { Repository, DeleteResult } from 'typeorm';
 import { UserPartialDto } from './dto/user-partial.dto';
+import { AlbumPartialDto } from './dto/album-partial.dto';
 import { User } from '../common/entity/user.entity';
 import { UserInfo } from '../common/view/user-info.entity';
 import { MusicCommentTagDto } from '../music/dto/music-comment-tag.dto';
@@ -101,13 +102,20 @@ export class UserService {
     return this.userAlbumRepository.save(album);
   }
 
+  async getAlbum(albumId: number): Promise<Album> {
+    return await this.userAlbumRepository.findOne({ id: albumId });
+  }
   async getAlbums(userId: number): Promise<Album[]> {
     const user = await this.userRepository.findOne({ id: userId });
     return user.albums;
   }
 
+  async isExistAlbum(albumPartial: AlbumPartialDto): Promise<boolean> {
+    return (await this.userAlbumRepository.count({ where: albumPartial })) > 0;
+  }
+
   //아래의 메소드들은 유저가 앨범을 가지고 있는지는 controller에서 guard를 통해 할 예정
-  //getMusicsInAlbum, addMusicInAlbum, updateAlbum, deleteAlbum
+  //getMusicsInAlbum, addMusicInAlbum, updateAlbum, deleteAlbum, deleteMusicInAlbum
 
   async getMusicsInAlbum(userId: number, albumId: number): Promise<Music[]> {
     const album = await this.userAlbumRepository.findOne({ id: albumId });
