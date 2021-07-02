@@ -14,7 +14,7 @@ import { MusicTagInfo } from './music-tag-info.entity';
       .addSelect('music.lyricist', 'lyricist')
       .addSelect('music.link', 'link')
       .addSelect(
-        'COUNT(music_like.userId)',
+        'COUNT(musicLike.userId)',
         'likedUserCount',
       )
       .from(Music, 'music')
