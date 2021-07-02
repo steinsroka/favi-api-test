@@ -44,7 +44,7 @@ export class UserService {
   }
 
   getUserAuthInfo(userPartial: UserPartialDto): Promise<User> {
-    return this.userRepository.findOneOrFail({
+    return this.userRepository.findOne({
       where: userPartial,
     });
   }
