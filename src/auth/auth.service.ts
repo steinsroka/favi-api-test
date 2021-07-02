@@ -26,7 +26,7 @@ export class AuthService {
   async saltHash(password: string, salt: string): Promise<string> {
     let key = salt + password;
     for (let i = 0; i < this.hashIter; ++i) {
-      key = createHash('sha512').update(password).digest('base64');
+      key = createHash('sha512').update(key).digest('base64');
     }
     return key;
   }
