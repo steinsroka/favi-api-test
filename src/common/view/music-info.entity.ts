@@ -14,12 +14,11 @@ import { MusicTagInfo } from './music-tag-info.entity';
       .addSelect('music.lyricist', 'lyricist')
       .addSelect('music.link', 'link')
       .addSelect(
-        'CASE WHEN user.id is null then 0 ELSE COUNT(music.id) END',
+        'COUNT(music_like.userId)',
         'likedUserCount',
       )
       .from(Music, 'music')
       .leftJoin('music.musicLikes', 'musicLike')
-      .leftJoin('musicLike.user', 'user')
       .groupBy('music.id'),
 })
 export class MusicInfo {
