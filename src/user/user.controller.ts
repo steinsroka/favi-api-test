@@ -113,7 +113,7 @@ export class UserController {
   }
 
   @Post('album/:album_id/:music_id')
-  @UsePipes(ValidateAlbumIdPipe, ValidateMusicPipe)
+  @UsePipes(ValidateAlbumIdPipe)
   @UseGuards(AlbumOwnerGuard)
   async addMusicInAlbum(
     @Param('album_id') albumId: number,
@@ -145,7 +145,7 @@ export class UserController {
   }
 
   @Delete('album/:album_id/:music_id')
-  @UsePipes(ValidateAlbumIdPipe, ValidateMusicPipe)
+  @UsePipes(ValidateAlbumIdPipe)
   @UseGuards(AlbumOwnerGuard)
   @HttpCode(204)
   async deleteMusicInAlbum(

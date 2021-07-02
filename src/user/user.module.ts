@@ -10,6 +10,7 @@ import { UserTagInfo } from '../common/view/user-tag-info.entity';
 import { MusicTagInfo } from '../common/view/music-tag-info.entity';
 import { MusicLike } from '../common/entity/music-like.entity';
 import { Music } from '../common/entity/music.entity';
+import { MusicService } from '../music/music.service';
 
 @Module({
   imports: [
