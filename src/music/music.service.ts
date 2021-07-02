@@ -52,7 +52,7 @@ export class MusicService {
   }
 
   async isExistMusic(musicId: number): Promise<boolean> {
-    return (await this.musicInfoRepository.count({ id: musicId })) > 0;
+    return (await this.musicRepository.count({ id: musicId })) > 0;
   }
 
   addMusicLike(musicId: number, user: User) {
