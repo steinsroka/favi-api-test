@@ -10,6 +10,7 @@ import { createTransport } from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import userVerifyCode from '../common/class/user-verify-code';
 import { randomBytes } from 'crypto';
+import { Crypto } from 'node-ts-crypto-promise';
 
 @Injectable()
 export class AuthService {
@@ -26,7 +27,7 @@ export class AuthService {
   async saltHash(password: string, salt: string): Promise<string> {
     let key = salt + password;
     for (let i = 0; i < this.hashIter; ++i) {
-      key = createHash('sha512').update(key).digest('base64');
+      key =  (await Crypto.hash(key, 'sha512')).toString('base64');
     }
     return key;
   }
