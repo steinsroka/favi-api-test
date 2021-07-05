@@ -28,7 +28,7 @@ export class SearchService {
         'match',
       )
       .addSelect('musicId', 'musicId')
-      .where('rank <= 3')
+      .where('`rank` <= 3')
       .groupBy('musicId')
       .orderBy('`match`', 'DESC')
       .addOrderBy(`RAND(${seed})`)
