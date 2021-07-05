@@ -1,4 +1,5 @@
 import { Connection, ViewColumn, ViewEntity } from 'typeorm';
+import { MusicLike } from '../entity/music-like.entity';
 import { MusicTagValue, Tag, TagClass } from '../entity/music-tag-value.entity';
 import { MusicTag } from '../entity/music-tag.entity';
 
@@ -16,22 +17,23 @@ import { MusicTag } from '../entity/music-tag.entity';
           qb
             .distinct(true)
             .select('musicTagValue.name', 'name')
-            .addSelect('musicTag.userId', 'userId')
+            .addSelect('musicLike.userId', 'userId')
             .addSelect('musicTagValue.class', 'class')
             .addSelect('musicTagValue.parent', 'parent')
             .addSelect(
-              'COUNT(*) OVER(PARTITION BY musicTag.userId, musicTag.musicTagValueId)',
+              'COUNT(*) OVER(PARTITION BY musicLike.userId, musicTag.musicTagValueId)',
               'count',
             )
             .addSelect(
-              'COUNT(*) OVER(PARTITION BY musicTag.userId, musicTag.musicTagValueId) / COUNT(*) OVER(PARTITION BY musicTag.userId) * 100',
+              'COUNT(*) OVER(PARTITION BY musicLike.userId, musicTag.musicTagValueId) / COUNT(*) OVER(PARTITION BY musicLike.userId) * 100',
               'ratio',
             )
             .addSelect(
-              'COUNT(*) OVER(PARTITION BY musicTag.userId, musicTag.musicTagValueId) / COUNT(*) OVER(PARTITION BY musicTag.userId, musicTagValue.class) * 100',
+              'COUNT(*) OVER(PARTITION BY musicLike.userId, musicTag.musicTagValueId) / COUNT(*) OVER(PARTITION BY musicLike.userId, musicTagValue.class) * 100',
               'classRatio',
             )
-            .from(MusicTag, 'musicTag')
+            .from(MusicLike, 'musicLike')
+            .leftJoin(MusicTag, 'musicTag', 'musicTag.musicId = musicLike.musicId')
             .leftJoin('musicTag.musicTagValue', 'musicTagValue'),
         'tagData',
       )
