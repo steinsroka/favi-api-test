@@ -68,7 +68,9 @@ export class UserController {
   }
 
   @Get('liked_albums')
-  async getUserLikedAlbums(@Param('id') id: number) {}
+  async getUserLikedAlbums(@Param('id') id: number) {
+    return await this.userService.getUserLikedAlbums(id);
+  }
 
   @Delete()
   @HttpCode(204)

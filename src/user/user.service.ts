@@ -106,6 +106,7 @@ export class UserService {
       )
       .where('musicTagInfo.rank <= 3')
       .groupBy('musicTagInfo.name')
+      .orderBy('musicLike.timestamp', 'DESC')
       .getRawMany();
   }
 
