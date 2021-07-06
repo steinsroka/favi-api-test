@@ -13,10 +13,7 @@ import { MusicTagInfo } from './music-tag-info.entity';
       .addSelect('music.composer', 'composer')
       .addSelect('music.lyricist', 'lyricist')
       .addSelect('music.link', 'link')
-      .addSelect(
-        'COUNT(musicLike.userId)',
-        'likedUserCount',
-      )
+      .addSelect('COUNT(musicLike.userId)', 'likedUserCount')
       .from(Music, 'music')
       .leftJoin('music.musicLikes', 'musicLike')
       .groupBy('music.id'),

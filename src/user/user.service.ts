@@ -14,6 +14,7 @@ import { MusicSmallInfoDto } from '../music/dto/music-small-info.dto';
 import { Tag, TagClass } from '../common/entity/music-tag-value.entity';
 import { MusicTagInfo } from '../common/view/music-tag-info.entity';
 import { Album } from '../common/entity/album.entity';
+import { UserLikedAlbumDto } from './dto/user-liked-album.dto';
 
 @Injectable()
 export class UserService {
@@ -88,6 +89,23 @@ export class UserService {
       .where('musicLike.userId = :userId', { userId: userId })
       .andWhere('musicTagInfo.rank <= 3')
       .andWhere('musicTagInfo.name = :tag', { tag: tag })
+      .getRawMany();
+  }
+
+  async getUserLikedAlbums(id: number): Promise<UserLikedAlbumDto[]> {
+    return this.userMusicLikeRepository
+      .createQueryBuilder('musicLike')
+      .select('musicTagInfo.name', 'name')
+      .addSelect('musicTagInfo.class', 'class')
+      .addSelect('musicTagInfo.parent', 'parent')
+      .addSelect('count(musicTagInfo.name)', 'count')
+      .leftJoin(
+        MusicTagInfo,
+        'musicTagInfo',
+        'musicLike.musicId = musicTagInfo.musicId',
+      )
+      .where('musicTagInfo.rank <= 3')
+      .groupBy('musicTagInfo.name')
       .getRawMany();
   }
 

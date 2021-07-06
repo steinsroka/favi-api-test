@@ -219,7 +219,6 @@ export enum Tag {
   VOCAL_CHORUS = 'vocal_chorus',
 }
 
-//TODO: tag, subtag replace string to enum class
 @Entity()
 export class MusicTagValue {
   @PrimaryGeneratedColumn()

@@ -33,7 +33,11 @@ import { MusicTag } from '../entity/music-tag.entity';
               'classRatio',
             )
             .from(MusicLike, 'musicLike')
-            .leftJoin(MusicTag, 'musicTag', 'musicTag.musicId = musicLike.musicId')
+            .leftJoin(
+              MusicTag,
+              'musicTag',
+              'musicTag.musicId = musicLike.musicId',
+            )
             .leftJoin('musicTag.musicTagValue', 'musicTagValue'),
         'tagData',
       )

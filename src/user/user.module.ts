@@ -14,7 +14,14 @@ import { MusicService } from '../music/music.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Album, UserInfo, UserTagInfo, MusicLike, Music]),
+    TypeOrmModule.forFeature([
+      User,
+      Album,
+      UserInfo,
+      UserTagInfo,
+      MusicLike,
+      Music,
+    ]),
   ],
   providers: [UserService, JwtStrategy],
   controllers: [UserController],
