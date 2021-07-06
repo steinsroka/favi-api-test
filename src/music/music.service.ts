@@ -197,7 +197,7 @@ export class MusicService {
   }
 
   async getUserDistributionInMusic(id: number) {
-    const ratioAge = this.musicLikeRepository
+    const ratioAge = await this.musicLikeRepository
       .createQueryBuilder('ratioAge')
       .select('musicId', 'musicId')
       .addSelect(
@@ -220,11 +220,11 @@ export class MusicService {
         'COUNT(case when user.age = 50 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
         '50',
       )
-      .leftJoin(User, 'user')
+      .leftJoin(User, 'user', 'ratoiAge.userId = user.id')
       .where('ratioAge.musicId = :id', { id: id })
       .getRawOne();
 
-    const ratioGender = this.musicLikeRepository
+    const ratioGender = await this.musicLikeRepository
       .createQueryBuilder('ratioAge')
       .select('musicId', 'musicId')
       .addSelect(
@@ -239,7 +239,7 @@ export class MusicService {
         'COUNT(case when user.gender = "default" then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
         'other',
       )
-      .leftJoin(User, 'user')
+      .leftJoin(User, 'user', 'ratoiAge.userId = user.id')
       .where('ratioAge.musicId = :id', { id: id })
       .getRawOne();
 
