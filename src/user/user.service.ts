@@ -93,21 +93,30 @@ export class UserService {
   }
 
   async getUserLikedAlbums(id: number): Promise<UserLikedAlbumDto[]> {
-    return this.userMusicLikeRepository
+    const albums: UserLikedAlbumDto[] = await this.userMusicLikeRepository
       .createQueryBuilder('musicLike')
       .select('musicTagInfo.name', 'name')
       .addSelect('musicTagInfo.class', 'class')
       .addSelect('musicTagInfo.parent', 'parent')
-      .addSelect('count(musicTagInfo.name)', 'count')
+      .addSelect('COUNT(*) OVER(PARTITION BY musicTagInfo.name)', 'count')
+      .addSelect('musicTagInfo.musicId', 'musicId')
       .leftJoin(
         MusicTagInfo,
         'musicTagInfo',
         'musicLike.musicId = musicTagInfo.musicId',
       )
       .where('musicTagInfo.rank <= 3')
-      .groupBy('musicTagInfo.name')
       .orderBy('musicLike.timestamp', 'DESC')
       .getRawMany();
+    const result: UserLikedAlbumDto[] = [];
+    const existInAlbum: Map<Tag, boolean> = new Map<Tag, boolean>();
+    for(const key of albums) {
+      if(!existInAlbum.has(key.name)) {
+        result.push(key);
+        existInAlbum.set(key.name, true);
+      }
+    }
+    return result;
   }
 
   async addAlbum(userId: number, albumName: string, isPublic: boolean) {
