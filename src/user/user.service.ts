@@ -106,6 +106,7 @@ export class UserService {
         'musicLike.musicId = musicTagInfo.musicId',
       )
       .where('musicTagInfo.rank <= 3')
+      .andWhere('musicLike.userId = :userId', { userId: id })
       .orderBy('musicLike.timestamp', 'DESC')
       .getRawMany();
     const result: UserLikedAlbumDto[] = [];
