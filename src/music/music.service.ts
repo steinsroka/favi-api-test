@@ -222,7 +222,7 @@ export class MusicService {
       )
       .leftJoin(User, 'user', 'ratioAge.userId = user.id')
       .where('ratioAge.musicId = :id', { id: id })
-      .getRawOne();
+      .getRawOne() ?? null;
 
     const ratioGender = await this.musicLikeRepository
       .createQueryBuilder('ratioAge')
@@ -241,7 +241,7 @@ export class MusicService {
       )
       .leftJoin(User, 'user', 'ratioAge.userId = user.id')
       .where('ratioAge.musicId = :id', { id: id })
-      .getRawOne();
+      .getRawOne() ?? null;
 
     return [
       {
