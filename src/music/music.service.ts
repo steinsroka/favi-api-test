@@ -220,7 +220,7 @@ export class MusicService {
         'COUNT(case when user.age = 50 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
         '50',
       )
-      .leftJoin(User, 'user', 'ratoiAge.userId = user.id')
+      .leftJoin(User, 'user', 'ratioAge.userId = user.id')
       .where('ratioAge.musicId = :id', { id: id })
       .getRawOne();
 
@@ -239,7 +239,7 @@ export class MusicService {
         'COUNT(case when user.gender = "default" then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
         'other',
       )
-      .leftJoin(User, 'user', 'ratoiAge.userId = user.id')
+      .leftJoin(User, 'user', 'ratioAge.userId = user.id')
       .where('ratioAge.musicId = :id', { id: id })
       .getRawOne();
 
