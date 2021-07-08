@@ -38,4 +38,6 @@ export class MusicInfo {
   likedUserCount: number;
 
   tags: MusicTagInfo[];
+
+  myLike: boolean;
 }

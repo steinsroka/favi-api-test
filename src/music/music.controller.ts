@@ -35,9 +35,10 @@ export class MusicController {
   constructor(private readonly musicService: MusicService) {}
 
   @Get(':id')
-  async getMusicInfo(@Param('id') id: number): Promise<MusicInfo> {
+  async getMusicInfo(@Request() req: UserRequest, @Param('id') id: number): Promise<MusicInfo> {
     const music = await this.musicService.getMusic(id);
     music.tags = await this.musicService.getMusicTags(id);
+    music.myLike = await this.musicService.isExistMusicLike(id, req.user);
     return music;
   }
 
@@ -155,5 +156,10 @@ export class MusicController {
   @Get(':id/users')
   async getUserDistribution(@Param('id') id: number) {
     return await this.musicService.getUserDistributionInMusic(id);
+  }
+
+  @Get('chart')
+  async getMusicChart() {
+    
   }
 }

@@ -159,4 +159,9 @@ export class UserController {
   ): Promise<void> {
     await this.userService.deleteMusicInAlbum(albumId, musicId);
   }
+
+  @Get('social')
+  async getUserSocialLogs(@Query('userId') userId?: number) {
+    
+  }
 }
