@@ -17,7 +17,7 @@ import { MusicTagInfo } from './music-tag-info.entity';
       .addSelect('MIN(user.name)', 'userName')
       .addSelect('MIN(user.id)', 'userId')
       .addSelect(
-        'COUNT(user.id)', 'like'
+        'COUNT(musicCommentLikes.userId)', 'like'
       )
       .from(MusicComment, 'musicComment')
       .leftJoin('musicComment.user', 'user')
