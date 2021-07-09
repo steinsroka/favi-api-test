@@ -10,12 +10,12 @@ import { MusicTagInfo } from './music-tag-info.entity';
   expression: (connection: Connection) =>
     connection
       .createQueryBuilder()
-      .select('musicComment.id', 'id')
-      .addSelect('musicComment.musicId', 'musicId')
-      .addSelect('musicComment.comment', 'comment')
-      .addSelect('musicComment.timestamp', 'timestamp')
-      .addSelect('user.name', 'userName')
-      .addSelect('user.id', 'userId')
+      .select('MIN(musicComment.id)', 'id')
+      .addSelect('MIN(musicComment.musicId)', 'musicId')
+      .addSelect('MIN(musicComment.comment)', 'comment')
+      .addSelect('MIN(musicComment.timestamp)', 'timestamp')
+      .addSelect('MIN(user.name)', 'userName')
+      .addSelect('MIN(user.id)', 'userId')
       .addSelect(
         'CASE WHEN musicCommentLikes.user.id is null then 0 ELSE COUNT(musicComment.id) END',
         'like',
