@@ -111,7 +111,7 @@ export class UserService {
       .where('`rank` <= 3')
       .groupBy('userId')
       .orderBy('weight', 'DESC')
-      .limit(5)
+      .limit(10)
       .getRawMany();
     const ret: number[] = [];
     for (const i of nearUsers) {

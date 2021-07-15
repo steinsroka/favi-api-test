@@ -1,6 +1,6 @@
 import { ViewColumn, ViewEntity } from 'typeorm';
 
-enum SocialLogType {
+export enum SocialLogType {
   MUSIC_COMMENT = 'music_comment',
   MUSIC_LIKE = 'music_like',
 }

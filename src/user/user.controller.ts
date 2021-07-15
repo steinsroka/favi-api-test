@@ -174,7 +174,7 @@ export class UserController {
     @Request() req: UserRequest,
     @Param('id') id: number,
     @Query('index') index?: number,
-    @Query('userId') userId?: number,
+    @Query('user_id') userId?: number,
   ): Promise<UserSocialLog[]> {
     const users: number[] = isDefined(userId)
       ? [userId]
@@ -195,6 +195,7 @@ export class UserController {
             musicCommentLog.musicComment.musicId,
             req.user,
           );
+          musicCommentLog.timestamp = log.timestamp;
           result.push(musicCommentLog);
           break;
         case 'music_like':
@@ -204,6 +205,7 @@ export class UserController {
             log.id,
             req.user,
           );
+          musicLikeLog.timestamp = log.timestamp;
           result.push(musicLikeLog);
           break;
       }
