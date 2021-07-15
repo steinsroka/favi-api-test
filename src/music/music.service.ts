@@ -47,8 +47,13 @@ export class MusicService {
     private readonly musicTagInfoRepository: Repository<MusicTagInfo>,
   ) {}
 
-  getMusic(musicId: number): Promise<MusicInfo> {
-    return this.musicInfoRepository.findOneOrFail({ id: musicId });
+  async getMusic(musicId: number, user?: User): Promise<MusicInfo> {
+    const music = await this.musicInfoRepository.findOneOrFail({ id: musicId });
+    music.tags = await this.getMusicTags(musicId);
+    music.myLike = isDefined(user)
+      ? await this.isExistMusicLike(musicId, user)
+      : null;
+    return music;
   }
 
   async isExistMusic(musicId: number): Promise<boolean> {
@@ -70,7 +75,7 @@ export class MusicService {
     });
   }
 
-  async isExistMusicLike(musicId: number, user: User) {
+  async isExistMusicLike(musicId: number, user: User): Promise<boolean> {
     return (
       (await this.musicLikeRepository.count({
         musicId: musicId,
@@ -79,20 +84,51 @@ export class MusicService {
     );
   }
 
-  async getMusicComment(musicId: number): Promise<MusicCommentInfo> {
-    return this.musicCommentInfoRepository.findOne({ id: musicId });
+  async isExistMusicCommentLike(
+    musicCommentId: number,
+    user: User,
+  ): Promise<boolean> {
+    return (
+      (await this.musicCommentLikeRepository.count({
+        musicCommentId: musicCommentId,
+        userId: user.id,
+      })) > 0
+    );
   }
 
-  async getMusicComments(musicId: number, index?: number) {
+  async getMusicComment(
+    musicCommentId: number,
+    user?: User,
+  ): Promise<MusicCommentInfo> {
+    const musicComment = await this.musicCommentInfoRepository.findOne({
+      id: musicCommentId,
+    });
+    musicComment.tags = await this.getMusicCommentTags(musicComment.id);
+    musicComment.myLike = isDefined(user)
+      ? await this.isExistMusicCommentLike(musicComment.id, user)
+      : null;
+    return musicComment;
+  }
+
+  async getMusicComments(musicId: number, index?: number, user?: User) {
     const musicCommentIndex = isDefined(index) ? 10 : 2;
     index = index ?? 0;
     let limit = musicCommentIndex;
-    return this.musicCommentInfoRepository.find({
+    const musicComments = await this.musicCommentInfoRepository.find({
       where: { musicId: musicId },
       order: { timestamp: 'DESC' },
       skip: index * musicCommentIndex,
       take: limit,
     });
+    for (let i = 0; i < musicComments.length; ++i) {
+      musicComments[i].tags = await this.getMusicCommentTags(
+        musicComments[i].id,
+      );
+      musicComments[i].myLike = isDefined(user)
+        ? await this.isExistMusicCommentLike(musicComments[i].id, user)
+        : null;
+    }
+    return musicComments;
   }
 
   async isExistMusicComment(musicCommentId: number) {
@@ -197,51 +233,53 @@ export class MusicService {
   }
 
   async getUserDistributionInMusic(id: number) {
-    const ratioAge = await this.musicLikeRepository
-      .createQueryBuilder('ratioAge')
-      .select('musicId', 'musicId')
-      .addSelect(
-        'COUNT(case when user.age = 10 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
-        '10',
-      )
-      .addSelect(
-        'COUNT(case when user.age = 20 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
-        '20',
-      )
-      .addSelect(
-        'COUNT(case when user.age = 30 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
-        '30',
-      )
-      .addSelect(
-        'COUNT(case when user.age = 40 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
-        '40',
-      )
-      .addSelect(
-        'COUNT(case when user.age = 50 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
-        '50',
-      )
-      .leftJoin(User, 'user', 'ratioAge.userId = user.id')
-      .where('ratioAge.musicId = :id', { id: id })
-      .getRawOne() ?? null;
+    const ratioAge =
+      (await this.musicLikeRepository
+        .createQueryBuilder('ratioAge')
+        .select('musicId', 'musicId')
+        .addSelect(
+          'COUNT(case when user.age = 10 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+          '10',
+        )
+        .addSelect(
+          'COUNT(case when user.age = 20 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+          '20',
+        )
+        .addSelect(
+          'COUNT(case when user.age = 30 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+          '30',
+        )
+        .addSelect(
+          'COUNT(case when user.age = 40 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+          '40',
+        )
+        .addSelect(
+          'COUNT(case when user.age = 50 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+          '50',
+        )
+        .leftJoin(User, 'user', 'ratioAge.userId = user.id')
+        .where('ratioAge.musicId = :id', { id: id })
+        .getRawOne()) ?? null;
 
-    const ratioGender = await this.musicLikeRepository
-      .createQueryBuilder('ratioAge')
-      .select('musicId', 'musicId')
-      .addSelect(
-        'COUNT(case when user.gender = "men" then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
-        'men',
-      )
-      .addSelect(
-        'COUNT(case when user.gender = "women" then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
-        'women',
-      )
-      .addSelect(
-        'COUNT(case when user.gender = "default" then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
-        'other',
-      )
-      .leftJoin(User, 'user', 'ratioAge.userId = user.id')
-      .where('ratioAge.musicId = :id', { id: id })
-      .getRawOne() ?? null;
+    const ratioGender =
+      (await this.musicLikeRepository
+        .createQueryBuilder('ratioAge')
+        .select('musicId', 'musicId')
+        .addSelect(
+          'COUNT(case when user.gender = "men" then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+          'men',
+        )
+        .addSelect(
+          'COUNT(case when user.gender = "women" then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+          'women',
+        )
+        .addSelect(
+          'COUNT(case when user.gender = "default" then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+          'other',
+        )
+        .leftJoin(User, 'user', 'ratioAge.userId = user.id')
+        .where('ratioAge.musicId = :id', { id: id })
+        .getRawOne()) ?? null;
 
     return [
       {

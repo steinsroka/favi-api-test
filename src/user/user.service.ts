@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { keys } from 'ts-transformer-keys';
-import { Repository, DeleteResult } from 'typeorm';
+import { Repository, DeleteResult, In } from 'typeorm';
 import { UserPartialDto } from './dto/user-partial.dto';
 import { AlbumPartialDto } from './dto/album-partial.dto';
 import { User } from '../common/entity/user.entity';
@@ -15,6 +15,7 @@ import { Tag, TagClass } from '../common/entity/music-tag-value.entity';
 import { MusicTagInfo } from '../common/view/music-tag-info.entity';
 import { Album } from '../common/entity/album.entity';
 import { UserLikedAlbumDto } from './dto/user-liked-album.dto';
+import { SocialLog } from '../common/view/social-log.entity';
 
 @Injectable()
 export class UserService {
@@ -31,10 +32,14 @@ export class UserService {
     private readonly userAlbumRepository: Repository<Album>,
     @InjectRepository(Music)
     private readonly userMusicRepository: Repository<Music>,
+    @InjectRepository(SocialLog)
+    private readonly socialLogRepository: Repository<SocialLog>,
   ) {}
 
-  getUserInfo(userId: number): Promise<UserInfo> {
-    return this.userInfoRepository.findOneOrFail({ id: userId });
+  async getUserInfo(userId: number): Promise<UserInfo> {
+    const user = await this.userInfoRepository.findOneOrFail({ id: userId });
+    user.tags = await this.getUserTags(userId);
+    return user;
   }
 
   async getUserTags(userId: number): Promise<UserTagInfo[]> {
@@ -92,6 +97,34 @@ export class UserService {
       .getRawMany();
   }
 
+  async getNearUsers(userId: number): Promise<number[]> {
+    const user = await this.getUserTags(userId);
+    const nearUsers = await this.userTagInfoRepository
+      .createQueryBuilder('userTagInfo')
+      .select('userId')
+      .addSelect(`SUM(${escape('`name`')} IN("${user.join('","')}"))`, 'weight')
+      .groupBy('userId')
+      .orderBy('weight', 'DESC')
+      .limit(5)
+      .getRawMany();
+    const ret: number[] = [];
+    for (const i of nearUsers) {
+      ret.push(i.userId);
+    }
+    return ret;
+  }
+
+  async getSocialLogs(
+    userIds: number[],
+    index: number = 0,
+  ): Promise<SocialLog[]> {
+    return await this.socialLogRepository.find({
+      where: { userId: In(userIds) },
+      take: 5,
+      skip: index * 5,
+    });
+  }
+
   async getUserLikedAlbums(id: number): Promise<UserLikedAlbumDto[]> {
     const albums: UserLikedAlbumDto[] = await this.userMusicLikeRepository
       .createQueryBuilder('musicLike')
@@ -111,8 +144,8 @@ export class UserService {
       .getRawMany();
     const result: UserLikedAlbumDto[] = [];
     const existInAlbum: Map<Tag, boolean> = new Map<Tag, boolean>();
-    for(const key of albums) {
-      if(!existInAlbum.has(key.name)) {
+    for (const key of albums) {
+      if (!existInAlbum.has(key.name)) {
         result.push(key);
         existInAlbum.set(key.name, true);
       }

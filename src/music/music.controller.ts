@@ -35,10 +35,11 @@ export class MusicController {
   constructor(private readonly musicService: MusicService) {}
 
   @Get(':id')
-  async getMusicInfo(@Request() req: UserRequest, @Param('id') id: number): Promise<MusicInfo> {
-    const music = await this.musicService.getMusic(id);
-    music.tags = await this.musicService.getMusicTags(id);
-    music.myLike = await this.musicService.isExistMusicLike(id, req.user);
+  async getMusicInfo(
+    @Request() req: UserRequest,
+    @Param('id') id: number,
+  ): Promise<MusicInfo> {
+    const music = await this.musicService.getMusic(id, req.user);
     return music;
   }
 
@@ -62,15 +63,15 @@ export class MusicController {
 
   @Get(':id/comment')
   async getMusicComments(
+    @Request() req: UserRequest,
     @Param('id') id: number,
     @Query('index') index?: number,
   ): Promise<MusicCommentInfo[]> {
-    const musicComments = await this.musicService.getMusicComments(id, index);
-    for (let i = 0; i < musicComments.length; i++) {
-      musicComments[i].tags = await this.musicService.getMusicCommentTags(
-        musicComments[i].id,
-      );
-    }
+    const musicComments = await this.musicService.getMusicComments(
+      id,
+      index,
+      req.user,
+    );
     return musicComments;
   }
 
@@ -159,7 +160,5 @@ export class MusicController {
   }
 
   @Get('chart')
-  async getMusicChart() {
-    
-  }
+  async getMusicChart() {}
 }

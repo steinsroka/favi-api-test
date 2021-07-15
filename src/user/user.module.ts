@@ -11,6 +11,8 @@ import { MusicTagInfo } from '../common/view/music-tag-info.entity';
 import { MusicLike } from '../common/entity/music-like.entity';
 import { Music } from '../common/entity/music.entity';
 import { MusicService } from '../music/music.service';
+import { MusicModule } from '../music/music.module';
+import { SocialLog } from '../common/view/social-log.entity';
 
 @Module({
   imports: [
@@ -21,7 +23,9 @@ import { MusicService } from '../music/music.service';
       UserTagInfo,
       MusicLike,
       Music,
+      SocialLog,
     ]),
+    MusicModule,
   ],
   providers: [UserService, JwtStrategy],
   controllers: [UserController],

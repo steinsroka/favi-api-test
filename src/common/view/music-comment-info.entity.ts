@@ -47,4 +47,6 @@ export class MusicCommentInfo {
   userName: string;
 
   tags: MusicCommentTagDto[];
+
+  myLike: boolean;
 }

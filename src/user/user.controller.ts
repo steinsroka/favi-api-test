@@ -10,6 +10,7 @@ import {
   Post,
   Query,
   Req,
+  Request,
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
@@ -45,17 +46,25 @@ import { Music } from '../common/entity/music.entity';
 //Service
 import { UserService } from './user.service';
 import { from } from 'rxjs';
+import { MusicService } from '../music/music.service';
+import {
+  UserSocialLog,
+  UserSocialLogMusicComment,
+  UserSocialLogMusicLike,
+} from './dto/user-social-log.dto';
 
 @Controller('user/:id')
 @UsePipes(ValidateUserIdPipe)
 @UseGuards(JwtAuthGuard, UserAuthGuard)
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly musicService: MusicService,
+  ) {}
 
   @Get()
   async getUser(@Param('id') id: number): Promise<UserInfo> {
     const user = await this.userService.getUserInfo(id);
-    user.tags = await this.userService.getUserTags(id);
     return user;
   }
 
@@ -161,7 +170,42 @@ export class UserController {
   }
 
   @Get('social')
-  async getUserSocialLogs(@Query('userId') userId?: number) {
-    
+  async getUserSocialLogs(
+    @Request() req: UserRequest,
+    @Param('id') id: number,
+    @Query('index') index?: number,
+    @Query('userId') userId?: number,
+  ): Promise<UserSocialLog[]> {
+    const users: number[] = isDefined(userId)
+      ? [userId]
+      : await this.userService.getNearUsers(id);
+    const socialLogs = await this.userService.getSocialLogs(users, index);
+    const result: UserSocialLog[] = [];
+    for (const log of socialLogs) {
+      const user = await this.userService.getUserInfo(log.userId);
+      switch (log.type) {
+        case 'music_comment':
+          const musicCommentLog = new UserSocialLogMusicComment();
+          musicCommentLog.user = user;
+          musicCommentLog.musicComment = await this.musicService.getMusicComment(
+            log.id,
+            req.user,
+          );
+          musicCommentLog.music = await this.musicService.getMusic(
+            musicCommentLog.musicComment.musicId,
+            req.user,
+          );
+          break;
+        case 'music_like':
+          const musicLikeLog = new UserSocialLogMusicLike();
+          musicLikeLog.user = user;
+          musicLikeLog.music = await this.musicService.getMusic(
+            log.id,
+            req.user,
+          );
+          break;
+      }
+    }
+    return result;
   }
 }

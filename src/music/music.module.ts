@@ -28,7 +28,7 @@ import { Artist } from '../common/entity/artist.entity';
       Artist,
     ]),
   ],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, MusicService],
   controllers: [MusicController],
   providers: [MusicService],
 })
