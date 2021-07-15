@@ -108,7 +108,7 @@ export class UserService {
       .createQueryBuilder('userTagInfo')
       .select('userId')
       .addSelect(`SUM(${'`name`'} IN("${tags.join('","')}"))`, 'weight')
-      .where('rank <= 3')
+      .where('`rank` <= 3')
       .groupBy('userId')
       .orderBy('weight', 'DESC')
       .limit(5)
