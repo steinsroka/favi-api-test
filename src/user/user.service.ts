@@ -16,6 +16,7 @@ import { MusicTagInfo } from '../common/view/music-tag-info.entity';
 import { Album } from '../common/entity/album.entity';
 import { UserLikedAlbumDto } from './dto/user-liked-album.dto';
 import { SocialLog } from '../common/view/social-log.entity';
+import { max, min } from 'class-validator';
 
 @Injectable()
 export class UserService {
@@ -98,11 +99,16 @@ export class UserService {
   }
 
   async getNearUsers(userId: number): Promise<number[]> {
-    const user = await this.getUserTags(userId);
+    const users = await this.getUserTags(userId);
+    const tags = [];
+    for(let i = 0; i < Math.min(3, users.length); ++i) {
+      tags.push(users[i].name);
+    }
     const nearUsers = await this.userTagInfoRepository
       .createQueryBuilder('userTagInfo')
       .select('userId')
-      .addSelect(`SUM(${escape('`name`')} IN("${user.join('","')}"))`, 'weight')
+      .addSelect(`SUM(${'`name`'} IN("${tags.join('","')}"))`, 'weight')
+      .where('rank <= 3')
       .groupBy('userId')
       .orderBy('weight', 'DESC')
       .limit(5)
