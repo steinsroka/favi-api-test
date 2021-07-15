@@ -195,6 +195,7 @@ export class UserController {
             musicCommentLog.musicComment.musicId,
             req.user,
           );
+          result.push(musicCommentLog);
           break;
         case 'music_like':
           const musicLikeLog = new UserSocialLogMusicLike();
@@ -203,6 +204,7 @@ export class UserController {
             log.id,
             req.user,
           );
+          result.push(musicLikeLog);
           break;
       }
     }
