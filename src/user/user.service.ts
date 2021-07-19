@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { keys } from 'ts-transformer-keys';
-import { Repository, DeleteResult, In } from 'typeorm';
+import { Repository, DeleteResult, In, getRepository, createQueryBuilder } from 'typeorm';
 import { UserPartialDto } from './dto/user-partial.dto';
 import { AlbumPartialDto } from './dto/album-partial.dto';
 import { User } from '../common/entity/user.entity';
@@ -104,15 +104,20 @@ export class UserService {
     for(let i = 0; i < Math.min(3, users.length); ++i) {
       tags.push(users[i].name);
     }
-    const nearUsers = await this.userTagInfoRepository
-      .createQueryBuilder('userTagInfo')
-      .select('userTagInfo.userId')
-      .addSelect(`SUM(${'`name`'} IN("${tags.join('","')}"))`, 'weight')
+    const nearUsers = await createQueryBuilder()
+      .select('t.userId', 'userId')
+      .addSelect(`MAX(t.weight)`, 'weight')
       .addSelect('MAX(socialLog.timestamp)', 'recentSocialLogTimestamp')
-      .where('`rank` <= 3')
-      .leftJoin(SocialLog, 'socialLog', 'userTagInfo.userId = socialLog.userId')
-      .groupBy('userTagInfo.userId')
-      .orderBy('weight', 'DESC')
+      .from((qb) => qb.select('userTagInfo.userId')
+                      .addSelect(`SUM(${'`name`'} IN("${tags.join('","')}"))`, 'weight')
+                      .from(UserTagInfo, 'userTagInfo')
+                      .where('`rank` <= 3')
+                      .groupBy('userTagInfo.userId')
+                      .orderBy('weight', 'DESC')
+      , 't')
+      .leftJoin(SocialLog, 'socialLog', 't.userId = socialLog.userId')
+      .groupBy('t.userId')
+      .orderBy('t.weight', 'DESC')
       .addOrderBy('recentSocialLogTimestamp', 'DESC')
       .take(10)
       .getRawMany();
