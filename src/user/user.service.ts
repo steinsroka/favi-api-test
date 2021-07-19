@@ -108,10 +108,13 @@ export class UserService {
       .createQueryBuilder('userTagInfo')
       .select('userId')
       .addSelect(`SUM(${'`name`'} IN("${tags.join('","')}"))`, 'weight')
+      .addSelect('MAX(socialLog.timestamp)', 'recentSocialLogTimestamp')
       .where('`rank` <= 3')
+      .leftJoin(SocialLog, 'socialLog', 'musicComment.userId = socialLog.userId')
       .groupBy('userId')
       .orderBy('weight', 'DESC')
-      .limit(10)
+      .addOrderBy('recentSocialLogTimestamp', 'DESC')
+      .take(10)
       .getRawMany();
     const ret: number[] = [];
     for (const i of nearUsers) {
@@ -126,8 +129,8 @@ export class UserService {
   ): Promise<SocialLog[]> {
     return await this.socialLogRepository.find({
       where: { userId: In(userIds) },
-      take: 5,
-      skip: index * 5,
+      take: 15,
+      skip: index * 15,
     });
   }
 

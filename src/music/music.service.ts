@@ -23,6 +23,7 @@ import { Message } from '../common/class/message';
 import { MusicCommentInfo } from '../common/view/music-comment-info.entity';
 import { MusicCommentTagDto } from './dto/music-comment-tag.dto';
 import { MusicTagInfo } from '../common/view/music-tag-info.entity';
+import { Artist } from '../common/entity/artist.entity';
 
 @Injectable()
 export class MusicService {
@@ -53,7 +54,13 @@ export class MusicService {
     music.myLike = isDefined(user)
       ? await this.isExistMusicLike(musicId, user)
       : null;
+    music.artists = await this.getMusicArtists(musicId);
     return music;
+  }
+
+  async getMusicArtists(musicId: number): Promise<Artist[]> {
+    const music = await this.musicRepository.findOneOrFail({relations: ['artists'], where: {id: musicId}});
+    return music.artists;
   }
 
   async isExistMusic(musicId: number): Promise<boolean> {

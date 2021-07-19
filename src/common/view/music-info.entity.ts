@@ -1,4 +1,5 @@
 import { ViewEntity, ViewColumn, Connection } from 'typeorm';
+import { Artist } from '../entity/artist.entity';
 import { MusicTagValue } from '../entity/music-tag-value.entity';
 import { Music } from '../entity/music.entity';
 import { User } from '../entity/user.entity';
@@ -36,6 +37,8 @@ export class MusicInfo {
 
   @ViewColumn()
   likedUserCount: number;
+
+  artists: Artist[];
 
   tags: MusicTagInfo[];
 
