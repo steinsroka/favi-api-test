@@ -106,7 +106,7 @@ export class UserService {
     }
     const nearUsers = await this.userTagInfoRepository
       .createQueryBuilder('userTagInfo')
-      .select('userId')
+      .select('userTagInfo.userId')
       .addSelect(`SUM(${'`name`'} IN("${tags.join('","')}"))`, 'weight')
       .addSelect('MAX(socialLog.timestamp)', 'recentSocialLogTimestamp')
       .where('`rank` <= 3')
