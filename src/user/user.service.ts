@@ -108,7 +108,7 @@ export class UserService {
       .select('t.userId', 'userId')
       .addSelect(`MAX(t.weight)`, 'weight')
       .addSelect('MAX(socialLog.timestamp)', 'recentSocialLogTimestamp')
-      .from((qb) => qb.select('userTagInfo.userId')
+      .from((qb) => qb.select('userTagInfo.userId', 'userId')
                       .addSelect(`SUM(${'`name`'} IN("${tags.join('","')}"))`, 'weight')
                       .from(UserTagInfo, 'userTagInfo')
                       .where('`rank` <= 3')
