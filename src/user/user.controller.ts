@@ -175,14 +175,18 @@ export class UserController {
     @Param('id') id: number,
     @Query('index') index?: number,
     @Query('user_id') userId?: number,
-  ): Promise<UserSocialLog[]> {
+  ) {
     const users: number[] = isDefined(userId)
       ? [userId]
       : await this.userService.getNearUsers(id);
     const socialLogs = await this.userService.getSocialLogs(users, index);
     const result: UserSocialLog[] = [];
+    const userInfos: UserInfo[] = [];
+    for(const userId of users) {
+      userInfos.push(await this.userService.getUserInfo(userId));
+    }
     for (const log of socialLogs) {
-      const user = await this.userService.getUserInfo(log.userId);
+      const user = userInfos.find((value) => value.id === log.id);
       switch (log.type) {
         case 'music_comment':
           const musicCommentLog = new UserSocialLogMusicComment();
@@ -210,6 +214,6 @@ export class UserController {
           break;
       }
     }
-    return result;
+    return {users: users, result: result};
   }
 }
