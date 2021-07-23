@@ -186,7 +186,7 @@ export class UserController {
       userInfos.push(await this.userService.getUserInfo(userId));
     }
     for (const log of socialLogs) {
-      const user = userInfos.find((value) => value.id === log.id);
+      const user = userInfos.find((value) => value.id === log.userId);
       switch (log.type) {
         case 'music_comment':
           const musicCommentLog = new UserSocialLogMusicComment();
