@@ -17,6 +17,7 @@ import { Album } from '../common/entity/album.entity';
 import { UserLikedAlbumDto } from './dto/user-liked-album.dto';
 import { SocialLog } from '../common/view/social-log.entity';
 import { max, min } from 'class-validator';
+import { MusicInfo } from '../common/view/music-info.entity';
 
 @Injectable()
 export class UserService {
@@ -33,6 +34,8 @@ export class UserService {
     private readonly userAlbumRepository: Repository<Album>,
     @InjectRepository(Music)
     private readonly userMusicRepository: Repository<Music>,
+    @InjectRepository(MusicInfo)
+    private readonly musicInfoRepository: Repository<MusicInfo>,
     @InjectRepository(SocialLog)
     private readonly socialLogRepository: Repository<SocialLog>,
   ) {}
@@ -65,23 +68,16 @@ export class UserService {
     return (await this.userRepository.count({ where: userPartial })) > 0;
   }
 
-  getUserLikedAllMusic(userId: number): Promise<MusicSmallInfoDto[]> {
-    return this.userRepository
-      .createQueryBuilder('user')
-      .select('music.id', 'id')
-      .addSelect('music.title', 'title')
-      .addSelect('music.composer', 'composer')
-      .innerJoin('user.musicLikes', 'musicLikes')
-      .leftJoin('musicLikes.music', 'music')
-      .where('user.id = :userId', { userId: userId })
-      .getRawMany();
+  async getUserLikedAllMusic(userId: number): Promise<Music[]> {
+    const musicLikes = await this.userMusicLikeRepository.find({userId: userId});
+    return this.userMusicRepository.find({where: {id: In(musicLikes.map((value) => value.musicId))}, relations: ['artists']});
   }
 
   async getUserLikedTagMusic(
     userId: number,
     tag: Tag,
-  ): Promise<MusicSmallInfoDto[]> {
-    return this.userMusicLikeRepository
+  ): Promise<Music[]> {
+    const musicLikes: MusicSmallInfoDto[] = await this.userMusicLikeRepository
       .createQueryBuilder('musicLike')
       .select('music.id', 'id')
       .addSelect('music.title', 'title')
@@ -96,6 +92,7 @@ export class UserService {
       .andWhere('musicTagInfo.rank <= 3')
       .andWhere('musicTagInfo.name = :tag', { tag: tag })
       .getRawMany();
+    return this.userMusicRepository.find({where: {id: In(musicLikes.map((value) => value.id))}, relations: ['artists']});
   }
 
   async getNearUsers(userId: number): Promise<number[]> {
