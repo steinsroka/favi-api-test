@@ -214,6 +214,6 @@ export class UserController {
           break;
       }
     }
-    return {users: users, result: result};
+    return {users: userInfos, result: result};
   }
 }
