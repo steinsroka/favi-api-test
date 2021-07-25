@@ -27,6 +27,7 @@ import { InsertResult } from 'typeorm';
 import { MusicCommentInfo } from 'src/common/view/music-comment-info.entity';
 import { MusicCommentAuthGuard } from './guard/music-comment-auth.guard';
 import { ValidateMusicPipe } from './pipe/validate-music.pipe';
+import { EditMusicDto } from './dto/edit-music.dto';
 
 @Controller('music')
 @UseGuards(JwtAuthGuard)
@@ -41,6 +42,11 @@ export class MusicController {
   ): Promise<MusicInfo> {
     const music = await this.musicService.getMusic(id, req.user);
     return music;
+  }
+
+  @Patch(':id')
+  async editMusic(@Param('id') id: number, @Body() editMusicDto: EditMusicDto) {
+    return await this.musicService.editMusic(id, editMusicDto);
   }
 
   @Put(':id/like')

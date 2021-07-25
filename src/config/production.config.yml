@@ -1,0 +1,27 @@
+http:
+  port: 80
+
+database:
+  port: 3306
+  database: 'favi'
+  host: 'arcanedb.cyu9nbnbjetu.ap-northeast-2.rds.amazonaws.com'
+  type: 'mysql'
+  username: 'arcane'
+  password: 'Arcane123'
+  synchronize: true
+  autoLoadEntities: true
+  logging: true
+  bigNumberStrings: false
+
+auth:
+  hashIter: 56718
+  jwtSecret: 'arcaneservicemurekabackendbyskeep194'
+
+mail:
+  service: 'gmail'
+  host: 'smtp.gmail.com'
+  port: 587
+  secure: false
+  auth:
+    user: 'official.arcane.inc@gmail.com'
+    pass: 'fwdjexwvfhdbdkbd'

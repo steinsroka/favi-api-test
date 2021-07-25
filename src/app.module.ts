@@ -12,6 +12,8 @@ import { AllExceptionsFilter } from './common/exception-filter/all-exceptions.fi
 import { SearchController } from './search/search.controller';
 import { SearchService } from './search/search.service';
 import { SearchModule } from './search/search.module';
+import { HelpController } from './help/help.controller';
+import { HelpModule } from './help/help.module';
 
 @Module({
   imports: [
@@ -31,8 +33,9 @@ import { SearchModule } from './search/search.module';
     AuthModule,
     MusicModule,
     SearchModule,
+    HelpModule,
   ],
-  controllers: [AppController, SearchController],
+  controllers: [AppController, SearchController, HelpController],
   providers: [
     AppService,
     { provide: APP_FILTER, useClass: AllExceptionsFilter },

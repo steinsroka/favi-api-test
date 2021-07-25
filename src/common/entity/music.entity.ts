@@ -1,3 +1,4 @@
+import { IsDate, IsEnum, IsNumber, IsString } from 'class-validator';
 import {
   Entity,
   Column,
@@ -12,33 +13,56 @@ import { MusicLike } from './music-like.entity';
 import { MusicTag } from './music-tag.entity';
 import { User } from './user.entity';
 
-//TODO: fill enum value
 export enum VocalType {
-  T = 't',
+  MEN = 'men',
+  WOMEN = 'women',
+  MIX = 'mix',
+  GROUP = 'group'
 }
 
 export enum Language {
-  T = 't',
+  KOREAN = 'korean',
+  JAPANESE = 'japanese',
+  ENGLISH = 'english',
+  CHINESE = 'chinese',
+  SPANISH = 'spanish',
+  FRENCH = 'french',
+  OTHER = 'other'
 }
 
 export enum RhythmBeat {
-  T = 't',
+  HALFTIME = 'halftime',
+  SHUFFLE = 'shuffle',
+  STRAIGHT = 'straight',
+  BOUNCE = 'bounce',
+  WALTZ = 'waltz',
+  GOGO = 'gogo',
+  SWING = 'swing',
+  TYPE = 'type'
 }
 
 export enum BPM {
-  T = 't',
+  A = 0,
+  B = 80,
+  C = 90,
+  D = 100,
+  E = 110,
+  F = 120
 }
 
 export enum MelodyScale {
-  T = 't',
+  MAJOR = 'major',
+  MINOR = 'minor'
 }
 
 export enum Copyright {
-  T = 't',
+  PD = 'pd',
+  BY = 'by'
 }
 
 @Entity()
 export class Music {
+  @IsNumber()
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -54,30 +78,38 @@ export class Music {
   @Column({ type: 'text', nullable: true })
   lyrics: string;
 
+  @IsDate()
   @Column({ type: 'date', nullable: true })
   dates: Date;
 
   @Column({ nullable: true })
   album: string;
 
+  @IsEnum(VocalType)
   @Column({ type: 'enum', enum: VocalType, nullable: true })
   vocalType: VocalType;
 
+  @IsEnum(Language)
   @Column({ type: 'enum', enum: Language, nullable: true })
   language: Language;
 
+  @IsEnum(RhythmBeat)
   @Column({ type: 'enum', enum: RhythmBeat, nullable: true })
   rhythmBeat: RhythmBeat;
 
+  @IsEnum(BPM)
   @Column({ type: 'enum', enum: BPM, nullable: true })
   bpm: BPM;
 
+  @IsEnum(MelodyScale)
   @Column({ type: 'enum', enum: MelodyScale, nullable: true })
   melodyScale: MelodyScale;
 
+  @IsEnum(Copyright)
   @Column({ type: 'enum', enum: Copyright, nullable: true })
   copyright: Copyright;
 
+  @IsString()
   @Column({ nullable: true })
   link: string;
 

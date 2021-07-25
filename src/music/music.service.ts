@@ -24,6 +24,7 @@ import { MusicCommentInfo } from '../common/view/music-comment-info.entity';
 import { MusicCommentTagDto } from './dto/music-comment-tag.dto';
 import { MusicTagInfo } from '../common/view/music-tag-info.entity';
 import { Artist } from '../common/entity/artist.entity';
+import { EditMusicDto } from './dto/edit-music.dto';
 
 @Injectable()
 export class MusicService {
@@ -56,6 +57,15 @@ export class MusicService {
       : null;
     music.artists = await this.getMusicArtists(musicId);
     return music;
+  }
+
+  async editMusic(musicId: number, editMusicDto: EditMusicDto) {
+    const music = await this.musicRepository.findOneOrFail(musicId);
+    for(const key of Object.keys(editMusicDto)) {
+      music[key] = editMusicDto[key];
+    }
+    await this.musicRepository.save(music);
+    return await this.getMusic(musicId);
   }
 
   async getMusicArtists(musicId: number): Promise<Artist[]> {
