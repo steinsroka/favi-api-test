@@ -15,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { Message } from '../common/class/message';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { TestUserGuard } from '../user/guard/test-user.guard';
 import { UserRequest } from '../common/@types/user-request';
 import { MusicService } from './music.service';
 import { MusicInfo } from '../common/view/music-info.entity';
@@ -45,6 +46,7 @@ export class MusicController {
   }
 
   @Patch(':id')
+  @UseGuards(TestUserGuard)
   async editMusic(@Param('id') id: number, @Body() editMusicDto: EditMusicDto) {
     return await this.musicService.editMusic(id, editMusicDto);
   }
