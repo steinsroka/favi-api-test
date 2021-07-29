@@ -5,7 +5,8 @@ import {
   NotFoundException,
   HttpStatus,
 } from '@nestjs/common';
-import { ErrorString } from 'src/common/const/error-string';
+import { isDefined } from 'class-validator';
+import { ErrorString } from '../../common/const/error-string';
 import { ErrorMessage } from '../../common/class/error-message';
 import { UserService } from '../../user/user.service';
 
@@ -15,6 +16,8 @@ export class ValidateUserIdPipe implements PipeTransform {
 
   async transform(value: any, metadata: ArgumentMetadata) {
     if ((metadata.type === 'param' && metadata.data === 'id') || (metadata.type === 'query' && metadata.data === 'user_id')) {
+      if(!isDefined(value))
+        return value;
       if (!(await this.userService.isExistUser({ id: value }))) {
         throw new NotFoundException(
           new ErrorMessage(
