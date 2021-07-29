@@ -14,7 +14,7 @@ export class ValidateUserIdPipe implements PipeTransform {
   constructor(private readonly userService: UserService) {}
 
   async transform(value: any, metadata: ArgumentMetadata) {
-    if (metadata.type === 'param' && metadata.data === 'id') {
+    if (metadata.type === 'param' && (metadata.data === 'id' || metadata.data === 'user_id')) {
       if (!(await this.userService.isExistUser({ id: value }))) {
         throw new NotFoundException(
           new ErrorMessage(
