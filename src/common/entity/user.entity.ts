@@ -88,6 +88,10 @@ export class User {
   @Column({ nullable: true })
   testEnd: Date;
 
+  @IsDate()
+  @Column( {nullable: true} )
+  proEnd: Date;
+
   @OneToMany(() => Album, (album) => album.user, { cascade: true })
   albums: Album[];
 

@@ -14,6 +14,7 @@ import { MusicTagInfo } from './music-tag-info.entity';
       .addSelect('MIN(musicComment.musicId)', 'musicId')
       .addSelect('MIN(musicComment.comment)', 'comment')
       .addSelect('MIN(musicComment.timestamp)', 'timestamp')
+      .addSelect('MIN(musicComment.parentId)', 'parentId')
       .addSelect('MIN(user.name)', 'userName')
       .addSelect('MIN(user.id)', 'userId')
       .addSelect(
@@ -32,6 +33,9 @@ export class MusicCommentInfo {
   userId: number;
 
   @ViewColumn()
+  parentId: number;
+
+  @ViewColumn()
   musicId: number;
 
   @ViewColumn()
@@ -45,6 +49,8 @@ export class MusicCommentInfo {
 
   @ViewColumn()
   userName: string;
+
+  parent: MusicCommentInfo;
 
   tags: MusicCommentTagDto[];
 

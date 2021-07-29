@@ -52,6 +52,7 @@ import {
   UserSocialLogMusicComment,
   UserSocialLogMusicLike,
 } from './dto/user-social-log.dto';
+import { ExistUserIdPipe } from 'src/auth/pipe/exist-user-id.pipe';
 
 @Controller('user/:id')
 @UsePipes(ValidateUserIdPipe)
@@ -174,7 +175,7 @@ export class UserController {
     @Request() req: UserRequest,
     @Param('id') id: number,
     @Query('index') index?: number,
-    @Query('user_id') userId?: number,
+    @Query('user_id', ExistUserIdPipe) userId?: number,
   ) {
     const users: number[] = isDefined(userId)
       ? [userId]

@@ -124,6 +124,9 @@ export class MusicService {
     musicComment.myLike = isDefined(user)
       ? await this.isExistMusicCommentLike(musicComment.id, user)
       : null;
+    if(isDefined(musicComment.parentId)) {
+      musicComment.parent = await this.getMusicComment(musicComment.parentId, user);
+    }
     return musicComment;
   }
 
