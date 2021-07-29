@@ -52,7 +52,7 @@ import {
   UserSocialLogMusicComment,
   UserSocialLogMusicLike,
 } from './dto/user-social-log.dto';
-import { ExistUserIdPipe } from 'src/auth/pipe/exist-user-id.pipe';
+import { ExistUserIdPipe } from '../auth/pipe/exist-user-id.pipe';
 
 @Controller('user/:id')
 @UsePipes(ValidateUserIdPipe)

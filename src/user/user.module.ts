@@ -13,6 +13,7 @@ import { Music } from '../common/entity/music.entity';
 import { MusicService } from '../music/music.service';
 import { MusicModule } from '../music/music.module';
 import { SocialLog } from '../common/view/social-log.entity';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [

@@ -6,6 +6,7 @@ import { AuthConfig } from '../config/configInterface';
 import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { ExistUserIdPipe } from './pipe/exist-user-id.pipe';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { LocalStrategy } from './strategy/local.strategy';
 
