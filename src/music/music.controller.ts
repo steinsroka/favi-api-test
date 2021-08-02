@@ -93,7 +93,7 @@ export class MusicController {
     @Param('id') id: number,
     @Body() addMusicCommentDto: AddMusicCommentDto,
   ): Promise<Message> {
-    if(isDefined(addMusicCommentDto.parent) && await this.musicService.isExistMusicComment(addMusicCommentDto.parent)) {
+    if(isDefined(addMusicCommentDto.parent) && !(await this.musicService.isExistMusicComment(addMusicCommentDto.parent))) {
       throw new NotFoundException(
         new ErrorMessage(
           `music comment id ${addMusicCommentDto.parent} is not exist`,
