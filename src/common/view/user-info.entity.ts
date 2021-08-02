@@ -12,6 +12,7 @@ import { UserTagInfo } from './user-tag-info.entity';
       .select('user.id', 'id')
       .addSelect('user.name', 'name')
       .addSelect('user.email', 'email')
+      .addSelect('user.testEnd', 'testEnd')
       .addSelect(
         (qb) =>
           qb
@@ -39,6 +40,9 @@ export class UserInfo {
 
   @ViewColumn()
   email: string;
+
+  @ViewColumn()
+  testEnd: Date;
 
   @ViewColumn()
   likedMusicCount: number;

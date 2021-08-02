@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -25,10 +26,13 @@ import { EditMusicCommentDto } from './dto/edit-music-comment.dto';
 import { VoteMusicTagDto } from './dto/vote-music-tag.dto';
 import { Tag } from '../common/entity/music-tag-value.entity';
 import { InsertResult } from 'typeorm';
-import { MusicCommentInfo } from 'src/common/view/music-comment-info.entity';
+import { MusicCommentInfo } from '../common/view/music-comment-info.entity';
 import { MusicCommentAuthGuard } from './guard/music-comment-auth.guard';
 import { ValidateMusicPipe } from './pipe/validate-music.pipe';
 import { EditMusicDto } from './dto/edit-music.dto';
+import { isDefined } from 'class-validator';
+import { ErrorMessage } from '../common/class/error-message';
+import { ErrorString } from '../common/const/error-string';
 
 @Controller('music')
 @UseGuards(JwtAuthGuard)
@@ -89,6 +93,14 @@ export class MusicController {
     @Param('id') id: number,
     @Body() addMusicCommentDto: AddMusicCommentDto,
   ): Promise<Message> {
+    if(isDefined(addMusicCommentDto.parent) && await this.musicService.isExistMusicComment(addMusicCommentDto.parent)) {
+      throw new NotFoundException(
+        new ErrorMessage(
+          `music comment id ${addMusicCommentDto.parent} is not exist`,
+          ErrorString.FAIL_EXIST,
+        ),
+      );
+    }
     const comment = await this.musicService.addMusicComment(
       id,
       req.user,

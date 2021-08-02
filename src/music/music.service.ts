@@ -169,7 +169,7 @@ export class MusicService {
     });
     let parentMusicComment = null;
     if (isDefined(parent)) {
-      parentMusicComment = this.getMusicComment(parent);
+      parentMusicComment = await this.getMusicComment(parent);
     }
     const musicComment = this.musicCommentRepository.create({
       comment: comment,
