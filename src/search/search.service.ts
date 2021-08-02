@@ -40,6 +40,7 @@ export class SearchService {
   async getMusicsQuery(
     query: string,
     index: number,
+    size: number
   ): Promise<MusicSmallInfoDto[]> {
     return this.musicRepository.find({
       select: ['id', 'title', 'composer'],
@@ -49,8 +50,8 @@ export class SearchService {
           title: `%${query}%`,
         }).orWhere('Music__artists.name LIKE :name', { name: `%${query}%` });
       },
-      take: 5,
-      skip: index * 5,
+      take: size,
+      skip: index * size,
     });
   }
 }

@@ -23,7 +23,8 @@ export class SearchController {
   async searchMusicQuery(
     @Query('query') query: string,
     @Query('index') index: number = 0,
+    @Query('size') size: number = 5,
   ) {
-    return await this.searchService.getMusicsQuery(query, index);
+    return await this.searchService.getMusicsQuery(query, index, size);
   }
 }
