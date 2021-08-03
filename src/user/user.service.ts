@@ -24,7 +24,6 @@ import { UserLikedAlbumDto } from './dto/user-liked-album.dto';
 import { SocialLog } from '../common/view/social-log.entity';
 import { max, min } from 'class-validator';
 import { MusicInfo } from '../common/view/music-info.entity';
-import { TesterMusic } from '../common/entity/tester-music.entity';
 
 @Injectable()
 export class UserService {
@@ -45,8 +44,6 @@ export class UserService {
     private readonly musicInfoRepository: Repository<MusicInfo>,
     @InjectRepository(SocialLog)
     private readonly socialLogRepository: Repository<SocialLog>,
-    @InjectRepository(TesterMusic)
-    private readonly testerMusicRepository: Repository<TesterMusic>
   ) {}
 
   async getUserInfo(userId: number): Promise<UserInfo> {
@@ -240,6 +237,6 @@ export class UserService {
   }
 
   async getTesterMusics(user: User): Promise<Music[]> {
-    return (await this.testerMusicRepository.findOne({where: {user: user}, relations: ['musics']})).musics;
+    return (await this.userRepository.findOne({where: {id: user.id}, relations: ['testerMusics']})).testerMusics;
   }
 }

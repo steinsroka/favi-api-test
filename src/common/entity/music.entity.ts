@@ -12,7 +12,6 @@ import { Artist } from './artist.entity';
 import { MusicComment } from './music-comment.entity';
 import { MusicLike } from './music-like.entity';
 import { MusicTag } from './music-tag.entity';
-import { TesterMusic } from './tester-music.entity';
 import { User } from './user.entity';
 
 export enum VocalType {
@@ -130,6 +129,6 @@ export class Music {
   @JoinTable()
   artists: Artist[];
 
-  @ManyToMany(() => TesterMusic, (testerMusic) => testerMusic.musics)
-  testerMusics: TesterMusic[];
+  @ManyToMany(() => User, (user) => user.testerMusics)
+  testerMusicUsers: User[];
 }

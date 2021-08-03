@@ -24,7 +24,6 @@ import { MusicComment } from './music-comment.entity';
 import { MusicLike } from './music-like.entity';
 import { MusicTag } from './music-tag.entity';
 import { Music } from './music.entity';
-import { TesterMusic } from './tester-music.entity';
 
 export enum Gender {
   MEN = 'men',
@@ -110,4 +109,8 @@ export class User {
 
   @OneToMany(() => MusicTag, (musicTag) => musicTag.music)
   musicTags: MusicTag[];
+
+  @ManyToMany(() => Music, (music) => music.testerMusicUsers)
+  @JoinTable({name: 'tester_music'})
+  testerMusics: Music[];
 }
