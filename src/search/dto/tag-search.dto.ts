@@ -19,4 +19,8 @@ export class TagSearchDto {
 
   @Matches(/^[1-9][0-9]*$/)
   index: string;
+
+  @IsOptional()
+  @IsNumber()
+  size: number = 5;
 }

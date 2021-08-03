@@ -24,6 +24,7 @@ import { MusicComment } from './music-comment.entity';
 import { MusicLike } from './music-like.entity';
 import { MusicTag } from './music-tag.entity';
 import { Music } from './music.entity';
+import { TesterMusic } from './tester-music.entity';
 
 export enum Gender {
   MEN = 'men',

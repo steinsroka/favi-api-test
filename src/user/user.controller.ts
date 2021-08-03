@@ -52,6 +52,7 @@ import {
   UserSocialLogMusicComment,
   UserSocialLogMusicLike,
 } from './dto/user-social-log.dto';
+import { TestUserGuard } from './guard/test-user.guard';
 
 @Controller('user/:id')
 @UsePipes(ValidateUserIdPipe)
@@ -97,6 +98,12 @@ export class UserController {
     }
     await this.userService.saveUser(req.user);
     return await this.userService.getUserInfo(req.user.id);
+  }
+
+  @Get('tester')
+  @UseGuards(TestUserGuard)
+  async getTesterMusics(@Req() req: UserRequest): Promise<Music[]> {
+    return await this.userService.getTesterMusics(req.user);
   }
 
   @Post('album')

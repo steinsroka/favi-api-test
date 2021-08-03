@@ -16,6 +16,7 @@ export class SearchController {
       tagSearchDto.tags,
       parseInt(tagSearchDto.seed),
       parseInt(tagSearchDto.index),
+      tagSearchDto.size
     );
   }
 

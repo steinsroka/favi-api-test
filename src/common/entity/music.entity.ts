@@ -6,11 +6,13 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  ManyToOne,
 } from 'typeorm';
 import { Artist } from './artist.entity';
 import { MusicComment } from './music-comment.entity';
 import { MusicLike } from './music-like.entity';
 import { MusicTag } from './music-tag.entity';
+import { TesterMusic } from './tester-music.entity';
 import { User } from './user.entity';
 
 export enum VocalType {
@@ -127,4 +129,7 @@ export class Music {
   @ManyToMany(() => Artist, (artist) => artist.musics)
   @JoinTable()
   artists: Artist[];
+
+  @ManyToOne(() => TesterMusic, (testerMusic) => testerMusic.musics)
+  testerMusic: TesterMusic;
 }

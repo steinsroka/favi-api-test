@@ -20,6 +20,7 @@ export class SearchService {
     tags: Tag[],
     seed: number,
     index: number,
+    size: number
   ): Promise<TagSearchResultDto[]> {
     return this.musicTagInfoRepository
       .createQueryBuilder()
@@ -32,8 +33,8 @@ export class SearchService {
       .groupBy('musicId')
       .orderBy('`match`', 'DESC')
       .addOrderBy(`RAND(${seed})`)
-      .take(5)
-      .skip(index * 5)
+      .take(size)
+      .skip(index * size)
       .getRawMany();
   }
 
