@@ -252,11 +252,7 @@ export class UserService {
   async isExistTesterMusic(user: User, musicId: number): Promise<boolean> {
     const tester = await this.userRepository.findOne({where: { id: user.id }, relations: ['testerMusics']});
     for(const music of tester.testerMusics) {
-      console.log(music.id);
-      console.log(musicId);
-      console.log(music.id === musicId);
-      console.log();
-      if(music.id === musicId) {
+      if(music.id.toString() === musicId.toString()) {
         return true;
       }
     }
