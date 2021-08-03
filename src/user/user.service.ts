@@ -246,7 +246,7 @@ export class UserService {
         where: { id: user.id },
         relations: ['testerMusics'],
       })
-    ).testerMusics.slice(index, Math.min(0, index + size - 1));
+    ).testerMusics.slice(index, Math.max(0, index + size));
   }
 
   async isExistTesterMusic(user: User, musicId: number): Promise<boolean> {
