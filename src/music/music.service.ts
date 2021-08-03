@@ -61,7 +61,7 @@ export class MusicService {
 
   async editMusic(musicId: number, editMusicDto: EditMusicDto) {
     const music = await this.musicRepository.findOneOrFail(musicId);
-    for(const key of Object.keys(editMusicDto)) {
+    for (const key of Object.keys(editMusicDto)) {
       music[key] = editMusicDto[key];
     }
     await this.musicRepository.save(music);
@@ -69,7 +69,10 @@ export class MusicService {
   }
 
   async getMusicArtists(musicId: number): Promise<Artist[]> {
-    const music = await this.musicRepository.findOneOrFail({relations: ['artists'], where: {id: musicId}});
+    const music = await this.musicRepository.findOneOrFail({
+      relations: ['artists'],
+      where: { id: musicId },
+    });
     return music.artists;
   }
 
@@ -124,8 +127,11 @@ export class MusicService {
     musicComment.myLike = isDefined(user)
       ? await this.isExistMusicCommentLike(musicComment.id, user)
       : null;
-    if(isDefined(musicComment.parentId)) {
-      musicComment.parent = await this.getMusicComment(musicComment.parentId, user);
+    if (isDefined(musicComment.parentId)) {
+      musicComment.parent = await this.getMusicComment(
+        musicComment.parentId,
+        user,
+      );
     }
     return musicComment;
   }

@@ -182,7 +182,7 @@ export class UserController {
     const socialLogs = await this.userService.getSocialLogs(users, index);
     const result: UserSocialLog[] = [];
     const userInfos: UserInfo[] = [];
-    for(const userId of users) {
+    for (const userId of users) {
       userInfos.push(await this.userService.getUserInfo(userId));
     }
     for (const log of socialLogs) {
@@ -214,6 +214,6 @@ export class UserController {
           break;
       }
     }
-    return {users: userInfos, result: result};
+    return { users: userInfos, result: result };
   }
 }

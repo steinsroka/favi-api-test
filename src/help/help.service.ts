@@ -6,7 +6,9 @@ import { WriteHelpDto } from './dto/write-help.dto';
 
 @Injectable()
 export class HelpService {
-  constructor(@InjectRepository(Help) private readonly helpRepository: Repository<Help>) {}
+  constructor(
+    @InjectRepository(Help) private readonly helpRepository: Repository<Help>,
+  ) {}
 
   async writeHelp(writeHelpDto: WriteHelpDto): Promise<Help> {
     const newHelp = this.helpRepository.create(writeHelpDto);

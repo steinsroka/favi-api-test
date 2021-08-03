@@ -1,7 +1,15 @@
 import { ViewEntity, ViewColumn, Connection } from 'typeorm';
 import { Artist } from '../entity/artist.entity';
 import { MusicTagValue } from '../entity/music-tag-value.entity';
-import { BPM, Copyright, Language, MelodyScale, Music, RhythmBeat, VocalType } from '../entity/music.entity';
+import {
+  BPM,
+  Copyright,
+  Language,
+  MelodyScale,
+  Music,
+  RhythmBeat,
+  VocalType,
+} from '../entity/music.entity';
 import { User } from '../entity/user.entity';
 import { MusicTagInfo } from './music-tag-info.entity';
 

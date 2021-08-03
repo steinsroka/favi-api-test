@@ -40,7 +40,7 @@ export class SearchService {
   async getMusicsQuery(
     query: string,
     index: number,
-    size: number
+    size: number,
   ): Promise<MusicSmallInfoDto[]> {
     return this.musicRepository.find({
       select: ['id', 'title', 'composer'],

@@ -1,5 +1,11 @@
 import { IsEmail, IsString } from 'class-validator';
-import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Help {
@@ -11,7 +17,7 @@ export class Help {
   title: string;
 
   @IsString()
-  @Column({type: 'text'})
+  @Column({ type: 'text' })
   contents: string;
 
   @IsEmail()

@@ -8,6 +8,6 @@ import { HelpService } from './help.service';
   imports: [TypeOrmModule.forFeature([Help])],
   controllers: [HelpController],
   providers: [HelpService],
-  exports: [HelpService]
+  exports: [HelpService],
 })
 export class HelpModule {}

@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { keys } from 'ts-transformer-keys';
-import { Repository, DeleteResult, In, getRepository, createQueryBuilder } from 'typeorm';
+import {
+  Repository,
+  DeleteResult,
+  In,
+  getRepository,
+  createQueryBuilder,
+} from 'typeorm';
 import { UserPartialDto } from './dto/user-partial.dto';
 import { AlbumPartialDto } from './dto/album-partial.dto';
 import { User } from '../common/entity/user.entity';
@@ -69,14 +75,16 @@ export class UserService {
   }
 
   async getUserLikedAllMusic(userId: number): Promise<Music[]> {
-    const musicLikes = await this.userMusicLikeRepository.find({userId: userId});
-    return this.userMusicRepository.find({where: {id: In(musicLikes.map((value) => value.musicId))}, relations: ['artists']});
+    const musicLikes = await this.userMusicLikeRepository.find({
+      userId: userId,
+    });
+    return this.userMusicRepository.find({
+      where: { id: In(musicLikes.map((value) => value.musicId)) },
+      relations: ['artists'],
+    });
   }
 
-  async getUserLikedTagMusic(
-    userId: number,
-    tag: Tag,
-  ): Promise<Music[]> {
+  async getUserLikedTagMusic(userId: number, tag: Tag): Promise<Music[]> {
     const musicLikes: MusicSmallInfoDto[] = await this.userMusicLikeRepository
       .createQueryBuilder('musicLike')
       .select('music.id', 'id')
@@ -92,26 +100,33 @@ export class UserService {
       .andWhere('musicTagInfo.rank <= 3')
       .andWhere('musicTagInfo.name = :tag', { tag: tag })
       .getRawMany();
-    return this.userMusicRepository.find({where: {id: In(musicLikes.map((value) => value.id))}, relations: ['artists']});
+    return this.userMusicRepository.find({
+      where: { id: In(musicLikes.map((value) => value.id)) },
+      relations: ['artists'],
+    });
   }
 
   async getNearUsers(userId: number): Promise<number[]> {
     const users = await this.getUserTags(userId);
     const tags = [];
-    for(let i = 0; i < Math.min(3, users.length); ++i) {
+    for (let i = 0; i < Math.min(3, users.length); ++i) {
       tags.push(users[i].name);
     }
     const nearUsers = await createQueryBuilder()
       .select('t.userId', 'userId')
       .addSelect(`MAX(t.weight)`, 'weight')
       .addSelect('MAX(socialLog.timestamp)', 'recentSocialLogTimestamp')
-      .from((qb) => qb.select('userTagInfo.userId', 'userId')
-                      .addSelect(`SUM(${'`name`'} IN("${tags.join('","')}"))`, 'weight')
-                      .from(UserTagInfo, 'userTagInfo')
-                      .where('`rank` <= 3')
-                      .groupBy('userTagInfo.userId')
-                      .orderBy('weight', 'DESC')
-      , 't')
+      .from(
+        (qb) =>
+          qb
+            .select('userTagInfo.userId', 'userId')
+            .addSelect(`SUM(${'`name`'} IN("${tags.join('","')}"))`, 'weight')
+            .from(UserTagInfo, 'userTagInfo')
+            .where('`rank` <= 3')
+            .groupBy('userTagInfo.userId')
+            .orderBy('weight', 'DESC'),
+        't',
+      )
       .leftJoin(SocialLog, 'socialLog', 't.userId = socialLog.userId')
       .groupBy('t.userId')
       .orderBy('t.weight', 'DESC')

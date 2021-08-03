@@ -17,7 +17,7 @@ export enum VocalType {
   MEN = 'men',
   WOMEN = 'women',
   MIX = 'mix',
-  GROUP = 'group'
+  GROUP = 'group',
 }
 
 export enum Language {
@@ -27,7 +27,7 @@ export enum Language {
   CHINESE = 'chinese',
   SPANISH = 'spanish',
   FRENCH = 'french',
-  OTHER = 'other'
+  OTHER = 'other',
 }
 
 export enum RhythmBeat {
@@ -38,7 +38,7 @@ export enum RhythmBeat {
   WALTZ = 'waltz',
   GOGO = 'gogo',
   SWING = 'swing',
-  TYPE = 'type'
+  TYPE = 'type',
 }
 
 export enum BPM {
@@ -47,17 +47,17 @@ export enum BPM {
   C = 90,
   D = 100,
   E = 110,
-  F = 120
+  F = 120,
 }
 
 export enum MelodyScale {
   MAJOR = 'major',
-  MINOR = 'minor'
+  MINOR = 'minor',
 }
 
 export enum Copyright {
   PD = 'pd',
-  BY = 'by'
+  BY = 'by',
 }
 
 @Entity()

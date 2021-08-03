@@ -12,11 +12,11 @@ import { ErrorMessage } from '../../common/class/error-message';
 import { ErrorString } from '../../common/const/error-string';
 
 @Injectable()
-export class TestUserGuard implements CanActivate {
+export class ProUserGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const request: UserRequest = context.switchToHttp().getRequest();
     const curTime: Date = new Date();
-    if (request.user.testEnd < curTime) {
+    if (request.user.proEnd < curTime) {
       return false;
     }
     return true;
