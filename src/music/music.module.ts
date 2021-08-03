@@ -12,6 +12,9 @@ import { MusicCommentLike } from '../common/entity/music-comment-like.entity';
 import { MusicCommentInfo } from '../common/view/music-comment-info.entity';
 import { MusicTagInfo } from '../common/view/music-tag-info.entity';
 import { Artist } from '../common/entity/artist.entity';
+import { UserService } from '../user/user.service';
+import { UserModule } from '../user/user.module';
+import { forwardRef } from '@nestjs/common';
 
 @Module({
   imports: [
@@ -25,8 +28,9 @@ import { Artist } from '../common/entity/artist.entity';
       MusicLike,
       MusicCommentLike,
       MusicTagInfo,
-      Artist
+      Artist,
     ]),
+    forwardRef(() => UserModule),
   ],
   exports: [TypeOrmModule, MusicService],
   controllers: [MusicController],

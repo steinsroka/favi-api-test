@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -26,7 +26,7 @@ import { AuthModule } from '../auth/auth.module';
       Music,
       SocialLog,
     ]),
-    MusicModule,
+    forwardRef(() => MusicModule),
   ],
   providers: [UserService, JwtStrategy],
   controllers: [UserController],

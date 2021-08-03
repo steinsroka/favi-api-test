@@ -2,14 +2,18 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
+  forwardRef,
   Get,
   HttpCode,
+  Inject,
   NotFoundException,
   Param,
   Patch,
   Post,
   Put,
   Query,
+  Req,
   Request,
   UseGuards,
   UsePipes,
@@ -33,12 +37,17 @@ import { EditMusicDto } from './dto/edit-music.dto';
 import { isDefined } from 'class-validator';
 import { ErrorMessage } from '../common/class/error-message';
 import { ErrorString } from '../common/const/error-string';
+import { UserService } from '../user/user.service';
 
 @Controller('music')
 @UseGuards(JwtAuthGuard)
 @UsePipes(ValidateMusicPipe)
 export class MusicController {
-  constructor(private readonly musicService: MusicService) {}
+  constructor(
+    private readonly musicService: MusicService,
+    @Inject((forwardRef(() => UserService)))
+    private readonly userService: UserService
+  ) {}
 
   @Get(':id')
   async getMusicInfo(
@@ -51,8 +60,13 @@ export class MusicController {
 
   @Patch(':id')
   @UseGuards(TestUserGuard)
-  async editMusic(@Param('id') id: number, @Body() editMusicDto: EditMusicDto) {
-    return await this.musicService.editMusic(id, editMusicDto);
+  async editMusic(@Req() req: UserRequest, @Param('id') id: number, @Body() editMusicDto: EditMusicDto) {
+    if(!(await this.userService.isExistTesterMusic(req.user, id))) {
+      throw ForbiddenException;
+    }
+    const result = await this.musicService.editMusic(id, editMusicDto);
+    await this.userService.deleteTesterMusic(req.user, id);
+    return result;
   }
 
   @Put(':id/like')

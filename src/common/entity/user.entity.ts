@@ -111,6 +111,6 @@ export class User {
   musicTags: MusicTag[];
 
   @ManyToMany(() => Music, (music) => music.testerMusicUsers)
-  @JoinTable({name: 'tester_music'})
+  @JoinTable({ name: 'tester_music' })
   testerMusics: Music[];
 }

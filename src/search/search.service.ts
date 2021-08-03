@@ -20,7 +20,7 @@ export class SearchService {
     tags: Tag[],
     seed: number,
     index: number,
-    size: number
+    size: number,
   ): Promise<TagSearchResultDto[]> {
     return this.musicTagInfoRepository
       .createQueryBuilder()

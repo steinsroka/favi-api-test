@@ -3,8 +3,10 @@ import {
   Body,
   Controller,
   Delete,
+  forwardRef,
   Get,
   HttpCode,
+  Inject,
   Param,
   Patch,
   Post,
@@ -60,6 +62,7 @@ import { TestUserGuard } from './guard/test-user.guard';
 export class UserController {
   constructor(
     private readonly userService: UserService,
+    @Inject(forwardRef(() => MusicService))
     private readonly musicService: MusicService,
   ) {}
 
@@ -102,8 +105,12 @@ export class UserController {
 
   @Get('tester')
   @UseGuards(TestUserGuard)
-  async getTesterMusics(@Req() req: UserRequest): Promise<Music[]> {
-    return await this.userService.getTesterMusics(req.user);
+  async getTesterMusics(
+    @Req() req: UserRequest,
+    @Query('index') index: number = 0,
+    @Query('size') size: number = 5,
+  ): Promise<Music[]> {
+    return await this.userService.getTesterMusics(req.user, index, size);
   }
 
   @Post('album')

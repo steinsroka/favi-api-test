@@ -236,7 +236,27 @@ export class UserService {
     return this.userAlbumRepository.save(album);
   }
 
-  async getTesterMusics(user: User): Promise<Music[]> {
-    return (await this.userRepository.findOne({where: {id: user.id}, relations: ['testerMusics']})).testerMusics;
+  async getTesterMusics(
+    user: User,
+    index: number,
+    size: number,
+  ): Promise<Music[]> {
+    return (
+      await this.userRepository.findOne({
+        where: { id: user.id },
+        relations: ['testerMusics'],
+      })
+    ).testerMusics.slice(index, Math.min(0, index + size - 1));
+  }
+
+  async isExistTesterMusic(user: User, musicId: number): Promise<boolean> {
+    return (await this.userRepository.count({where: { testerMusics: {id: musicId}, id: user.id }, relations: ['testerMusics']})) > 0;
+  }
+
+  async deleteTesterMusic(user: User, musicId: number) {
+    const tester = await this.userRepository.findOne({where: { id: user.id }, relations: ['testerMusics']});
+    tester.testerMusics = tester.testerMusics.filter((value) => value.id !== musicId);
+    await this.userRepository.save(tester);
+    return tester.testerMusics;
   }
 }
