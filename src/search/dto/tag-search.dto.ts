@@ -17,7 +17,7 @@ export class TagSearchDto {
   @IsEnum(Tag, { each: true })
   tags: Tag[] = [];
 
-  @Matches(/^[1-9][0-9]*$/)
+  @Matches(/0+^[1-9][0-9]*$/)
   index: string;
 
   @IsOptional()
