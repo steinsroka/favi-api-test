@@ -62,7 +62,7 @@ export class MusicController {
   @UseGuards(TestUserGuard)
   async editMusic(@Req() req: UserRequest, @Param('id') id: number, @Body() editMusicDto: EditMusicDto) {
     if(!(await this.userService.isExistTesterMusic(req.user, id))) {
-      throw ForbiddenException;
+      throw new ForbiddenException();
     }
     const result = await this.musicService.editMusic(id, editMusicDto);
     await this.userService.deleteTesterMusic(req.user, id);
