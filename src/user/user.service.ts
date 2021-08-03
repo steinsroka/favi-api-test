@@ -261,7 +261,7 @@ export class UserService {
 
   async deleteTesterMusic(user: User, musicId: number) {
     const tester = await this.userRepository.findOne({where: { id: user.id }, relations: ['testerMusics']});
-    tester.testerMusics = tester.testerMusics.filter((value) => value.id !== musicId);
+    tester.testerMusics = tester.testerMusics.filter((value) => value.id.toString() !== musicId.toString());
     await this.userRepository.save(tester);
     return tester.testerMusics;
   }
