@@ -250,7 +250,8 @@ export class UserService {
   }
 
   async isExistTesterMusic(user: User, musicId: number): Promise<boolean> {
-    return (await this.userRepository.count({where: { testerMusics: {id: musicId}, id: user.id }, relations: ['testerMusics']})) > 0;
+    const tester = await this.userRepository.findOne({where: { id: user.id }, relations: ['testerMusics']});
+    return tester.testerMusics.findIndex((value) => value.id === musicId) !== -1;
   }
 
   async deleteTesterMusic(user: User, musicId: number) {
