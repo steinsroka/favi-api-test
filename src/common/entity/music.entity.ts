@@ -130,6 +130,6 @@ export class Music {
   @JoinTable()
   artists: Artist[];
 
-  @ManyToOne(() => TesterMusic, (testerMusic) => testerMusic.musics)
-  testerMusic: TesterMusic;
+  @ManyToMany(() => TesterMusic, (testerMusic) => testerMusic.musics)
+  testerMusics: TesterMusic[];
 }
