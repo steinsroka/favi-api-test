@@ -21,6 +21,5 @@ export class TagSearchDto {
   index: string;
 
   @IsOptional()
-  @IsNumber()
   size: number = 5;
 }
