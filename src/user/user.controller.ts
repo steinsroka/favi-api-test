@@ -55,6 +55,7 @@ import {
   UserSocialLogMusicLike,
 } from './dto/user-social-log.dto';
 import { TestUserGuard } from './guard/test-user.guard';
+import { TesterProceedDto } from './dto/tester-remain.dto';
 
 @Controller('user/:id')
 @UsePipes(ValidateUserIdPipe)
@@ -111,6 +112,12 @@ export class UserController {
     @Query('size') size: number = 5,
   ): Promise<Music[]> {
     return await this.userService.getTesterMusics(req.user, index, size);
+  }
+
+  @Get('tester/proceed')
+  @UseGuards(TestUserGuard)
+  async getTesterProceedCount(@Req() req: UserRequest): Promise<TesterProceedDto> {
+    return await this.userService.getTesterMusicCount(req.user);
   }
 
   @Post('album')

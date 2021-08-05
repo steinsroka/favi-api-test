@@ -24,6 +24,7 @@ import { UserLikedAlbumDto } from './dto/user-liked-album.dto';
 import { SocialLog } from '../common/view/social-log.entity';
 import { max, min } from 'class-validator';
 import { MusicInfo } from '../common/view/music-info.entity';
+import { TesterProceedDto } from './dto/tester-remain.dto';
 
 @Injectable()
 export class UserService {
@@ -247,6 +248,10 @@ export class UserService {
         relations: ['testerMusics'],
       })
     ).testerMusics.slice(index, Math.max(0, index + size));
+  }
+
+  async getTesterMusicCount(user: User): Promise<TesterProceedDto> {
+    return { remain: await this.userRepository.count({where: {id: user.id}, relations: ['testerMusics']}) };
   }
 
   async isExistTesterMusic(user: User, musicId: number): Promise<boolean> {
