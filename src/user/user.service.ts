@@ -261,6 +261,7 @@ export class UserService {
             'testerMusics',
             'user.id = testerMusics.userId',
           )
+          .where('user.id = :userId', {userId: user.id})
           .getRawOne()
       ).remain,
     };
