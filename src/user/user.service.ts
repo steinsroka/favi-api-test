@@ -257,7 +257,7 @@ export class UserService {
           .createQueryBuilder('user')
           .select('COUNT(testerMusics.musicId)', 'remain')
           .leftJoin(
-            'testerMusics',
+            'tester_music',
             'testerMusics',
             'user.id = testerMusics.userId',
           )
