@@ -247,7 +247,7 @@ export class UserService {
         where: { id: user.id },
         relations: ['testerMusics'],
       })
-    ).testerMusics.slice(index * size, Math.max(0, index + size));
+    ).testerMusics.slice(index * size, Math.max(0, index * size + size));
   }
 
   async getTesterMusicCount(user: User): Promise<TesterProceedDto> {
