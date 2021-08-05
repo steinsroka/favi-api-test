@@ -251,13 +251,28 @@ export class UserService {
   }
 
   async getTesterMusicCount(user: User): Promise<TesterProceedDto> {
-    return { remain: await this.userRepository.count({where: {id: user.id}, relations: ['testerMusics']}) };
+    return {
+      remain: (
+        await this.userRepository
+          .createQueryBuilder('user')
+          .select('COUNT(testerMusics.musicId)', 'remain')
+          .leftJoin(
+            'testerMusics',
+            'testerMusics',
+            'user.id = testerMusics.userId',
+          )
+          .getRawOne()
+      ).remain,
+    };
   }
 
   async isExistTesterMusic(user: User, musicId: number): Promise<boolean> {
-    const tester = await this.userRepository.findOne({where: { id: user.id }, relations: ['testerMusics']});
-    for(const music of tester.testerMusics) {
-      if(music.id.toString() === musicId.toString()) {
+    const tester = await this.userRepository.findOne({
+      where: { id: user.id },
+      relations: ['testerMusics'],
+    });
+    for (const music of tester.testerMusics) {
+      if (music.id.toString() === musicId.toString()) {
         return true;
       }
     }
@@ -265,8 +280,13 @@ export class UserService {
   }
 
   async deleteTesterMusic(user: User, musicId: number) {
-    const tester = await this.userRepository.findOne({where: { id: user.id }, relations: ['testerMusics']});
-    tester.testerMusics = tester.testerMusics.filter((value) => value.id.toString() !== musicId.toString());
+    const tester = await this.userRepository.findOne({
+      where: { id: user.id },
+      relations: ['testerMusics'],
+    });
+    tester.testerMusics = tester.testerMusics.filter(
+      (value) => value.id.toString() !== musicId.toString(),
+    );
     await this.userRepository.save(tester);
     return tester.testerMusics;
   }

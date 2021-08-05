@@ -116,7 +116,9 @@ export class UserController {
 
   @Get('tester/proceed')
   @UseGuards(TestUserGuard)
-  async getTesterProceedCount(@Req() req: UserRequest): Promise<TesterProceedDto> {
+  async getTesterProceedCount(
+    @Req() req: UserRequest,
+  ): Promise<TesterProceedDto> {
     return await this.userService.getTesterMusicCount(req.user);
   }
 

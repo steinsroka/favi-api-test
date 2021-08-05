@@ -45,8 +45,8 @@ import { UserService } from '../user/user.service';
 export class MusicController {
   constructor(
     private readonly musicService: MusicService,
-    @Inject((forwardRef(() => UserService)))
-    private readonly userService: UserService
+    @Inject(forwardRef(() => UserService))
+    private readonly userService: UserService,
   ) {}
 
   @Get(':id')
@@ -60,8 +60,12 @@ export class MusicController {
 
   @Patch(':id')
   @UseGuards(TestUserGuard)
-  async editMusic(@Req() req: UserRequest, @Param('id') id: number, @Body() editMusicDto: EditMusicDto) {
-    if(!(await this.userService.isExistTesterMusic(req.user, id))) {
+  async editMusic(
+    @Req() req: UserRequest,
+    @Param('id') id: number,
+    @Body() editMusicDto: EditMusicDto,
+  ) {
+    if (!(await this.userService.isExistTesterMusic(req.user, id))) {
       throw new ForbiddenException();
     }
     const result = await this.musicService.editMusic(id, editMusicDto);
