@@ -242,6 +242,8 @@ export class UserService {
     index: number,
     size: number,
   ): Promise<Music[]> {
+    index = parseInt(index.toString());
+    size = parseInt(size.toString());
     return (
       await this.userRepository.findOne({
         where: { id: user.id },
