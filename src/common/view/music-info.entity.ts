@@ -22,9 +22,9 @@ import { MusicTagInfo } from './music-tag-info.entity';
       .addSelect('music.composer', 'composer')
       .addSelect('music.lyricist', 'lyricist')
       .addSelect('music.link', 'link')
-      .addSelect('music.vocalType', 'vocalType')
+      // .addSelect('music.vocalType', 'vocalType')
       .addSelect('music.language', 'language')
-      .addSelect('music.rhythmBeat', 'rhythmBeat')
+      // .addSelect('music.rhythmBeat', 'rhythmBeat')
       .addSelect('music.bpm', 'bpm')
       .addSelect('music.melodyScale', 'melodyScale')
       .addSelect('music.copyright', 'copyright')
@@ -52,14 +52,14 @@ export class MusicInfo {
   @ViewColumn()
   likedUserCount: number;
 
-  @ViewColumn()
-  vocalType: VocalType;
+  // @ViewColumn()
+  // vocalType: VocalType;
 
   @ViewColumn()
   language: Language;
 
-  @ViewColumn()
-  rhythmBeat: RhythmBeat;
+  // @ViewColumn()
+  // rhythmBeat: RhythmBeat;
 
   @ViewColumn()
   bpm: BPM;

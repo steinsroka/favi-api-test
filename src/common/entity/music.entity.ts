@@ -86,17 +86,17 @@ export class Music {
   @Column({ nullable: true })
   album: string;
 
-  @IsEnum(VocalType)
-  @Column({ type: 'enum', enum: VocalType, nullable: true })
-  vocalType: VocalType;
+  // @IsEnum(VocalType)
+  // @Column({ type: 'enum', enum: VocalType, nullable: true })
+  // vocalType: VocalType;
 
   @IsEnum(Language)
   @Column({ type: 'enum', enum: Language, nullable: true })
   language: Language;
 
-  @IsEnum(RhythmBeat)
-  @Column({ type: 'enum', enum: RhythmBeat, nullable: true })
-  rhythmBeat: RhythmBeat;
+  // @IsEnum(RhythmBeat)
+  // @Column({ type: 'enum', enum: RhythmBeat, nullable: true })
+  // rhythmBeat: RhythmBeat;
 
   @IsEnum(BPM)
   @Column({ type: 'enum', enum: BPM, nullable: true })
