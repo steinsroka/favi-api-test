@@ -92,6 +92,10 @@ export class User {
   @Column({ nullable: true })
   proEnd: Date;
 
+  @IsNumber()
+  @Column({ nullable: true })
+  totalTesterMusicCount: number;
+
   @OneToMany(() => Album, (album) => album.user, { cascade: true })
   albums: Album[];
 

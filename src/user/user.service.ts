@@ -266,6 +266,7 @@ export class UserService {
           .where('user.id = :userId', {userId: user.id})
           .getRawOne()
       ).remain,
+      total: (await this.userRepository.findOne(user.id)).totalTesterMusicCount
     };
   }
 
