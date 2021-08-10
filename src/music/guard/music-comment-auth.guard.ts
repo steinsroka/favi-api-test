@@ -19,12 +19,13 @@ export class MusicCommentAuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: UserRequest = context.switchToHttp().getRequest();
-    const musicComment = await this.musicService.getMusicComment(
-      parseInt(request.params.comment_id),
-    );
-    if (!isDefined(musicComment)) {
+    const commentId = parseInt(request.params.comment_id);
+    if(!(await this.musicService.isExistMusicComment(commentId))) {
       return true;
     }
+    const musicComment = await this.musicService.getMusicComment(
+      commentId,
+    );
     if (musicComment.userId !== request.user.id) {
       throw new UnauthorizedException(
         new ErrorMessage(
