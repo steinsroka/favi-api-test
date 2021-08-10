@@ -48,7 +48,7 @@ export class AuthController {
       ),
     );
     user.pwSalt = salt;
-    return await this.userService.saveUser(user);
+    return await this.authService.login(user);
   }
 
   @HttpCode(204)

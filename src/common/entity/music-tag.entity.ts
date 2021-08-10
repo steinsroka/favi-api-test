@@ -33,7 +33,7 @@ export class MusicTag {
   @ManyToOne(() => Music, (music) => music.musicTags)
   music: Music;
 
-  @ManyToOne(() => MusicComment, (musicComment) => musicComment.musicTags)
+  @ManyToOne(() => MusicComment, (musicComment) => musicComment.musicTags, {onDelete: 'CASCADE'})
   musicComment: MusicComment;
 
   @ManyToOne(() => User, (user) => user.musicTags)
