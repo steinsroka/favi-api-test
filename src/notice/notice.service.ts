@@ -25,8 +25,10 @@ export class NoticeService {
     });
   }
 
-  async writeNotice(writeNoticeDto: WriteNoticeDto): Promise<Notice> {
-    const newNotice = this.noticeRepository.create(writeNoticeDto);
+  async writeNotice(title:string, content:string): Promise<Notice> {
+    let newNotice = new Notice();
+    newNotice.content = content;
+    newNotice.title = title;
     return await this.noticeRepository.save(newNotice);
   }
 }
