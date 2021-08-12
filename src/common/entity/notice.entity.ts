@@ -15,10 +15,12 @@ export class Notice {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @IsString()
   @Column()
   title: string;
 
-  @Column()
+  @IsString()
+  @Column({ type: 'text' })
   content: string;
 
   @CreateDateColumn()
