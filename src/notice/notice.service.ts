@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Notice } from 'src/common/entity/notice.entity';
+import { Notice } from '../common/entity/notice.entity';
 import { WriteNoticeDto } from './dto/write-notice.dto';
 import {
   Repository,
