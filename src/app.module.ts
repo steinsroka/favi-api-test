@@ -14,6 +14,9 @@ import { SearchService } from './search/search.service';
 import { SearchModule } from './search/search.module';
 import { HelpController } from './help/help.controller';
 import { HelpModule } from './help/help.module';
+import { NoticeController } from './notice/notice.controller';
+import { NoticeService } from './notice/notice.service';
+import { NoticeModule } from './notice/notice.module';
 
 @Module({
   imports: [
@@ -34,12 +37,19 @@ import { HelpModule } from './help/help.module';
     MusicModule,
     SearchModule,
     HelpModule,
+    NoticeModule,
   ],
-  controllers: [AppController, SearchController, HelpController],
+  controllers: [
+    AppController,
+    SearchController,
+    HelpController,
+    NoticeController,
+  ],
   providers: [
     AppService,
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
     SearchService,
+    NoticeService,
   ],
 })
 export class AppModule {}

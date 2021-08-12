@@ -16,7 +16,7 @@ export class MusicCommentLike {
   @ManyToOne(
     () => MusicComment,
     (musicComment) => musicComment.musicCommentLikes,
-    {onDelete: 'CASCADE'}
+    { onDelete: 'CASCADE' },
   )
   musicComment: MusicComment;
 
