@@ -27,6 +27,7 @@ export class NoticeService {
 
   async writeNotice(writeNoticeDto: WriteNoticeDto): Promise<Notice> {
     const newNotice = this.noticeRepository.create(writeNoticeDto);
+    console.log(newNotice);
     return await this.noticeRepository.save(newNotice);
   }
 }

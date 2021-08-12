@@ -17,6 +17,7 @@ export class NoticeController {
 
   @Post()
   async writeNotice(@Body() writeNoticeDto: WriteNoticeDto): Promise<Notice> {
+    console.log(writeNoticeDto);
     return await this.noticeService.writeNotice(writeNoticeDto);
   }
 }
