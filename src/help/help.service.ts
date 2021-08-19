@@ -10,8 +10,17 @@ export class HelpService {
     @InjectRepository(Help) private readonly helpRepository: Repository<Help>,
   ) {}
 
-  async getHelps(index: number, size: number, userId?: number): Promise<Help[]> {
-    return await this.helpRepository.find({order: {timestamp: 'DESC'}, take: size, skip: index * size, where: {}});
+  async getHelps(
+    index: number,
+    size: number,
+    userId?: number,
+  ): Promise<Help[]> {
+    return await this.helpRepository.find({
+      order: { timestamp: 'DESC' },
+      take: size,
+      skip: index * size,
+      where: {},
+    });
   }
 
   async writeHelp(writeHelpDto: WriteHelpDto): Promise<Help> {
