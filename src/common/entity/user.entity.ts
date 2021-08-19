@@ -103,7 +103,7 @@ export class User {
   @Column({ nullable: true })
   totalTesterMusicCount: number;
 
-  @OneToMany(() => Album, (album) => album.user, { cascade: true })
+  @OneToMany(() => Album, (album) => album.user)
   albums: Album[];
 
   @OneToMany(() => MusicComment, (musicComment) => musicComment.user)
