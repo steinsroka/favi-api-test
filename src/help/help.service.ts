@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Help } from '../common/entity/help.entity';
 import { Repository } from 'typeorm';
 import { WriteHelpDto } from './dto/write-help.dto';
+import { User } from '../common/entity/user.entity';
 
 @Injectable()
 export class HelpService {
@@ -28,8 +29,10 @@ export class HelpService {
     });
   }
 
-  async writeHelp(writeHelpDto: WriteHelpDto): Promise<Help> {
+  async writeHelp(writeHelpDto: WriteHelpDto, user: User): Promise<Help> {
     const newHelp = this.helpRepository.create(writeHelpDto);
+    if(user.id === 0) newHelp.user = undefined;
+    else newHelp.user = user;
     return await this.helpRepository.save(newHelp);
   }
 }
