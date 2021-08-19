@@ -7,6 +7,7 @@ import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { ExistUserIdPipe } from './pipe/exist-user-id.pipe';
+import { GuestStrategy } from './strategy/guest.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { LocalStrategy } from './strategy/local.strategy';
 
@@ -27,7 +28,7 @@ import { LocalStrategy } from './strategy/local.strategy';
     ConfigModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, GuestStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

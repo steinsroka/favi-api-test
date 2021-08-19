@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, InsertResult, Repository } from 'typeorm';
+import { DeleteResult, In, InsertResult, Repository } from 'typeorm';
 import { Music } from '../common/entity/music.entity';
 import { User } from '../common/entity/user.entity';
 import { MusicInfo } from '../common/view/music-info.entity';
@@ -55,9 +55,14 @@ export class MusicService {
     music.myLike = isDefined(user)
       ? await this.isExistMusicLike(musicId, user)
       : null;
-    music.artists = await this.getMusicArtists(musicId);
+    // music.artists = await this.getMusicArtists(musicId);
     return music;
   }
+
+  // async getMusics(musicIds: number[]): Promise<MusicInfo[]> {
+  //   return await this.musicInfoRepository.createQueryBuilder()
+  //     .
+  // }
 
   async editMusic(musicId: number, editMusicDto: EditMusicDto) {
     const music = await this.musicRepository.findOneOrFail(musicId);

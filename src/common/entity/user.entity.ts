@@ -118,3 +118,11 @@ export class User {
   @JoinTable({ name: 'tester_music' })
   testerMusics: Music[];
 }
+
+export class GuestUser extends User {
+  constructor() {
+    super('guest', 'guest');
+    this.id = 0;
+    this.name = 'guest';
+  }
+}

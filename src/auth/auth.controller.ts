@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   HttpCode,
   Patch,
   Post,
@@ -22,6 +23,7 @@ import userVerifyCode from '../common/class/user-verify-code';
 import { VerifyEmailCodeGuard } from './guard/verify-email-code.guard';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
 import { UserRequest } from '../common/@types/user-request';
+import { GuestableAuthGuard } from './guard/guestable-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -48,7 +50,8 @@ export class AuthController {
       ),
     );
     user.pwSalt = salt;
-    return await this.authService.login(user);
+    const newUser = await this.userService.saveUser(user);
+    return await this.authService.login(newUser);
   }
 
   @HttpCode(204)

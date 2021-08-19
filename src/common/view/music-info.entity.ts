@@ -1,4 +1,4 @@
-import { ViewEntity, ViewColumn, Connection } from 'typeorm';
+import { ViewEntity, ViewColumn, Connection, JoinColumn, ManyToMany } from 'typeorm';
 import { Artist } from '../entity/artist.entity';
 import { MusicTagValue } from '../entity/music-tag-value.entity';
 import {
