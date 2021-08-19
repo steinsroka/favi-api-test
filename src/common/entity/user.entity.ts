@@ -32,6 +32,14 @@ export enum Gender {
   DEFAULT = 'default',
 }
 
+export enum Age {
+  A = 10,
+  B = 20,
+  C = 30,
+  D = 40,
+  E = 50
+}
+
 @Entity()
 export class User {
   constructor(email: string, password: string) {
@@ -65,8 +73,8 @@ export class User {
   name: string;
 
   @IsOptional()
-  @Matches(/10+20+30+40+50/)
-  @Column({ nullable: true })
+  @IsEnum(Age)
+  @Column({ type: 'enum', enum: Age, nullable: true })
   age: number;
 
   @IsOptional()
