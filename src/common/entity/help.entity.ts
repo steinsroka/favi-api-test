@@ -3,9 +3,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { User } from './user.entity';
 
 @Entity()
 export class Help {
@@ -31,6 +34,10 @@ export class Help {
   @IsString()
   @Column()
   name: string;
+
+  @OneToOne(() => User)
+  @JoinColumn()
+  user: User;
 
   @CreateDateColumn()
   timestamp: Date;
