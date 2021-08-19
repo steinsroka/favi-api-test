@@ -8,7 +8,10 @@ import { MusicService } from '../music/music.service';
 
 @Controller('search')
 export class SearchController {
-  constructor(private readonly searchService: SearchService, private readonly musicService: MusicService) {}
+  constructor(
+    private readonly searchService: SearchService,
+    private readonly musicService: MusicService,
+  ) {}
 
   @Get('music/tag')
   async searchMusicWithTags(
@@ -21,7 +24,7 @@ export class SearchController {
       tagSearchDto.size,
     );
     const musics: MusicInfo[] = [];
-    for(const key of musicIds) {
+    for (const key of musicIds) {
       musics.push(await this.musicService.getMusic(key.musicId));
     }
     return musics;

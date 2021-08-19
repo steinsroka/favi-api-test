@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: configService.get<AuthConfig>('auth').jwtSecret,
-      failureFlash: 'Invalid token'
+      failureFlash: 'Invalid token',
     });
   }
 
