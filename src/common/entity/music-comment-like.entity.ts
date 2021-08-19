@@ -10,7 +10,7 @@ export class MusicCommentLike {
   @PrimaryColumn()
   musicCommentId: number;
 
-  @ManyToOne(() => User, (user) => user.musicCommentLikes, {onDelete: 'NO ACTION'})
+  @ManyToOne(() => User, (user) => user.musicCommentLikes, {onDelete: 'CASCADE'})
   user: User;
 
   @ManyToOne(

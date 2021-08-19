@@ -35,7 +35,7 @@ export class Help {
   @Column()
   name: string;
 
-  @OneToOne(() => User, {onDelete: 'NO ACTION'})
+  @OneToOne(() => User, {onDelete: 'CASCADE'})
   @JoinColumn()
   user: User;
 
