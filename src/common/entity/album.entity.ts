@@ -24,7 +24,7 @@ export class Album {
   @CreateDateColumn()
   timestamp: Date;
 
-  @ManyToOne(() => User, (user) => user.albums, { primary: true, onDelete: 'SET NULL'})
+  @ManyToOne(() => User, (user) => user.albums, { primary: true, cascade: true})
   user: User;
 
   @ManyToMany(() => Music, { cascade: true })

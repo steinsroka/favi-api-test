@@ -16,7 +16,7 @@ export class MusicLike {
   @PrimaryColumn()
   musicId: number;
 
-  @ManyToOne(() => User, (user) => user.musicLikes, { onDelete: "SET NULL" })
+  @ManyToOne(() => User, (user) => user.musicLikes, { cascade: true })
   user: User;
 
   @ManyToOne(() => Music, (music) => music.musicLikes)
