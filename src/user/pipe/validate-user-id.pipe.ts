@@ -19,7 +19,7 @@ export class ValidateUserIdPipe implements PipeTransform {
       (metadata.type === 'param' && metadata.data === 'id') ||
       (metadata.type === 'query' && metadata.data === 'user_id')
     ) {
-      if (!isDefined(value)) return value;
+      if (!isDefined(value) || value === NaN) return undefined;
       if (!(await this.userService.isExistUser({ id: value }))) {
         throw new NotFoundException(
           new ErrorMessage(
