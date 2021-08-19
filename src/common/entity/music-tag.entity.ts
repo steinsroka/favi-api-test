@@ -38,7 +38,7 @@ export class MusicTag {
   })
   musicComment: MusicComment;
 
-  @ManyToOne(() => User, (user) => user.musicTags)
+  @ManyToOne(() => User, (user) => user.musicTags, {onDelete: 'SET NULL'})
   user: User;
 
   @ManyToOne(() => MusicTagValue, (musicTagValue) => musicTagValue.musicTags)

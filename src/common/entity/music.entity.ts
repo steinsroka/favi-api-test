@@ -129,6 +129,6 @@ export class Music {
   @JoinTable()
   artists: Artist[];
 
-  @ManyToMany(() => User, (user) => user.testerMusics)
+  @ManyToMany(() => User, (user) => user.testerMusics, {cascade: true})
   testerMusicUsers: User[];
 }

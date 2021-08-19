@@ -5,6 +5,7 @@ import {
   IsEmail,
   IsEnum,
   IsNumber,
+  IsOptional,
   IsString,
   IsUUID,
   Matches,
@@ -56,16 +57,19 @@ export class User {
   @Column({ name: 'pw_salt' })
   pwSalt: string;
 
+  @IsOptional()
   @IsString()
   @Column({
     nullable: true,
   })
   name: string;
 
+  @IsOptional()
   @Matches(/10+20+30+40+50/)
   @Column({ nullable: true })
   age: number;
 
+  @IsOptional()
   @IsEnum(Gender)
   @Column({
     type: 'enum',
@@ -84,14 +88,17 @@ export class User {
   })
   level: number;
 
+  @IsOptional()
   @IsDate()
   @Column({ nullable: true })
   testEnd: Date;
 
+  @IsOptional()
   @IsDate()
   @Column({ nullable: true })
   proEnd: Date;
 
+  @IsOptional()
   @IsNumber()
   @Column({ nullable: true })
   totalTesterMusicCount: number;

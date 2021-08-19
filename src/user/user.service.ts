@@ -58,7 +58,7 @@ export class UserService {
   }
 
   deleteUser(userId: number): Promise<DeleteResult> {
-    return this.userRepository.softDelete(userId);
+    return this.userRepository.delete(userId);
   }
 
   getUserAuthInfo(userPartial: UserPartialDto): Promise<User> {

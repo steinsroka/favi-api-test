@@ -32,7 +32,7 @@ export class MusicComment {
   @ManyToOne(() => Music, (music) => music.musicComments, { nullable: false })
   music: Music;
 
-  @ManyToOne(() => User, (user) => user.musicComments, { nullable: false })
+  @ManyToOne(() => User, (user) => user.musicComments, { nullable: false, onDelete: 'SET NULL' })
   user: User;
 
   @OneToMany(
