@@ -103,25 +103,26 @@ export class User {
   @Column({ nullable: true })
   totalTesterMusicCount: number;
 
-  @OneToMany(() => Album, (album) => album.user)
+  @OneToMany(() => Album, (album) => album.user, {cascade: true})
   albums: Album[];
 
-  @OneToMany(() => MusicComment, (musicComment) => musicComment.user)
+  @OneToMany(() => MusicComment, (musicComment) => musicComment.user, {cascade: true})
   musicComments: MusicComment[];
 
-  @OneToMany(() => MusicLike, (musicLike) => musicLike.user)
+  @OneToMany(() => MusicLike, (musicLike) => musicLike.user, {cascade: true})
   musicLikes: MusicLike[];
 
   @OneToMany(
     () => MusicCommentLike,
     (musicCommentLike) => musicCommentLike.user,
+    {cascade: true}
   )
   musicCommentLikes: MusicCommentLike[];
 
-  @OneToMany(() => MusicTag, (musicTag) => musicTag.music)
+  @OneToMany(() => MusicTag, (musicTag) => musicTag.music, {cascade: true})
   musicTags: MusicTag[];
 
-  @ManyToMany(() => Music, (music) => music.testerMusicUsers)
+  @ManyToMany(() => Music, (music) => music.testerMusicUsers, {cascade: true})
   @JoinTable({ name: 'tester_music' })
   testerMusics: Music[];
 }
