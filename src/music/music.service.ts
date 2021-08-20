@@ -66,9 +66,9 @@ export class MusicService {
     let j = 0;
     for(let i = 0; i < musicInfos.length; ++i) {
       musicInfos[i].artists = artists[i].artists;
+      musicInfos[i].tags = [];
       while(1) {
-        musicInfos[i].tags = [];
-        if(tags[j].musicId === musicInfos[i].id) {
+        if(j < tags.length && tags[j].musicId === musicInfos[i].id) {
           musicInfos[i].tags.push(tags[j]);
           ++j;
         }
