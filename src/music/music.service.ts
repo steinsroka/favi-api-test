@@ -55,14 +55,16 @@ export class MusicService {
     music.myLike = isDefined(user)
       ? await this.isExistMusicLike(musicId, user)
       : null;
-    // music.artists = await this.getMusicArtists(musicId);
+    music.artists = await this.getMusicArtists(musicId);
     return music;
   }
 
-  // async getMusics(musicIds: number[]): Promise<MusicInfo[]> {
-  //   return await this.musicInfoRepository.createQueryBuilder()
-  //     .
-  // }
+  async getMusics(musicIds: number[]): Promise<MusicInfo[]> {
+    return await this.musicInfoRepository.createQueryBuilder()
+      .select()
+      .leftJoinAndMapMany('tags', MusicTagInfo, 'musicTagInfo', 'musicInfo.id = musicTagInfo.musicId')
+      .getRawMany();
+  }
 
   async editMusic(musicId: number, editMusicDto: EditMusicDto) {
     const music = await this.musicRepository.findOneOrFail(musicId);

@@ -23,10 +23,11 @@ export class SearchController {
       parseInt(tagSearchDto.index),
       tagSearchDto.size,
     );
-    const musics: MusicInfo[] = [];
-    for (const key of musicIds) {
-      musics.push(await this.musicService.getMusic(key.musicId));
+    const ids: number[] = [];
+    for(const key of musicIds) {
+      ids.push(key.musicId);
     }
+    const musics: MusicInfo[] = await this.musicService.getMusics(ids);
     return musics;
   }
 
