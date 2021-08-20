@@ -60,10 +60,23 @@ export class MusicService {
   }
 
   async getMusics(musicIds: number[]): Promise<MusicInfo[]> {
-    return await this.musicInfoRepository.createQueryBuilder()
-      .select()
-      .leftJoinAndMapMany('tags', MusicTagInfo, 'musicTagInfo', 'musicInfo.id = musicTagInfo.musicId')
-      .getRawMany();
+    const musicInfos = await this.musicInfoRepository.find({where: {id: In(musicIds)}, order: {id: 'ASC'}});
+    const tags = await this.musicTagInfoRepository.find({where: {musicId: In(musicIds)}, order: {musicId: 'ASC'}});
+    const artists = await this.musicRepository.find({where: {id: In(musicIds)}, relations: ['artists'], order: {id: 'ASC'}});
+    let j = 0;
+    for(let i = 0; i < musicInfos.length; ++i) {
+      musicInfos[i].artists = artists[i].artists;
+      while(1) {
+        if(tags[j].musicId === musicInfos[i].id) {
+          musicInfos[i].tags.push(tags[j]);
+          ++j;
+        }
+        else {
+          break;
+        }
+      }
+    }
+    return musicInfos;
   }
 
   async editMusic(musicId: number, editMusicDto: EditMusicDto) {
