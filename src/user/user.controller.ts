@@ -52,7 +52,7 @@ import { MusicService } from '../music/music.service';
 import {
   UserSocialLog,
   UserSocialLogMusicComment,
-  UserSocialLogMusicLike,
+  // UserSocialLogMusicLike,
 } from './dto/user-social-log.dto';
 import { TestUserGuard } from './guard/test-user.guard';
 import { TesterProceedDto } from './dto/tester-remain.dto';
