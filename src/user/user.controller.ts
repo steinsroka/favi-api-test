@@ -225,16 +225,16 @@ export class UserController {
           musicCommentLog.timestamp = log.timestamp;
           result.push(musicCommentLog);
           break;
-        case 'music_like':
-          const musicLikeLog = new UserSocialLogMusicLike();
-          musicLikeLog.user = user;
-          musicLikeLog.music = await this.musicService.getMusic(
-            log.id,
-            req.user,
-          );
-          musicLikeLog.timestamp = log.timestamp;
-          result.push(musicLikeLog);
-          break;
+        // case 'music_like':
+        //   const musicLikeLog = new UserSocialLogMusicLike();
+        //   musicLikeLog.user = user;
+        //   musicLikeLog.music = await this.musicService.getMusic(
+        //     log.id,
+        //     req.user,
+        //   );
+        //   musicLikeLog.timestamp = log.timestamp;
+        //   result.push(musicLikeLog);
+        //   break;
       }
     }
     return { users: userInfos, result: result };
