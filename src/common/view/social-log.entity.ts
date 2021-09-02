@@ -2,7 +2,7 @@ import { ViewColumn, ViewEntity } from 'typeorm';
 
 export enum SocialLogType {
   MUSIC_COMMENT = 'music_comment',
-  // MUSIC_LIKE = 'music_like',
+  MUSIC_LIKE = 'music_like',
 }
 
 @ViewEntity({
