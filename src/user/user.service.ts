@@ -90,7 +90,7 @@ export class UserService {
       .createQueryBuilder('musicLike')
       .select('music.id', 'id')
       .addSelect('music.title', 'title')
-      .addSelect('music.composer', 'composer')
+      // .addSelect('music.composer', 'composer')
       .leftJoin(
         MusicTagInfo,
         'musicTagInfo',
@@ -147,8 +147,8 @@ export class UserService {
   ): Promise<SocialLog[]> {
     return await this.socialLogRepository.find({
       where: { userId: In(userIds) },
-      take: 15,
-      skip: index * 15,
+      take: 30,
+      skip: index * 30,
     });
   }
 
