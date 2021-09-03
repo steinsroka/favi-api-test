@@ -210,11 +210,12 @@ export class UserController {
     // }
     for (const log of socialLogs) {
       // const user = userInfos.find((value) => value.id === log.userId);
-      const user = await this.userService.getUserInfo(log.userId)
+      // const user = await this.userService.getUserInfo(log.userId)
       switch (log.type) {
         case 'music_comment':
           const musicCommentLog = new UserSocialLogMusicComment();
-          musicCommentLog.user = user;
+          // musicCommentLog.user = user;
+          musicCommentLog.user = await this.userService.getUserInfo(log.userId);
           musicCommentLog.musicComment = await this.musicService.getMusicComment(
             log.id,
             req.user,
