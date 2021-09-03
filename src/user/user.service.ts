@@ -132,7 +132,7 @@ export class UserService {
       .groupBy('t.userId')
       .orderBy('t.weight', 'DESC')
       .addOrderBy('recentSocialLogTimestamp', 'DESC')
-      .limit(7)
+      .limit(5)
       .getRawMany();
     const ret: number[] = [];
     for (const i of nearUsers) {
@@ -147,8 +147,8 @@ export class UserService {
   ): Promise<SocialLog[]> {
     return await this.socialLogRepository.find({
       where: { userId: In(userIds) },
-      take: 7,
-      skip: index * 7,
+      take: 6,
+      skip: index * 6,
     });
   }
 
