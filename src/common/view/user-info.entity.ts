@@ -1,6 +1,6 @@
 import { MusicCommentTagDto } from '../../music/dto/music-comment-tag.dto';
 import { Connection, ViewColumn, ViewEntity } from 'typeorm';
-import { User } from '../entity/user.entity';
+import { User,Age,Gender } from '../entity/user.entity';
 import { MusicLike } from '../entity/music-like.entity';
 import { MusicComment } from '../entity/music-comment.entity';
 import { UserTagInfo } from './user-tag-info.entity';
@@ -44,10 +44,10 @@ export class UserInfo {
   email: string;
 
   @ViewColumn()
-  age: number;
+  age: Age;
 
   @ViewColumn()
-  gender: string;
+  gender: Gender;
 
   @ViewColumn()
   testEnd: Date;
