@@ -147,8 +147,8 @@ export class UserService {
   ): Promise<SocialLog[]> {
     return await this.socialLogRepository.find({
       where: { userId: In(userIds) },
-      take: 30,
-      skip: index * 30,
+      take: 10,
+      skip: index * 10,
     });
   }
 
