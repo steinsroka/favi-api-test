@@ -204,12 +204,13 @@ export class UserController {
       : await this.userService.getNearUsers(id);
     const socialLogs = await this.userService.getSocialLogs(users, index);
     const result: UserSocialLog[] = [];
-    const userInfos: UserInfo[] = [];
-    for (const userId of users) {
-      userInfos.push(await this.userService.getUserInfo(userId));
-    }
+    // const userInfos: UserInfo[] = [];
+    // for (const userId of users) {
+    //   userInfos.push(await this.userService.getUserInfo(userId));
+    // }
     for (const log of socialLogs) {
-      const user = userInfos.find((value) => value.id === log.userId);
+      // const user = userInfos.find((value) => value.id === log.userId);
+      const user = await this.userService.getUserInfo(log.userId)
       switch (log.type) {
         case 'music_comment':
           const musicCommentLog = new UserSocialLogMusicComment();
@@ -237,6 +238,7 @@ export class UserController {
         //   break;
       }
     }
-    return { users: userInfos, result: result };
+    // return { users: userInfos, result: result };
+    return { result: result };
   }
 }
