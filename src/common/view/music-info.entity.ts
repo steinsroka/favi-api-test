@@ -47,12 +47,6 @@ export class MusicInfo {
   title: string;
 
   @ViewColumn()
-  composer: string;
-
-  @ViewColumn()
-  lyricist: string;
-
-  @ViewColumn()
   link: string;
 
   @ViewColumn()
