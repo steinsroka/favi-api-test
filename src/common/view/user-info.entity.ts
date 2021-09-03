@@ -12,6 +12,8 @@ import { UserTagInfo } from './user-tag-info.entity';
       .select('user.id', 'id')
       .addSelect('user.name', 'name')
       .addSelect('user.email', 'email')
+      .addSelect('user.age', 'age')
+      .addSelect('user.gender', 'gender')
       .addSelect('user.testEnd', 'testEnd')
       .addSelect(
         (qb) =>
@@ -40,6 +42,12 @@ export class UserInfo {
 
   @ViewColumn()
   email: string;
+
+  @ViewColumn()
+  age: number;
+
+  @ViewColumn()
+  gender: string;
 
   @ViewColumn()
   testEnd: Date;

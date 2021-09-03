@@ -132,7 +132,7 @@ export class UserService {
       .groupBy('t.userId')
       .orderBy('t.weight', 'DESC')
       .addOrderBy('recentSocialLogTimestamp', 'DESC')
-      .limit(10)
+      .limit(7)
       .getRawMany();
     const ret: number[] = [];
     for (const i of nearUsers) {
