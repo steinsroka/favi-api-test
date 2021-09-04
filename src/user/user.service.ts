@@ -134,7 +134,7 @@ export class UserService {
       .addOrderBy('recentSocialLogTimestamp', 'DESC')
       .limit(5)
       .getRawMany();
-      console.log('social-log near-user comp');
+
 
     const ret: number[] = [];
     for (const i of nearUsers) {
@@ -147,7 +147,6 @@ export class UserService {
     userIds: number[],
     index: number = 0,
   ): Promise<SocialLog[]> {
-    console.log('social-log fint-post');
 
     return await this.socialLogRepository.find({
       where: { userId: In(userIds) },
