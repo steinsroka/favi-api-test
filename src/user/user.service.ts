@@ -90,7 +90,6 @@ export class UserService {
       .createQueryBuilder('musicLike')
       .select('music.id', 'id')
       .addSelect('music.title', 'title')
-      .addSelect('musicLike.timestamp', 'timestamp')
       .leftJoin(
         MusicTagInfo,
         'musicTagInfo',
@@ -104,6 +103,7 @@ export class UserService {
       .getRawMany();
     return this.userMusicRepository.find({
       where: { id: In(musicLikes.map((value) => value.id)) },
+      order: { timestamp: 'DESC' },
       relations: ['artists']
     });
   }
