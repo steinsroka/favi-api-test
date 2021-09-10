@@ -90,6 +90,7 @@ export class UserService {
       .createQueryBuilder('musicLike')
       .select('music.id', 'id')
       .addSelect('music.title', 'title')
+      .addSelect('musicLike.timestamp', 'timestamp')
       .leftJoin(
         MusicTagInfo,
         'musicTagInfo',
