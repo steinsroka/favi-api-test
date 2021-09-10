@@ -104,7 +104,7 @@ export class UserService {
       .getRawMany();
     return this.userMusicRepository.find({
       where: { id: In(musicLikes.map((value) => value.id)) },
-      relations: ['artists','timestamp']
+      relations: ['timestamp']
     });
   }
 
