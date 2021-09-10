@@ -2,6 +2,7 @@ import { IsDate, IsEnum, IsNumber, IsString } from 'class-validator';
 import {
   Entity,
   Column,
+  CreateDateColumn,
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToMany,
