@@ -100,7 +100,7 @@ export class UserService {
       .where('musicLike.userId = :userId', { userId: userId })
       .andWhere('musicTagInfo.rank <= 3')
       .andWhere('musicTagInfo.name = :tag', { tag: tag })
-      .orderBy('musicLike.timestamp', 'ASC')
+      .addOrderBy('musicLike.timestamp', 'DESC')
       .getRawMany();
     return this.userMusicRepository.find({
       where: { id: In(musicLikes.map((value) => value.id)) },
