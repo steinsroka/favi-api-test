@@ -131,4 +131,7 @@ export class Music {
 
   @ManyToMany(() => User, (user) => user.testerMusics, {onDelete: 'CASCADE'})
   testerMusicUsers: User[];
+
+  @CreateDateColumn()
+  timestamp: Date;
 }
