@@ -44,7 +44,7 @@ export class SearchService {
     size: number,
   ): Promise<MusicSmallInfoDto[]> {
     return this.musicRepository.find({
-      select: ['id', 'title', 'composer'],
+      select: ['id', 'title', 'composer','musicTags'],
       relations: ['artists'],
       where: (qb: SelectQueryBuilder<Music>) => {
         qb.where('Music.title LIKE :title', {
