@@ -1,8 +1,4 @@
 import { IsNumber, IsString } from 'class-validator';
-import {
-  OneToMany,
-} from 'typeorm';
-import { MusicTag } from '../../common/entity/music-tag.entity';
 
 export class MusicSmallInfoDto {
   @IsNumber()
@@ -14,6 +10,4 @@ export class MusicSmallInfoDto {
   @IsString()
   composer: string;
 
-  @OneToMany(() => MusicTag, (musicTag) => musicTag.music, { cascade: true })
-  musicTags: MusicTag[];
 }
