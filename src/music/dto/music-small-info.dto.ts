@@ -2,7 +2,7 @@ import { IsNumber, IsString } from 'class-validator';
 import {
   OneToMany,
 } from 'typeorm';
-import { MusicTag } from './music-tag.entity';
+import { MusicTag } from '../../common/entity/music-tag.entity';
 
 export class MusicSmallInfoDto {
   @IsNumber()
