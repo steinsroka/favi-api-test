@@ -133,7 +133,7 @@ export class UserService {
       .groupBy('t.userId')
       .orderBy('t.weight', 'DESC')
       .addOrderBy('recentSocialLogTimestamp', 'DESC')
-      .limit(10)
+      .limit(5)
       .getRawMany();
 
 
