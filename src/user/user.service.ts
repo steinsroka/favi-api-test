@@ -114,7 +114,6 @@ export class UserService {
     for (let i = 0; i < Math.min(3, users.length); ++i) {
       tags.push(users[i].name);
     }
-    const now = Date.now();
     const nearUsers = await createQueryBuilder()
       .select('t.userId', 'userId')
       .addSelect(`MAX(t.weight)`, 'weight')
@@ -142,18 +141,16 @@ export class UserService {
     for (const i of nearUsers) {
       ret.push(i.userId);
     }
-    const delay = Date.now() - now;
-    console.log('nearUser-delay : ',delay);
 
     return ret;
   }
 
-  async getSocialLogs(
+  getSocialLogs(
     userIds: number[],
     index: number = 0,
   ): Promise<SocialLog[]> {
-    
-    return await this.socialLogRepository.find({
+
+    return this.socialLogRepository.find({
       where: { userId: In(userIds) },
       take: 5,
       skip: index * 5,
