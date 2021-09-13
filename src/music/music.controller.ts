@@ -58,14 +58,14 @@ export class MusicController {
     const music = await this.musicService.getMusic(id, req.user);
     return music;
   }
-  @Get('artist/:id')
-  async getMusicArtists(
-    @Request() req: UserRequest,
-    @Param('id') id: number,
-  ): Promise<Artist> {
-    const music = await this.musicService.getMusicWithArtist(id);
-    return music;
-  }
+  // @Get('artist/:id')
+  // async getMusicArtists(
+  //   @Request() req: UserRequest,
+  //   @Param('id') id: number,
+  // ): Promise<Artist> {
+  //   const music = await this.musicService.getMusicWithArtist(id);
+  //   return music;
+  // }
 
   @Patch(':id')
   @UseGuards(TestUserGuard)
