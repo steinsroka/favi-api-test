@@ -33,6 +33,8 @@ export class MusicService {
     private readonly musicRepository: Repository<Music>,
     @InjectRepository(MusicInfo)
     private readonly musicInfoRepository: Repository<MusicInfo>,
+    @InjectRepository(Artist)
+    private readonly artistRepository: Repository<Artist>,
     @InjectRepository(MusicCommentInfo)
     private readonly musicCommentInfoRepository: Repository<MusicCommentInfo>,
     @InjectRepository(MusicComment)
@@ -58,6 +60,16 @@ export class MusicService {
     music.artists = await this.getMusicArtists(musicId);
     return music;
   }
+  async addMusic(title: string, composer: string, lyricist: string, album: string, link: string){
+    const music = this.musicRepository.create({
+      title: title,
+      composer: composer,
+      lyricist: lyricist,
+      album: album,
+      link: link
+    });
+    return this.musicRepository.save(music);
+  }
 
   async getMusics(musicIds: number[]): Promise<MusicInfo[]> {
     const musicInfos = await this.musicInfoRepository.find({where: {id: In(musicIds)}, order: {id: 'ASC'}});
@@ -78,6 +90,11 @@ export class MusicService {
       }
     }
     return musicInfos;
+  }
+  async getMusicWithArtist(artistId: number[]): Promise<MusicInfo[]> {
+    const artistInfos = await this.artistRepository.findOneOrFail({where: {id: In(artistId)}, order: {id: 'ASC'}});
+    
+    return artistInfos;
   }
 
   async editMusic(musicId: number, editMusicDto: EditMusicDto) {
