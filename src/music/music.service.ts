@@ -91,11 +91,10 @@ export class MusicService {
     }
     return musicInfos;
   }
-  // async getMusicWithArtist(artistId: number): Promise<Artist[]> {
-  //   const artistInfos = await this.artistRepository.find({where: {id: In(artistId)}, order: {id: 'ASC'}});
-  //
-  //   return artistInfos;
-  // }
+  async getMusicWithArtist(artistId: number): Promise<Artist[]> {
+    const artistInfos = await this.artistRepository.find({where: {id: In(artistId)}});
+    return artistInfos;
+  }
 
   async editMusic(musicId: number, editMusicDto: EditMusicDto) {
     const music = await this.musicRepository.findOneOrFail(musicId);
