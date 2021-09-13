@@ -24,7 +24,7 @@ import { TestUserGuard } from '../user/guard/test-user.guard';
 import { UserRequest } from '../common/@types/user-request';
 import { MusicService } from './music.service';
 import { MusicInfo } from '../common/view/music-info.entity';
-import { Artist } from '../common/view/artist.entity';
+import { Artist } from '../common/entity/artist.entity';
 import { AddMusicCommentDto } from './dto/add-music-comment.dto';
 import { MusicComment } from '../common/entity/music-comment.entity';
 import { EditMusicCommentDto } from './dto/edit-music-comment.dto';
@@ -62,7 +62,7 @@ export class MusicController {
   async getMusicArtists(
     @Request() req: UserRequest,
     @Param('id') id: number,
-  ): Promise<Artist[]> {
+  ): Promise<Artist> {
     const music = await this.musicService.getMusicWithArtist(id);
     return music;
   }
