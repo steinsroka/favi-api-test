@@ -92,7 +92,7 @@ export class MusicService {
     return musicInfos;
   }
   async getMusicWithArtist(artistId: number): Promise<Artist> {
-    const artistInfos = await this.artistRepository.find({where: {id: artistId}});
+    const artistInfos = await this.artistRepository.findOneOrFail({where: {id: artistId}});
     return artistInfos;
   }
 
