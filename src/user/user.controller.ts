@@ -206,11 +206,12 @@ export class UserController {
     const socialLogs = await this.userService.getSocialLogs(users, index);
     const result: UserSocialLog[] = [];
     const userInfos: UserInfo[] = [];
-    // for (const userId2 of users) {
-    //   userInfos.push(await this.userService.getUserInfo(userId2));
-    // }
+    for (const userId2 of users) {
+      userInfos.push(await this.userService.getUserInfo(userId2));
+    }
      const promises = socialLogs.map(async(log) =>{
-       const user = await this.userService.getUserInfo(log.userId);
+       const user = userInfos.find((value) => value.id === log.userId);
+       // const user = await this.userService.getUserInfo(log.userId);
        switch (log.type) {
          case 'music_comment':
            const musicCommentLog = new UserSocialLogMusicComment();
