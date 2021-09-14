@@ -84,10 +84,6 @@ export class Music {
   @Column({ type: 'date', nullable: true })
   dates: Date;
 
-  @IsDate()
-  @Column({ type: 'date', nullable: true })
-  timestamp: Date;
-
   @Column({ nullable: true })
   album: string;
 

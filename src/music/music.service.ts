@@ -93,6 +93,8 @@ export class MusicService {
   }
   async getMusicWithArtist(artistId: number): Promise<Artist> {
     const artistInfos = await this.artistRepository.findOneOrFail({where: {id: artistId}});
+
+    // artistInfos.musics = await this.musicInfoRepository.find({where: {musicId: In(musicIds)}, order: {musicId: 'ASC'}});
     return artistInfos;
   }
 
