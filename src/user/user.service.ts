@@ -152,8 +152,8 @@ export class UserService {
     return this.socialLogRepository.find({
       where: { userId: In(userIds) },
       order: { timestamp: 'DESC' },
-      take: 7,
-      skip: index * 7,
+      take: 10,
+      skip: index * 10,
     });
   }
 
