@@ -209,7 +209,7 @@ export class UserController {
     for (const userId2 of users) {
       userInfos.push(await this.userService.getUserInfo(userId2));
     }
-     const promises = await socialLogs.map( async log =>{
+     const promises = socialLogs.map( async log =>{
        const user = userInfos.find((value) => value.id === log.userId);
        // const user = await this.userService.getUserInfo(log.userId);
        switch (log.type) {
