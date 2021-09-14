@@ -202,7 +202,7 @@ export class UserController {
     const users: number[] = isDefined(userId)
       ? [userId]
       : await this.userService.getNearUsers(id);
-    // const now = Date.now();
+    const now = Date.now();
     const socialLogs = await this.userService.getSocialLogs(users, index);
     const result: UserSocialLog[] = [];
     const userInfos: UserInfo[] = [];
