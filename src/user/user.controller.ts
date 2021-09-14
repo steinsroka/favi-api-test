@@ -217,30 +217,33 @@ export class UserController {
           const musicCommentLog = new UserSocialLogMusicComment();
           musicCommentLog.user = user;
           // musicCommentLog.user = await this.userService.getUserInfo(log.userId);
-          musicCommentLog.musicComment = this.musicService.getMusicComment(
+          musicCommentLog.musicComment = await this.musicService.getMusicComment(
             log.id,
             req.user,
           );
-          musicCommentLog.music = this.musicService.getMusic(
+          musicCommentLog.music = await this.musicService.getMusic(
             musicCommentLog.musicComment.musicId,
             req.user,
           );
           musicCommentLog.timestamp = log.timestamp;
           result.push(musicCommentLog);
           break;
-        // case 'music_like':
-        //   const musicLikeLog = new UserSocialLogMusicLike();
-        //   musicLikeLog.user = user;
-        //   musicLikeLog.music = await this.musicService.getMusic(
-        //     log.id,
-        //     req.user,
-        //   );
-        //   musicLikeLog.timestamp = log.timestamp;
-        //   result.push(musicLikeLog);
-        //   break;
+
       }
     }
     return { users: userInfos, result: result };
+
+    // case 'music_like':
+    //   const musicLikeLog = new UserSocialLogMusicLike();
+    //   musicLikeLog.user = user;
+    //   musicLikeLog.music = await this.musicService.getMusic(
+    //     log.id,
+    //     req.user,
+    //   );
+    //   musicLikeLog.timestamp = log.timestamp;
+    //   result.push(musicLikeLog);
+    //   break;
+
     // return { result: result };
   }
 }
