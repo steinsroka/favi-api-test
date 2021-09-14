@@ -206,39 +206,62 @@ export class UserController {
     const socialLogs = await this.userService.getSocialLogs(users, index);
     const result: UserSocialLog[] = [];
     const userInfos: UserInfo[] = [];
-    for (const userId2 of users) {
-      userInfos.push(await this.userService.getUserInfo(userId2));
-    }
-     console.log('social-delay-getData',Date.now() - now);
+    // for (const userId2 of users) {
+    //   userInfos.push(await this.userService.getUserInfo(userId2));
+    // }
+     const promises = socialLogs.map(log =>{
+       const user = await this.userService.getUserInfo(log.userId)
+       switch (log.type) {
+         case 'music_comment':
+           const musicCommentLog = new UserSocialLogMusicComment();
+           musicCommentLog.user = user;
+           // musicCommentLog.user = await this.userService.getUserInfo(log.userId);
+           musicCommentLog.musicComment = await this.musicService.getMusicComment(
+             log.id,
+             req.user,
+           );
+           musicCommentLog.music = await this.musicService.getMusic(
+             musicCommentLog.musicComment.musicId,
+             req.user,
+           );
+           musicCommentLog.timestamp = log.timestamp;
+           result.push(musicCommentLog);
+           const delay = Date.now() - now;
+           console.log('social-delay-log',delay);
 
-     for (const log of socialLogs) {
-      const user = userInfos.find((value) => value.id === log.userId);
-      console.log('social-delay-userInofs',Date.now() - now);
-      console.log('social-log',log);
+           break;
 
-      // const user = await this.userService.getUserInfo(log.userId)
-      switch (log.type) {
-        case 'music_comment':
-          const musicCommentLog = new UserSocialLogMusicComment();
-          musicCommentLog.user = user;
-          // musicCommentLog.user = await this.userService.getUserInfo(log.userId);
-          musicCommentLog.musicComment = await this.musicService.getMusicComment(
-            log.id,
-            req.user,
-          );
-          musicCommentLog.music = await this.musicService.getMusic(
-            musicCommentLog.musicComment.musicId,
-            req.user,
-          );
-          musicCommentLog.timestamp = log.timestamp;
-          result.push(musicCommentLog);
-          const delay = Date.now() - now;
-          console.log('social-delay-log',delay);
-
-          break;
-
-      }
-    }
+       }
+     });
+      await Promise.all(promises);
+    //  for (const log of socialLogs) {
+    //   // const user = userInfos.find((value) => value.id === log.userId);
+    //   console.log('social-delay-userInofs',Date.now() - now);
+    //   console.log('social-log',log);
+    //
+    //   const user = await this.userService.getUserInfo(log.userId)
+    //   switch (log.type) {
+    //     case 'music_comment':
+    //       const musicCommentLog = new UserSocialLogMusicComment();
+    //       musicCommentLog.user = user;
+    //       // musicCommentLog.user = await this.userService.getUserInfo(log.userId);
+    //       musicCommentLog.musicComment = await this.musicService.getMusicComment(
+    //         log.id,
+    //         req.user,
+    //       );
+    //       musicCommentLog.music = await this.musicService.getMusic(
+    //         musicCommentLog.musicComment.musicId,
+    //         req.user,
+    //       );
+    //       musicCommentLog.timestamp = log.timestamp;
+    //       result.push(musicCommentLog);
+    //       const delay = Date.now() - now;
+    //       console.log('social-delay-log',delay);
+    //
+    //       break;
+    //
+    //   }
+    // }
 
     return { users: userInfos, result: result };
 
