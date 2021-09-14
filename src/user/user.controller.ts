@@ -214,6 +214,8 @@ export class UserController {
      for (const log of socialLogs) {
       const user = userInfos.find((value) => value.id === log.userId);
       console.log('social-delay-userInofs',Date.now() - now);
+      console.log('social-log',log);
+
       // const user = await this.userService.getUserInfo(log.userId)
       switch (log.type) {
         case 'music_comment':
