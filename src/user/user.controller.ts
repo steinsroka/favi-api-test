@@ -209,7 +209,7 @@ export class UserController {
     for (const userId2 of users) {
       userInfos.push(await this.userService.getUserInfo(userId2));
     }
-     const promises = await socialLogs.map( log =>{
+     const promises = await socialLogs.map( async log =>{
        const user = userInfos.find((value) => value.id === log.userId);
        // const user = await this.userService.getUserInfo(log.userId);
        switch (log.type) {
@@ -217,11 +217,11 @@ export class UserController {
            const musicCommentLog = new UserSocialLogMusicComment();
            musicCommentLog.user = user;
            // musicCommentLog.user = await this.userService.getUserInfo(log.userId);
-           musicCommentLog.musicComment = this.musicService.getMusicComment(
+           musicCommentLog.musicComment = await this.musicService.getMusicComment(
              log.id,
              req.user,
            );
-           musicCommentLog.music = this.musicService.getMusic(
+           musicCommentLog.music = await this.musicService.getMusic(
              musicCommentLog.musicComment.musicId,
              req.user,
            );
