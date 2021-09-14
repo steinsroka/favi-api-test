@@ -247,17 +247,19 @@ export class UserController {
             log.id,
             req.user,
           );
+          console.log('social-delay-log-4',Date.now() - now);
           musicCommentLog.music = await this.musicService.getMusic(
             musicCommentLog.musicComment.musicId,
             req.user,
           );
+          console.log('social-delay-log-5',Date.now() - now);
           musicCommentLog.timestamp = log.timestamp;
           result.push(musicCommentLog);
           break;
 
       }
     }
-    console.log('social-delay-log-4',Date.now() - now);
+    console.log('social-delay-log-6',Date.now() - now);
     return { users: userInfos, result: result };
 
 
