@@ -133,7 +133,7 @@ export class UserService {
       .groupBy('t.userId')
       .orderBy('t.weight', 'DESC')
       .addOrderBy('recentSocialLogTimestamp', 'DESC')
-      .limit(10)
+      .limit(7)
       .getRawMany();
 
 
@@ -152,8 +152,8 @@ export class UserService {
     return this.socialLogRepository.find({
       where: { userId: In(userIds) },
       order: { timestamp: 'DESC' },
-      take: 10,
-      skip: index * 10,
+      take: 5,
+      skip: index * 5,
     });
   }
 
