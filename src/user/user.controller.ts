@@ -202,15 +202,18 @@ export class UserController {
     const users: number[] = isDefined(userId)
       ? [userId]
       : await this.userService.getNearUsers(id);
+    const now = Date.now();
     const socialLogs = await this.userService.getSocialLogs(users, index);
     const result: UserSocialLog[] = [];
     const userInfos: UserInfo[] = [];
     for (const userId2 of users) {
       userInfos.push(await this.userService.getUserInfo(userId2));
     }
+     console.log('social-delay-getData',Date.now() - now);
 
      for (const log of socialLogs) {
       const user = userInfos.find((value) => value.id === log.userId);
+      console.log('social-delay-userInofs',Date.now() - now);
       // const user = await this.userService.getUserInfo(log.userId)
       switch (log.type) {
         case 'music_comment':
@@ -227,10 +230,14 @@ export class UserController {
           );
           musicCommentLog.timestamp = log.timestamp;
           result.push(musicCommentLog);
+          const delay = Date.now() - now;
+          console.log('social-delay-log',delay);
+
           break;
 
       }
     }
+
     return { users: userInfos, result: result };
 
     // case 'music_like':
