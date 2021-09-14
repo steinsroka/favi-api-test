@@ -248,7 +248,7 @@ export class UserController {
             req.user,
           );
           console.log('social-delay-log-4',Date.now() - now);
-          musicCommentLog.music = await this.musicService.getMusic(
+          musicCommentLog.music = await this.musicService.getMusic2(
             musicCommentLog.musicComment.musicId,
             req.user,
           );

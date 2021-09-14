@@ -60,6 +60,15 @@ export class MusicService {
     music.artists = await this.getMusicArtists(musicId);
     return music;
   }
+  async getMusic2(musicId: number, user?: User): Promise<MusicInfo> {
+    const music = await this.musicInfoRepository.findOneOrFail({ id: musicId });
+    // music.tags = await this.getMusicTags(musicId);
+    // music.myLike = isDefined(user)
+    //   ? await this.isExistMusicLike(musicId, user)
+    //   : null;
+    music.artists = await this.getMusicArtists(musicId);
+    return music;
+  }
   async addMusic(title: string, composer: string, lyricist: string, album: string, link: string){
     const music = this.musicRepository.create({
       title: title,
