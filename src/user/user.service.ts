@@ -149,7 +149,6 @@ export class UserService {
     userIds: number[],
     index: number = 0,
   ): Promise<SocialLog[]> {
-
     return this.socialLogRepository.find({
       where: { userId: In(userIds) },
       take: 5,
