@@ -151,7 +151,7 @@ export class UserService {
   ): Promise<SocialLog[]> {
     return this.socialLogRepository.find({
       where: { userId: In(userIds) },
-      order: { timestamp: 'DESC' },
+      // order: { timestamp: 'DESC' },
       take: 7,
       skip: index * 7,
     });
