@@ -108,14 +108,15 @@ export class MusicService {
     });
     const results: MusicTag[] = [];
     const promises = artist.musics.map( async music =>{
-      results.push(await this.getMusicTags(music.id));
-      console.log('get-artist-tag-log',results);
+      const data = await this.getMusicTags(music.id);
+      // results.push(data);
+      console.log('get-artist-tag-log',data);
     })
      await Promise.all(promises);
     // for (const music of artist.musics) {
     //
     // }
-    console.log('get-artist-tag-log2',results);
+    // console.log('get-artist-tag-log2',results);
 
     // artist.artistTags = results;
     return artist;
