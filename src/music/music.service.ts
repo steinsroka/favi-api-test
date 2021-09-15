@@ -127,13 +127,13 @@ export class MusicService {
     });
     return music.artists;
   }
-  async getArtistMusics(artistId: number): Promise<Artist[]> {
-    const artist = await this.artistRepository.findOneOrFail({
-      relations: ['musics'],
-      where: { artistId: artistId },
-    });
-    return artist.musics;
-  }
+  // async getArtistMusics(artistId: number): Promise<Artist[]> {
+  //   const artist = await this.artistRepository.findOneOrFail({
+  //     relations: ['musics'],
+  //     where: { artistId: artistId },
+  //   });
+  //   return artist.musics;
+  // }
 
   async isExistMusic(musicId: number): Promise<boolean> {
     return (await this.musicRepository.count({ id: musicId })) > 0;
