@@ -104,7 +104,7 @@ export class MusicService {
     // const artistInfos = await this.artistRepository.findOneOrFail({where: {id: artistId}});
     const artist = await this.artistRepository.findOneOrFail({
       relations: ['musics'],
-      // where: { artistId: artistId },
+      where: { id: artistId },
     });
     return artist.musics;
     // artistInfos.musics = await this.musicInfoRepository.find({where: {musicId: In(musicIds)}, order: {musicId: 'ASC'}});

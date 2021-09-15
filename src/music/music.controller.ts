@@ -62,7 +62,7 @@ export class MusicController {
   async getMusicWithArtist(
     // @Request() req: UserRequest,
     @Param('id') id: number,
-  ): Promise<Music[]> {
+  ): Promise<MusicInfo[]> {
     const music = await this.musicService.getMusicWithArtist(id);
     return music;
   }
