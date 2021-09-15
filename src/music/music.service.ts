@@ -106,7 +106,7 @@ export class MusicService {
       relations: ['musics'],
       where: { id: artistId },
     });
-    const results: MusicTag[] = [];
+    const results: MusicTagInfo[] = [];
     for (const music of artist.musics) {
       results.concat(await this.getMusicTags(music.id));
     }
