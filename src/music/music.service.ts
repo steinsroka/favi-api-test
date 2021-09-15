@@ -106,7 +106,7 @@ export class MusicService {
       relations: ['musics'],
       where: { artistId: artistId },
     });
-    return artist.musics;
+    return artist;
     // artistInfos.musics = await this.musicInfoRepository.find({where: {musicId: In(musicIds)}, order: {musicId: 'ASC'}});
     // return artistInfos;
   }
