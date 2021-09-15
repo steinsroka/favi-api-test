@@ -199,10 +199,11 @@ export class UserController {
     @Query('index') index?: number,
     @Query('user_id') userId?: number,
   ) {
+    const now = Date.now();
     const users: number[] = isDefined(userId)
       ? [userId]
       : await this.userService.getNearUsers(id);
-    const now = Date.now();
+    console.log('social-delay-log-1',Date.now() - now);
     const socialLogs = await this.userService.getSocialLogs(users, index);
     console.log('social-delay-log-2',Date.now() - now);
     const result: UserSocialLog[] = [];
