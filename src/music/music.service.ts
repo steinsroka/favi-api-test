@@ -106,6 +106,11 @@ export class MusicService {
       relations: ['musics'],
       where: { id: artistId },
     });
+    const results: MusicTagInfo[] = [];
+    for (const music of artist.musics) {
+      results.concat(await this.getMusicTags(music.id));
+    }
+    artist.tags = results;
     return artist;
     // artistInfos.musics = await this.musicInfoRepository.find({where: {musicId: In(musicIds)}, order: {musicId: 'ASC'}});
     // return artistInfos;
