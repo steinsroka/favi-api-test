@@ -110,7 +110,7 @@ export class MusicService {
     const promises = artist.musics.map( async music =>{
       const data = await this.getMusicTags(music.id);
       // results.push(data);
-      console.log('get-artist-tag-log',data);
+      console.log('get-artist-tag-log',data[0]);
     })
      await Promise.all(promises);
     // for (const music of artist.musics) {
