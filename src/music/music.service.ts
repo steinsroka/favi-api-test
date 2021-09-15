@@ -108,9 +108,8 @@ export class MusicService {
     });
     const results: MusicTagInfo[] = [];
     const promises = artist.musics.map( async music =>{
-      results.concat(await this.getMusicTags(music.id));
+      results.push(await this.getMusicTags(music.id));
       console.log('get-artist-tag-log',results);
-
     })
      await Promise.all(promises);
     // for (const music of artist.musics) {
