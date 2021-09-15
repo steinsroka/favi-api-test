@@ -10,5 +10,6 @@ export class Artist {
   name: string;
 
   @ManyToMany(() => Music, (music) => music.artists)
+  @JoinTable()
   musics: Music[];
 }
