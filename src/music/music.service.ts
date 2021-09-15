@@ -107,7 +107,7 @@ export class MusicService {
       where: { id: artistId },
     });
     const results: MusicTagInfo[] = [];
-    const promises = artists.musics.map( async music =>{
+    const promises = artist.musics.map( async music =>{
       results.concat(await this.getMusicTags(music.id));
       console.log('get-artist-tag-log',results);
 
