@@ -14,6 +14,6 @@ export class Artist {
   @JoinTable()
   musics: Music[];
 
-  @OneToMany(() => MusicTagInfo, { cascade: true })
+  @Column()
   artistTags: MusicTagInfo[];
 }
