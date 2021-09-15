@@ -14,6 +14,8 @@ import { isDefined } from 'class-validator';
 import { MusicLike } from '../common/entity/music-like.entity';
 import { MusicCommentLike } from '../common/entity/music-comment-like.entity';
 import { MusicTag } from '../common/entity/music-tag.entity';
+import { Artist } from '../common/entity/artist.entity';
+import { MusicArtist } from '../common/entity/music-artist.entity';
 import {
   MusicTagValue,
   Tag,
@@ -23,7 +25,7 @@ import { Message } from '../common/class/message';
 import { MusicCommentInfo } from '../common/view/music-comment-info.entity';
 import { MusicCommentTagDto } from './dto/music-comment-tag.dto';
 import { MusicTagInfo } from '../common/view/music-tag-info.entity';
-import { Artist } from '../common/entity/artist.entity';
+
 import { EditMusicDto } from './dto/edit-music.dto';
 
 @Injectable()
@@ -35,6 +37,8 @@ export class MusicService {
     private readonly musicInfoRepository: Repository<MusicInfo>,
     @InjectRepository(Artist)
     private readonly artistRepository: Repository<Artist>,
+    @InjectRepository(MusicArtist)
+    private readonly musicArtistRepository: Repository<MusicArtist>,
     @InjectRepository(MusicCommentInfo)
     private readonly musicCommentInfoRepository: Repository<MusicCommentInfo>,
     @InjectRepository(MusicComment)
@@ -62,10 +66,6 @@ export class MusicService {
   }
   async getMusic2(musicId: number, user?: User): Promise<MusicInfo> {
     const music = await this.musicInfoRepository.findOneOrFail({ id: musicId });
-    // music.tags = await this.getMusicTags(musicId);
-    // music.myLike = isDefined(user)
-    //   ? await this.isExistMusicLike(musicId, user)
-    //   : null;
     music.artists = await this.getMusicArtists(musicId);
     return music;
   }
@@ -101,10 +101,14 @@ export class MusicService {
     return musicInfos;
   }
   async getMusicWithArtist(artistId: number): Promise<Artist> {
-    const artistInfos = await this.artistRepository.findOneOrFail({where: {id: artistId}});
-
+    // const artistInfos = await this.artistRepository.findOneOrFail({where: {id: artistId}});
+    const artist = await this.artistRepository.findOneOrFail({
+      relations: ['musics'],
+      where: { artistId: artistId },
+    });
+    return artist.musics;
     // artistInfos.musics = await this.musicInfoRepository.find({where: {musicId: In(musicIds)}, order: {musicId: 'ASC'}});
-    return artistInfos;
+    // return artistInfos;
   }
 
   async editMusic(musicId: number, editMusicDto: EditMusicDto) {
@@ -122,6 +126,13 @@ export class MusicService {
       where: { id: musicId },
     });
     return music.artists;
+  }
+  async getArtistMusics(artistId: number): Promise<Artist[]> {
+    const artist = await this.artistRepository.findOneOrFail({
+      relations: ['musics'],
+      where: { artistId: artistId },
+    });
+    return artist.musics;
   }
 
   async isExistMusic(musicId: number): Promise<boolean> {

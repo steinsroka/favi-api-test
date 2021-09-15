@@ -6,22 +6,13 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 import { Music } from './music.entity';
-import { User } from './user.entity';
 
 @Entity()
-export class MusicLike {
+export class MusicArtist {
   @PrimaryColumn()
-  userId: number;
+  artistId: number;
 
   @PrimaryColumn()
   musicId: number;
 
-  @ManyToOne(() => User, (user) => user.musicLikes, { onDelete: 'CASCADE' })
-  user: User;
-
-  @ManyToOne(() => Music, (music) => music.musicLikes)
-  music: Music;
-
-  @CreateDateColumn()
-  timestamp: Date;
 }
