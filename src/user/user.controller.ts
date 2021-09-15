@@ -203,9 +203,9 @@ export class UserController {
     const users: number[] = isDefined(userId)
       ? [userId]
       : await this.userService.getNearUsers(id);
-    console.log('social-delay-log-1',Date.now() - now);
+    // console.log('social-delay-log-1',Date.now() - now);
     const socialLogs = await this.userService.getSocialLogs(users, index);
-    console.log('social-delay-log-2',Date.now() - now);
+    // console.log('social-delay-log-2',Date.now() - now);
     const result: UserSocialLog[] = [];
     const userInfos: UserInfo[] = [];
     for (const userId2 of users) {
