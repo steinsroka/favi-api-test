@@ -110,7 +110,9 @@ export class MusicService {
     for (const music of artist.musics) {
       results.concat(await this.getMusicTags(music.id));
     }
-    artist.artistTags = results;
+    console.log('get-artist-tag-log',results);
+
+    // artist.artistTags = results;
     return artist;
     // artistInfos.musics = await this.musicInfoRepository.find({where: {musicId: In(musicIds)}, order: {musicId: 'ASC'}});
     // return artistInfos;
