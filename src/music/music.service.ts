@@ -118,7 +118,7 @@ export class MusicService {
     // }
     // console.log('get-artist-tag-log2',results);
 
-    artist.artistTags = results;
+    artist.tags = results;
     return artist;
     // artistInfos.musics = await this.musicInfoRepository.find({where: {musicId: In(musicIds)}, order: {musicId: 'ASC'}});
     // return artistInfos;
