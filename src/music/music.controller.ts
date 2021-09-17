@@ -58,6 +58,7 @@ export class MusicController {
     const music = await this.musicService.getMusic(id, req.user);
     return music;
   }
+
   @Get('artist/:id')
   async getMusicWithArtist(
     // @Request() req: UserRequest,
@@ -189,6 +190,10 @@ export class MusicController {
   @Get(':id/tag')
   async getMusicTag(@Param('id') id: number) {
     return await this.musicService.getMusicTags(id);
+  }
+  @Get('total')
+  async getMusicReview() {
+    return await this.musicService.getMusicReview();
   }
 
   @Put(':id/tag')

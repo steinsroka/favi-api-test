@@ -317,6 +317,16 @@ export class MusicService {
       musicTagValueId: musicTagValue.id,
     });
   }
+  async getMusicReview(){
+    const music = (await this.musicRepository
+      .createQueryBuilder('music')
+      .select('COUNT(*)')
+      .where('(select exists (select * from music_tag where music.id = music_tag.musicId))')
+      .getRawOne()
+    )
+    console.log('get-total-log',music);
+
+  }
 
   async getUserDistributionInMusic(id: number) {
     const ratioAge =
