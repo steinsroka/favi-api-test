@@ -318,13 +318,14 @@ export class MusicService {
     });
   }
   async getMusicReview(){
-    const music = (await this.musicRepository
-      .createQueryBuilder('music')
-      .select('COUNT(*)')
-      .where('(select exists (select * from music_tag where music.id = music_tag.musicId))')
-      .getRawOne()
-    )
-    console.log('get-total-log',music);
+    // const music = (await this.musicRepository
+    //   .createQueryBuilder('music')
+    //   .select('COUNT(music.id)')
+    //   .leftJoin(MusicTag, 'musicTag', 'music.id = musicTag.musicId')
+    //   .where('select exists (select * from musicTag where music.id = music_tag.musicId)')
+    //   .getRawOne()
+    // )
+    // console.log('get-total-log',music);
 
   }
 
