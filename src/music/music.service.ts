@@ -107,6 +107,10 @@ export class MusicService {
       where: { id: artistId },
     });
 
+    for(const music in artist.musics){
+      music.tags = await this.getMusicTags(music.id);
+    }
+
     return artist;
     // artistInfos.musics = await this.musicInfoRepository.find({where: {musicId: In(musicIds)}, order: {musicId: 'ASC'}});
     // return artistInfos;
