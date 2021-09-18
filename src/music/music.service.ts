@@ -100,15 +100,20 @@ export class MusicService {
     }
     return musicInfos;
   }
-  async getMusicWithArtist(artistId: number): Promise<Artist> {
+  async getMusicWithArtist(artistId: number,user?: User): Promise<Artist> {
     // const artistInfos = await this.artistRepository.findOneOrFail({where: {id: artistId}});
     const artist = await this.artistRepository.findOneOrFail({
       relations: ['musics'],
       where: { id: artistId },
     });
 
-    for(const music in artist.musics){
-      music.tags = await this.getMusicTags(music.id);
+    for (const music of artist.musics){
+      // music.musicTags = await this.getMusicTags(music.musicId);
+      music.tags = await this.getMusicTags(music.musicId);
+      music.myLike = isDefined(user)
+        ? await this.isExistMusicLike(music.musicId, user)
+        : null;
+      music.artists = await this.getMusicArtists(music.musicId);
     }
 
     return artist;
