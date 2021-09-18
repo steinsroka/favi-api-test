@@ -109,10 +109,10 @@ export class MusicService {
 
     for (const music of artist.musics){
       // music.musicTags = await this.getMusicTags(music.musicId);
-      music.musicTags = await this.getMusicTags(music.id);
-      // music.myLike = isDefined(user)
-      //   ? await this.isExistMusicLike(music.id, user)
-      //   : null;
+      music.tags = await this.getMusicTags(music.id);
+      music.myLike = isDefined(user)
+        ? await this.isExistMusicLike(music.id, user)
+        : null;
       music.artists = await this.getMusicArtists(music.id);
     }
 
