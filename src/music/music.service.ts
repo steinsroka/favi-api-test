@@ -109,10 +109,10 @@ export class MusicService {
     });
     // const tags = [];
     console.log('artist-delay-log-1',Date.now() - now);
-     const promises = artist.musics.map( music =>{
+     const promises = artist.musics.map( async music =>{
        music.tags = await this.getMusicTags(music.id);
        console.log('artist-delay-log-2',Date.now() - now);
-       // tags.push(tag);
+
        music.myLike = isDefined(user)
          ? await this.isExistMusicLike(music.id, user)
          : null;
