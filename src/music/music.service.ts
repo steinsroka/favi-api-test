@@ -110,16 +110,16 @@ export class MusicService {
     // const tags = [];
     console.log('artist-delay-log-1',Date.now() - now);
      const promises = artist.musics.map( music =>{
-       music.tags = this.getMusicTags(music.id);
+       music.tags = await this.getMusicTags(music.id);
        console.log('artist-delay-log-2',Date.now() - now);
        // tags.push(tag);
        music.myLike = isDefined(user)
-         ? this.isExistMusicLike(music.id, user)
+         ? await this.isExistMusicLike(music.id, user)
          : null;
-       music.artists = this.getMusicArtists(music.id);
+       music.artists = await this.getMusicArtists(music.id);
      });
     await Promise.all(promises);
-    console.log('artist-delay-log-5',Date.now() - now);
+    console.log('artist-delay-log-3',Date.now() - now);
     // for (const music of artist.musics){
     //   const tag = await this.getMusicTags(music.id);
     //   // tags.push(tag);
