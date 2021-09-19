@@ -106,15 +106,27 @@ export class MusicService {
       relations: ['musics'],
       where: { id: artistId },
     });
-
-    for (const music of artist.musics){
-      // music.musicTags = await this.getMusicTags(music.musicId);
-      music.tags = await this.getMusicTags(music.id);
-      music.myLike = isDefined(user)
-        ? await this.isExistMusicLike(music.id, user)
-        : null;
-      music.artists = await this.getMusicArtists(music.id);
-    }
+    // const tags = [];
+     const promises = artist.musics.map( async music =>{
+       const tag = await this.getMusicTags(music.id);
+       // tags.push(tag);
+       music.tags = tag;
+       music.myLike = isDefined(user)
+         ? await this.isExistMusicLike(music.id, user)
+         : null;
+       music.artists = await this.getMusicArtists(music.id);
+     });
+    await Promise.all(promises);
+    // for (const music of artist.musics){
+    //   const tag = await this.getMusicTags(music.id);
+    //   // tags.push(tag);
+    //
+    //   music.tags = tag;
+    //   music.myLike = isDefined(user)
+    //     ? await this.isExistMusicLike(music.id, user)
+    //     : null;
+    //   music.artists = await this.getMusicArtists(music.id);
+    // }
 
     return artist;
     // artistInfos.musics = await this.musicInfoRepository.find({where: {musicId: In(musicIds)}, order: {musicId: 'ASC'}});
