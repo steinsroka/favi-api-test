@@ -64,7 +64,7 @@ export class MusicController {
     @Request() req: UserRequest,
     @Param('id') id: number,
   ): Promise<Artist> {
-    const music = await this.musicService.getMusicWithArtist(id,req.user);
+    const music = await this.musicService.getMusicWithArtist(id, req.user);
     return music;
   }
 
