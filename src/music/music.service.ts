@@ -109,17 +109,14 @@ export class MusicService {
     });
     // const tags = [];
     console.log('artist-delay-log-1',Date.now() - now);
-     const promises = artist.musics.map( async music =>{
-       const tag = await this.getMusicTags(music.id);
+     const promises = artist.musics.map( music =>{
+       music.tags = this.getMusicTags(music.id);
        console.log('artist-delay-log-2',Date.now() - now);
        // tags.push(tag);
-       music.tags = tag;
        music.myLike = isDefined(user)
-         ? await this.isExistMusicLike(music.id, user)
+         ? this.isExistMusicLike(music.id, user)
          : null;
-         console.log('artist-delay-log-3',Date.now() - now);
-       music.artists = await this.getMusicArtists(music.id);
-       console.log('artist-delay-log-4',Date.now() - now);
+       music.artists = this.getMusicArtists(music.id);
      });
     await Promise.all(promises);
     console.log('artist-delay-log-5',Date.now() - now);
