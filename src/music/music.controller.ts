@@ -62,10 +62,9 @@ export class MusicController {
   @Get('artist/:id')
   async getMusicWithArtist(
     @Request() req: UserRequest,
-    @Query('index') index?: number,
     @Param('id') id: number,
   ): Promise<Artist> {
-    const music = await this.musicService.getMusicWithArtist(id,index,req.user);
+    const music = await this.musicService.getMusicWithArtist(id,req.user);
     return music;
   }
 

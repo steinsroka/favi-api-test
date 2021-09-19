@@ -106,8 +106,7 @@ export class MusicService {
     const artist = await this.artistRepository.findOneOrFail({
       relations: ['musics'],
       where: { id: artistId },
-      take: 10,
-      skip: index * 10,
+
     });
     // const tags = [];
      const promises = artist.musics.map( async music =>{
