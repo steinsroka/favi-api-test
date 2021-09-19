@@ -102,21 +102,27 @@ export class MusicService {
   }
   async getMusicWithArtist(artistId: number,user?: User): Promise<Artist> {
     // const artistInfos = await this.artistRepository.findOneOrFail({where: {id: artistId}});
+    const now = Date.now();
     const artist = await this.artistRepository.findOneOrFail({
       relations: ['musics'],
       where: { id: artistId },
     });
     // const tags = [];
+    console.log('artist-delay-log-1',Date.now() - now);
      const promises = artist.musics.map( async music =>{
        const tag = await this.getMusicTags(music.id);
+       console.log('artist-delay-log-2',Date.now() - now);
        // tags.push(tag);
        music.tags = tag;
        music.myLike = isDefined(user)
          ? await this.isExistMusicLike(music.id, user)
          : null;
+         console.log('artist-delay-log-3',Date.now() - now);
        music.artists = await this.getMusicArtists(music.id);
+       console.log('artist-delay-log-4',Date.now() - now);
      });
     await Promise.all(promises);
+    console.log('artist-delay-log-5',Date.now() - now);
     // for (const music of artist.musics){
     //   const tag = await this.getMusicTags(music.id);
     //   // tags.push(tag);
