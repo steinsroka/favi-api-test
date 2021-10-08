@@ -357,23 +357,23 @@ export class MusicService {
         .createQueryBuilder('ratioAge')
         .select('musicId', 'musicId')
         .addSelect(
-          'COUNT(case when user.age = 10 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+          'COUNT(case when user.age = "10" then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
           '10',
         )
         .addSelect(
-          'COUNT(case when user.age = 20 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+          'COUNT(case when user.age = "20" then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
           '20',
         )
         .addSelect(
-          'COUNT(case when user.age = 30 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+          'COUNT(case when user.age = "30" then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
           '30',
         )
         .addSelect(
-          'COUNT(case when user.age = 40 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+          'COUNT(case when user.age = "40" then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
           '40',
         )
         .addSelect(
-          'COUNT(case when user.age = 50 then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
+          'COUNT(case when user.age = "50" then 1 ELSE NULL END) OVER(PARTITION BY musicId) / COUNT(*) OVER(PARTITION BY musicId) * 100',
           '50',
         )
         .leftJoin(User, 'user', 'ratioAge.userId = user.id')
