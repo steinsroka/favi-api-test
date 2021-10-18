@@ -204,7 +204,7 @@ export class UserService {
     const albums = await this.userAlbumRepository.find({
        user: user
      });
-    console.log('get-albums-user',albums);
+    // console.log('get-albums-user',albums);
 
     return albums;
   }
