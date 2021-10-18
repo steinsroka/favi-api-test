@@ -201,6 +201,8 @@ export class UserService {
   }
   async getAlbums(userId: number): Promise<Album[]> {
     const user = await this.userRepository.findOne({ id: userId });
+    console.log('get-albums-user',user);
+
     return user.albums;
   }
 
