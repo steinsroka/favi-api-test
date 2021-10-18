@@ -200,10 +200,17 @@ export class UserService {
     return await this.userAlbumRepository.findOne({ id: albumId });
   }
   async getAlbums(userId: number): Promise<Album[]> {
-    const user = await this.userRepository.findOne({ id: userId });
-    console.log('get-albums-user',user);
 
-    return user.albums;
+    const albums = await this.userAlbumRepository.find({
+      where: { userId: userId },
+      order: { timestamp: 'DESC' },
+      // take: 5,
+      // skip: index * 5,
+    });
+    // const albums = await this.userAlbumRepository.findOne({ userid: userId });
+    console.log('get-albums-user',albums);
+
+    return albums;
   }
 
   async isExistAlbum(albumPartial: AlbumPartialDto): Promise<boolean> {
