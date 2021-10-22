@@ -223,7 +223,7 @@ export class UserService {
 
   async addMusicInAlbum(albumId: number, musicId: number) {
     let album = await this.userAlbumRepository.findOne({ id: albumId });
-    album.musics.push(await this.userMusicRepository.findOne({ id: musicId }));
+    album.musics = await this.userMusicRepository.findOne({ id: musicId });
     return this.userAlbumRepository.save(album);
   }
 
