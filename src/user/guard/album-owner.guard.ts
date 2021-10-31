@@ -37,6 +37,7 @@ export class AlbumOwnerGuard implements CanActivate {
           throw new BadRequestException();
       }
     }
+    console.log('album-err-guard');
     return true;
   }
 }

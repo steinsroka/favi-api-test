@@ -24,6 +24,8 @@ export class ValidateAlbumIdPipe implements PipeTransform {
         );
       }
     }
+    console.log('album-err-pipe');
+
     return value;
   }
 }
