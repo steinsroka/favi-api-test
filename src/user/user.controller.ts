@@ -10,6 +10,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Query,
   Req,
   Request,
@@ -149,7 +150,7 @@ export class UserController {
     return await this.userService.getMusicsInAlbum(id, albumId);
   }
 
-  @PUT('album/:album_id/:music_id')
+  @Put('album/:album_id/:music_id')
   @UsePipes(ValidateAlbumIdPipe)
   @UseGuards(AlbumOwnerGuard)
   async addMusicInAlbum(
