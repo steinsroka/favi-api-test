@@ -22,9 +22,12 @@ export class AlbumOwnerGuard implements CanActivate {
     for (const key of Object.keys(request.params)) {
       console.log('guard-key',key);
       switch (key) {
+        case 'id':
+          break;
         case 'music_id':
           break;
         case 'album_id':
+          // console.log('guard-album',request.params.albu);
           let album: Album = await this.userService.getAlbum(
             parseInt(request.params.album_id),
           );
