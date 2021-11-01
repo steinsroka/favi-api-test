@@ -15,12 +15,11 @@ import { UserService } from '../../user/user.service';
 @Injectable()
 export class AlbumOwnerGuard implements CanActivate {
   constructor(private readonly userService: UserService) {}
-
-  async canActivate(context: ExecutionContext) {
+  async canActivate(context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
     const request: UserRequest = context.switchToHttp().getRequest();
     for (const key of Object.keys(request.params)) {
       console.log('guard-key',key);
-
       switch (key) {
         case 'album_id':
           let album: Album = await this.userService.getAlbum(
