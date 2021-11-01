@@ -10,23 +10,21 @@ import { Album } from 'src/common/entity/album.entity';
 import { UserRequest } from '../../common/@types/user-request';
 import { ErrorMessage } from '../../common/class/error-message';
 import { ErrorString } from '../../common/const/error-string';
-import { UserService } from '../user.service';
+import { UserService } from '../../user/user.service';
 
 @Injectable()
 export class AlbumOwnerGuard implements CanActivate {
   constructor(private readonly userService: UserService) {}
   async canActivate(
     context: ExecutionContext,
-  ): Promise<boolean> {
+  ) {
     const request: UserRequest = context.switchToHttp().getRequest();
     for (const key of Object.keys(request.params)) {
       console.log('guard-key',key);
       switch (key) {
         case 'id':
-
           break;
         case 'music_id':
-
           break;
         case 'album_id':
           let album: Album = await this.userService.getAlbum(
