@@ -20,7 +20,7 @@ export class AlbumOwnerGuard implements CanActivate {
   ): Promise<boolean> {
     const request: UserRequest = context.switchToHttp().getRequest();
     for (const key of Object.keys(request.params)) {
-      // console.log('guard-key',key);
+      console.log('guard-key',key);
       switch (key) {
         case 'id':
 
