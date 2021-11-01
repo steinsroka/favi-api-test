@@ -10,7 +10,7 @@ import { Album } from 'src/common/entity/album.entity';
 import { UserRequest } from '../../common/@types/user-request';
 import { ErrorMessage } from '../../common/class/error-message';
 import { ErrorString } from '../../common/const/error-string';
-import { UserService } from '../../user/user.service';
+import { UserService } from '../user.service';
 
 @Injectable()
 export class AlbumOwnerGuard implements CanActivate {
