@@ -17,6 +17,8 @@ export class UserAuthGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request: UserRequest = context.switchToHttp().getRequest();
     for (const key of Object.keys(request.params)) {
+      console.log('user-auth-key',key);
+
       switch (key) {
         case 'id':
           if (request.user.id.toString() !== request.params.id) {
