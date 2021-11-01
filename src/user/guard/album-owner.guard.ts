@@ -19,6 +19,8 @@ export class AlbumOwnerGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const request: UserRequest = context.switchToHttp().getRequest();
     for (const key of Object.keys(request.params)) {
+      console.log('guard-key',key);
+
       switch (key) {
         case 'album_id':
           let album: Album = await this.userService.getAlbum(
@@ -37,7 +39,7 @@ export class AlbumOwnerGuard implements CanActivate {
           throw new BadRequestException();
       }
     }
-    
+
     return true;
   }
 }

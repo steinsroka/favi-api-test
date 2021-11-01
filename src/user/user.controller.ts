@@ -150,7 +150,7 @@ export class UserController {
     return await this.userService.getMusicsInAlbum(id, albumId);
   }
 
-  @Put('album/:album_id/:music_id')
+  @Post('album/:album_id/:music_id')
   @UsePipes(ValidateAlbumIdPipe)
   @UseGuards(AlbumOwnerGuard)
   async addMusicInAlbum(
