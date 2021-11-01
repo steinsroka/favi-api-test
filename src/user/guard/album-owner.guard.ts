@@ -32,6 +32,7 @@ export class AlbumOwnerGuard implements CanActivate {
             parseInt(request.params.album_id),
           );
           console.log('guard-album-2',album);
+          console.log('guard-album-3',request.user.id);
           if (request.user.id !== album.user.id) {
             throw new UnauthorizedException(
               new ErrorMessage(
