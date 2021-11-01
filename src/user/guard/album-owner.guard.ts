@@ -27,10 +27,11 @@ export class AlbumOwnerGuard implements CanActivate {
         case 'music_id':
           break;
         case 'album_id':
-          // console.log('guard-album',request.params.albu);
+          console.log('guard-album');
           let album: Album = await this.userService.getAlbum(
             parseInt(request.params.album_id),
           );
+          console.log('guard-album-2',album);
           if (request.user.id !== album.user.id) {
             throw new UnauthorizedException(
               new ErrorMessage(
