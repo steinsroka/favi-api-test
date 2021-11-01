@@ -38,8 +38,8 @@ export class AlbumOwnerGuard implements CanActivate {
         default:
           throw new BadRequestException(
             new ErrorMessage(
-              'key is',
-              key,
+              `'key is ${key}`,
+              ErrorString.FAIL_NOT_AUTHORIZED,
             ),
           );
       }
