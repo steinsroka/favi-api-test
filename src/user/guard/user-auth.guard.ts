@@ -30,6 +30,9 @@ export class UserAuthGuard implements CanActivate {
             );
           }
           break;
+        case 'album_id':
+        
+          break;
         default:
           throw new BadRequestException();
       }
