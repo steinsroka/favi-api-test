@@ -18,6 +18,9 @@ export class Album {
   @Column()
   name: string;
 
+  @Column()
+  userId: number;
+
   @Column({ default: true })
   isPublic: boolean;
 
