@@ -217,7 +217,10 @@ export class UserService {
   //getMusicsInAlbum, addMusicInAlbum, updateAlbum, deleteAlbum, deleteMusicInAlbum
 
   async getMusicsInAlbum(userId: number, albumId: number): Promise<Music[]> {
-    const album = await this.userAlbumRepository.findOne({ id: albumId });
+    const album = await this.userAlbumRepository.findOneOrFail({
+      relations: ['musics'],
+      where: {id: albumId },
+     });
     return album.musics;
   }
 
