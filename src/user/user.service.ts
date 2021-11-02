@@ -227,9 +227,9 @@ export class UserService {
       relations: ['musics'],
       where: {id: albumId },
      });
-    console.log('album-music album',album);
+    // console.log('album-music album',album);
     let musics = await this.userMusicRepository.findOne({ id: musicId });
-    console.log('album-music musics',musics);
+    // console.log('album-music musics',musics);
     album.musics.push(await this.userMusicRepository.findOne({ id: musicId }));
 
     return this.userAlbumRepository.save(album);

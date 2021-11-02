@@ -24,7 +24,7 @@ export class ValidateAlbumIdPipe implements PipeTransform {
         );
       }
     }
-    
+
 
     return value;
   }
