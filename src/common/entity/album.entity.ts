@@ -30,7 +30,7 @@ export class Album {
   @ManyToOne(() => User, (user) => user.albums, { primary: true, onDelete: 'CASCADE' })
   user: User;
 
-  @OneToMany(() => Music, { cascade: true })
+  @ManyToMany(() => Music, { cascade: true })
   @JoinTable()
   musics: Music[];
 }
