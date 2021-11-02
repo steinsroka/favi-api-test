@@ -222,19 +222,15 @@ export class UserService {
   }
 
   async addMusicInAlbum(albumId: number, musicId: number) {
-    console.log('album-music ready');
-    let album = await this.userAlbumRepository.findOne({ id: albumId });
+    // console.log('album-music ready');
+    let album = await this.userAlbumRepository.findOneOrFail({
+      relations: ['musics'],
+      where: {id: albumId },
+     });
     console.log('album-music album',album);
     let musics = await this.userMusicRepository.findOne({ id: musicId });
     console.log('album-music musics',musics);
-
-    try {
-      album.musics.push(musics);
-    } catch (error) {
-
-    }
-
-
+    album.musics.push(await this.userMusicRepository.findOne({ id: musicId }));
 
     return this.userAlbumRepository.save(album);
   }
