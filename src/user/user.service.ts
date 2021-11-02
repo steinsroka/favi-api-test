@@ -227,8 +227,13 @@ export class UserService {
     console.log('album-music album',album);
     let musics = await this.userMusicRepository.findOne({ id: musicId });
     console.log('album-music musics',musics);
-    album.musics.push(musics);
-    // console.log('album-music-post3',musics);
+  
+    if (album.musics !== undefined) {
+      album.musics.push(musics);
+    }else{
+      album.musics = [musics]
+    }
+
 
     return this.userAlbumRepository.save(album);
   }
