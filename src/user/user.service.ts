@@ -246,7 +246,9 @@ export class UserService {
   }
 
   async deleteAlbum(albumId: number): Promise<DeleteResult> {
-    return await this.userAlbumRepository.softDelete(albumId);
+    console.log('delete-callback');
+
+    return this.userAlbumRepository.softDelete(albumId);
   }
 
   async deleteMusicInAlbum(albumId: number, musicId: number) {
