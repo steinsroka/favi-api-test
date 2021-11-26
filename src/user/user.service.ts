@@ -238,13 +238,14 @@ export class UserService {
     return this.userAlbumRepository.save(album);
   }
 
-  async updateAlbum(albumId: number, name: string, isPublic: boolean) {
+  async updateAlbum(albumId: number, newName: string, isPublic: boolean) {
     let album = await this.userAlbumRepository.findOneOrFail({
       relations: ['musics'],
       where: {id: albumId },
      });
-    album.name = name;
+    album.name = newName;
     album.isPublic = isPublic;
+    console.log('update-name',newName);    
     return this.userAlbumRepository.save(album);
   }
 
