@@ -239,15 +239,17 @@ export class UserService {
   }
 
   async updateAlbum(albumId: number, newName: string, isPublic: boolean) {
-    let album = await this.userAlbumRepository.findOne({ id: albumId });
+    let album = await this.userAlbumRepository.findOneOrFail({
+      relations: ['musics'],
+      where: {id: albumId },
+     });
     album.name = newName;
     album.isPublic = isPublic;
     return this.userAlbumRepository.save(album);
   }
 
   async deleteAlbum(albumId: number): Promise<DeleteResult> {
-    console.log('delete-callback');
-
+    // console.log('delete-callback');
     return this.userAlbumRepository.softDelete(albumId);
   }
 
