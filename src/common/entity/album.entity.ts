@@ -33,4 +33,7 @@ export class Album {
   @ManyToMany(() => Music, { cascade: true })
   @JoinTable()
   musics: Music[];
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }
