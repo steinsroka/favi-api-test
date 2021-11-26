@@ -7,6 +7,7 @@ import {
   ManyToMany,
   JoinTable,
   CreateDateColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 
