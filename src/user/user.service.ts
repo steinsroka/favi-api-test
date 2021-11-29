@@ -243,9 +243,10 @@ export class UserService {
       relations: ['musics'],
       where: {id: albumId },
      });
+    // console.log('update-name',newName);    
     album.name = newName;
     album.isPublic = isPublic;
-    console.log('update-name',newName);    
+
     return this.userAlbumRepository.save(album);
   }
 

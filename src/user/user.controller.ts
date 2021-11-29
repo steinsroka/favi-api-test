@@ -167,6 +167,7 @@ export class UserController {
     @Param('album_id') albumId: number,
     @Body() updateAlbumDto: AddAlbumDto,
   ) {
+    console.log('update-name',updateAlbumDto.name);    
     return await this.userService.updateAlbum(
       albumId,
       updateAlbumDto.name,
