@@ -35,6 +35,7 @@ import { MusicTagInfo } from './music-tag-info.entity';
       .addSelect('music.melodyScale', 'melodyScale')
       .addSelect('music.copyright', 'copyright')
       .addSelect('COUNT(musicLike.userId)', 'likedUserCount')
+      .addSelect('COUNT(musicComment.userId)', 'commentedCount')
       .from(Music, 'music')
       .leftJoin('music.musicLikes', 'musicLike')
       .groupBy('music.id'),
@@ -51,6 +52,9 @@ export class MusicInfo {
 
   @ViewColumn()
   likedUserCount: number;
+
+  @ViewColumn()
+  commentedCount: nmber;
 
   @ViewColumn()
   vocalType: VocalType;

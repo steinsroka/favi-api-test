@@ -133,7 +133,7 @@ export class UserService {
       .groupBy('t.userId')
       .orderBy('t.weight', 'DESC')
       .addOrderBy('recentSocialLogTimestamp', 'DESC')
-      .limit(5)
+      .limit(10)
       .getRawMany();
 
 
@@ -243,7 +243,7 @@ export class UserService {
       relations: ['musics'],
       where: {id: albumId },
      });
-    // console.log('update-name',newName);    
+    // console.log('update-name',newName);
     album.name = newName;
     album.isPublic = isPublic;
 
