@@ -54,7 +54,7 @@ export class MusicInfo {
   likedUserCount: number;
 
   @ViewColumn()
-  commentedCount: nmber;
+  commentedCount: number;
 
   @ViewColumn()
   vocalType: VocalType;
