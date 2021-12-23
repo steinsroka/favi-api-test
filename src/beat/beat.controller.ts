@@ -29,6 +29,7 @@ import { ValidateBeatPipe } from './pipe/validate-beat.pipe';
 import { BeatInfo } from '../common/view/beat-info.entity';
 // import { GetHelpDto } from './dto/get-help.dto';
 // import { WriteHelpDto } from './dto/write-help.dto';
+import { AddBeatDto } from './dto/add-beat.dto';
 import { BeatSmallInfoDto } from './dto/beat-small-info.dto';
 import { EditBeatDto } from './dto/edit-beat.dto';
 import { BeatService } from './beat.service';
