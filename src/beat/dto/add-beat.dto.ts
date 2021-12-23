@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { Language,BPM,MelodyScale } from '../../common/entity/beat.entity';
 
-export class AddMusicCommentDto {
+export class AddBeatDto {
   @IsString()
   title: string;
 
