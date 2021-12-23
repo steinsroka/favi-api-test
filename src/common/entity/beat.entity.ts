@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   PrimaryGeneratedColumn,
+  PrimaryColumn,
   OneToMany,
   ManyToMany,
   JoinTable,
