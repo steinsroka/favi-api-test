@@ -30,14 +30,14 @@ export class BeatService {
     // @InjectRepository(BeatComment)
     // private readonly beatCommentRepository: Repository<BeatComment>,
   ) {}
-    async addBeat(user: User, title: string, contents: string, language: string, bpm: number, melodyScale: string){
+    async addBeat(user: User, beatTitle: string, beatContents: string, beatLanguage: string, beatBpm: number, beatMelodyScale: string){
       const beat = this.beatRepository.create({
-        title: title,
-        contents: contents,
+        title: beatTitle,
+        contents: beatContents,
         userId: user.id,
-        language: language,
-        bpm: bpm,
-        melodyScale: melodyScale
+        language: beatLanguage,
+        bpm: beatBpm,
+        melodyScale: beatMelodyScale
       });
       return this.beatRepository.save(beat);
     }
