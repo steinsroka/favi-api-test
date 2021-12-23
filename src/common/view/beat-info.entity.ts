@@ -16,6 +16,7 @@ import {
   RhythmBeat,
   VocalType,
 } from '../entity/music.entity';
+import { Beat } from '../entity/beat.entity';
 import { User } from '../entity/user.entity';
 // import { MusicTagInfo } from './music-tag-info.entity';
 
@@ -28,7 +29,7 @@ import { User } from '../entity/user.entity';
       // .addSelect('music.composer', 'composer')
       // .addSelect('music.lyricist', 'lyricist')
       .addSelect('beat.contents', 'contents')
-      .addSelect('beat.vocalType', 'vocalType')
+      // .addSelect('beat.vocalType', 'vocalType')
       .addSelect('beat.language', 'language')
       // .addSelect('beat.rhythmBeat', 'rhythmBeat')
       .addSelect('beat.bpm', 'bpm')
@@ -57,8 +58,8 @@ export class MusicInfo {
   // @ViewColumn()
   // commentedCount: number;
 
-  @ViewColumn()
-  vocalType: VocalType;
+  // @ViewColumn()
+  // vocalType: VocalType;
 
   @ViewColumn()
   language: Language;
