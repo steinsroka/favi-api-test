@@ -50,6 +50,15 @@ export class BeatService {
     // music.artists = await this.getMusicArtists(musicId);
     return beat;
   }
+
+  async editBeat(beatId: number, editBeatDto: EditBeatDto) {
+    const beat = await this.beatRepository.findOneOrFail(beatId);
+    for (const key of Object.keys(editBeatDto)) {
+      beat[key] = editBeatDto[key];
+    }
+    await this.beatRepository.save(beat);
+    return await this.getBeat(beatId);
+  }
   // async getMusic2(musicId: number, user?: User): Promise<MusicInfo> {
   //   const music = await this.musicInfoRepository.findOneOrFail({ id: musicId });
   //   music.artists = await this.getMusicArtists(musicId);
