@@ -19,7 +19,7 @@ export class BeatLike {
   @ManyToOne(() => User, (user) => user.beatLikes, { onDelete: 'CASCADE' })
   user: User;
 
-  @ManyToOne(() => Music, (beat) => beat.beatLikes)
+  @ManyToOne(() => Beat, (beat) => beat.beatLikes)
   beat: Beat;
 
   @CreateDateColumn()
