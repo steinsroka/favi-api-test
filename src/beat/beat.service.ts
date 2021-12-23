@@ -76,4 +76,33 @@ export class BeatService {
       })) > 0
     );
   }
+
+  async getBeatComments(beatId: number, index?: number, user?: User) {
+    // const musicCommentIndex = isDefined(index) ? 10 : 2;
+    // index = index ?? 0;
+    // let limit = musicCommentIndex;
+    // const musicComments = await this.musicCommentInfoRepository.find({
+    //   where: { musicId: musicId },
+    //   order: { timestamp: 'DESC' },
+    //   skip: index * musicCommentIndex,
+    //   take: limit,
+    // });
+    // for (let i = 0; i < musicComments.length; ++i) {
+    //   musicComments[i].tags = await this.getMusicCommentTags(
+    //     musicComments[i].id,
+    //   );
+    //   musicComments[i].myLike = isDefined(user)
+    //     ? await this.isExistMusicCommentLike(musicComments[i].id, user)
+    //     : null;
+    // }
+    // return musicComments;
+  }
+
+  async isExistBeatComment(beatCommentId: number) {
+    // return (
+    //   (await this.musicCommentRepository.count({ id: musicCommentId })) > 0
+    // );
+  }
+
+
 }
