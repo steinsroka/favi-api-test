@@ -11,20 +11,20 @@ import { Observable } from 'rxjs';
 import { UserRequest } from '../../common/@types/user-request';
 import { ErrorMessage } from '../../common/class/error-message';
 import { ErrorString } from '../../common/const/error-string';
-import { MusicService } from '../music.service';
+import { BeatService } from '../beat.service';
 
 @Injectable()
-export class MusicCommentAuthGuard implements CanActivate {
-  constructor(private readonly musicService: MusicService) {}
+export class BeatCommentAuthGuard implements CanActivate {
+  constructor(private readonly beatService: BeatService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: UserRequest = context.switchToHttp().getRequest();
     const commentId = parseInt(request.params.comment_id);
-    if (!(await this.musicService.isExistMusicComment(commentId))) {
+    if (!(await this.beatService.isExistBeatComment(commentId))) {
       return true;
     }
-    const musicComment = await this.musicService.getMusicComment(commentId);
-    if (musicComment.userId !== request.user.id) {
+    const beatComment = await this.beatService.getBeatComment(commentId);
+    if (beatComment.userId !== request.user.id) {
       throw new UnauthorizedException(
         new ErrorMessage(
           `user id ${request.user.id} not has beat comment id ${request.params.comment_id}`,
