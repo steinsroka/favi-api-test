@@ -5,11 +5,8 @@ export class EditBeatDto extends PartialType(
   PickType(Beat, [
     'title',
     'contents',
-    'link',
     'bpm',
     'melodyScale',
     'language',
-    'vocalType',
-    'rhythmBeat',
   ]),
 ) {}
