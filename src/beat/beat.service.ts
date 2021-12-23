@@ -13,6 +13,7 @@ import { isDefined } from 'class-validator';
 import { BeatLike } from '../common/entity/beat-like.entity';
 import { Message } from '../common/class/message';
 import { EditBeatDto } from './dto/edit-beat.dto';
+import { AddBeatDto } from './dto/add-beat.dto';
 // import { BeatComment } from '../common/entity/beat-comment.entity';
 // import { BeatCommentInfo } from '../common/view/beat-comment-info.entity';
 
@@ -30,14 +31,14 @@ export class BeatService {
     // @InjectRepository(BeatComment)
     // private readonly beatCommentRepository: Repository<BeatComment>,
   ) {}
-    async addBeat(user: User, beatTitle: string, beatContents: string, beatLanguage: string, beatBpm: number, beatMelodyScale: string){
+    async addBeat(user: User, addBeatDto: AddBeatDto){
       const beat = this.beatRepository.create({
-        title: beatTitle,
-        contents: beatContents,
+        title: addBeatDto.title,
+        contents: addBeatDto.contents,
         userId: user.id,
-        language: beatLanguage,
-        bpm: beatBpm,
-        melodyScale: beatMelodyScale
+        language: addBeatDto.language,
+        bpm: addBeatDto.bpm,
+        melodyScale: addBeatDto.melodyScale
       });
       return this.beatRepository.save(beat);
     }

@@ -59,11 +59,7 @@ export class BeatController {
   ): Promise<Message> {
     await this.beatService.addBeat(
       req.user,
-      addBeatDto.title,
-      addBeatDto.contents,
-      addBeatDto.language,
-      addBeatDto.bpm,
-      addBeatDto.melodyScale
+      addBeatDto.title
     );
 
     return new Message('success');
