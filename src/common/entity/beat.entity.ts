@@ -100,7 +100,7 @@ export class Beat {
   // musicComments: MusicComment[];
 
   @OneToMany(() => BeatLike, (beatLike) => beatLike.beat, { cascade: true })
-  beatLikes: beatLike[];
+  beatLikes: BeatLike[];
 
   // @OneToMany(() => MusicTag, (musicTag) => musicTag.music, { cascade: true })
   // musicTags: MusicTag[];
