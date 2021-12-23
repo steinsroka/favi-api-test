@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 // import { Artist } from './artist.entity';
 // import { MusicComment } from './music-comment.entity';
-import { BeatLike } from './music-like.entity';
+import { BeatLike } from './beat-like.entity';
 // import { MusicTag } from './music-tag.entity';
 import { User } from './user.entity';
 
