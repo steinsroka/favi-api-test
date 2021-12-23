@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import configuration from './config/configuration';
 import { MusicModule } from './music/music.module';
+import { BeatModule } from './music/beat.module';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './common/exception-filter/all-exceptions.filter';
 import { SearchController } from './search/search.controller';
@@ -35,6 +36,7 @@ import { NoticeModule } from './notice/notice.module';
     UserModule,
     AuthModule,
     MusicModule,
+    BeatModule,
     SearchModule,
     HelpModule,
     NoticeModule,
