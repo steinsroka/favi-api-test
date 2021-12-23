@@ -94,6 +94,8 @@ export class Beat {
   @Column({ type: 'enum', enum: MelodyScale, nullable: true })
   melodyScale: MelodyScale;
 
+  @PrimaryColumn()
+  userId: number;
   // @OneToMany(() => MusicComment, (musicComment) => musicComment.music, {
   //   cascade: true,
   // })
