@@ -59,7 +59,7 @@ export class BeatController {
       req.user,
       addBeatDto.title,
       addBeatDto.contents,
-      addBeatDto.language
+      addBeatDto.language,
       addBeatDto.bpm,
       addBeatDto.melodyScale
     );
