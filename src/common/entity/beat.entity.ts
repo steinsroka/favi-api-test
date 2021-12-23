@@ -78,9 +78,9 @@ export class Beat {
   @Column({ type: 'date', nullable: true })
   timestamp: Date;
 
-  @IsEnum(VocalType)
-  @Column({ type: 'enum', enum: VocalType, nullable: true })
-  vocalType: VocalType;
+  // @IsEnum(VocalType)
+  // @Column({ type: 'enum', enum: VocalType, nullable: true })
+  // vocalType: VocalType;
 
   @IsEnum(Language)
   @Column({ type: 'enum', enum: Language, nullable: true })

@@ -36,6 +36,7 @@ import { InsertResult } from 'typeorm';
 import { isDefined } from 'class-validator';
 import { ErrorMessage } from '../common/class/error-message';
 import { ErrorString } from '../common/const/error-string';
+import { UserService } from '../user/user.service';
 
 @Controller('beat')
 @UseGuards(JwtAuthGuard)
