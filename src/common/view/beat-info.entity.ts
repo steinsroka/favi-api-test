@@ -9,14 +9,14 @@ import {
 // import { MusicTagValue } from '../entity/music-tag-value.entity';
 import {
   BPM,
-  Copyright,
+  // Copyright,
   Language,
   MelodyScale,
-  Music,
-  RhythmBeat,
-  VocalType,
-} from '../entity/music.entity';
-import { Beat } from '../entity/beat.entity';
+  Beat,
+  // RhythmBeat,
+  // VocalType,
+} from '../entity/beat.entity';
+// import { Beat } from '../entity/beat.entity';
 import { User } from '../entity/user.entity';
 // import { MusicTagInfo } from './music-tag-info.entity';
 
@@ -42,7 +42,7 @@ import { User } from '../entity/user.entity';
       // .leftJoin('music.musicComments', 'musicComment')
       .groupBy('beat.id'),
 })
-export class MusicInfo {
+export class BeatInfo {
   @ViewColumn()
   id: number;
 
