@@ -5,7 +5,10 @@ import { BeatLike } from '../common/entity/beat-like.entity';
 import { BeatController } from './beat.controller';
 import { BeatService } from './beat.service';
 import { BeatInfo } from '../common/view/beat-info.entity';
+import { UserService } from '../user/user.service';
+import { UserModule } from '../user/user.module';
 import { forwardRef } from '@nestjs/common';
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([
