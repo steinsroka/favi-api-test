@@ -13,6 +13,8 @@ import { isDefined } from 'class-validator';
 import { BeatLike } from '../common/entity/beat-like.entity';
 import { Message } from '../common/class/message';
 import { EditBeatDto } from './dto/edit-beat.dto';
+// import { BeatComment } from '../common/entity/beat-comment.entity';
+// import { BeatCommentInfo } from '../common/view/beat-comment-info.entity';
 
 @Injectable()
 export class BeatService {
@@ -23,6 +25,10 @@ export class BeatService {
     private readonly beatInfoRepository: Repository<BeatInfo>,
     @InjectRepository(BeatLike)
     private readonly beatLikeRepository: Repository<BeatLike>,
+    // @InjectRepository(BeatCommentInfo)
+    // private readonly beatCommentInfoRepository: Repository<BeatCommentInfo>,
+    // @InjectRepository(BeatComment)
+    // private readonly beatCommentRepository: Repository<BeatComment>,
   ) {}
     async addBeat(user: User, title: string, contents: string, language: string, bpm: string, melodyScale: string){
       const beat = this.beatRepository.create({
@@ -77,32 +83,52 @@ export class BeatService {
     );
   }
 
-  async getBeatComments(beatId: number, index?: number, user?: User) {
-    // const musicCommentIndex = isDefined(index) ? 10 : 2;
-    // index = index ?? 0;
-    // let limit = musicCommentIndex;
-    // const musicComments = await this.musicCommentInfoRepository.find({
-    //   where: { musicId: musicId },
-    //   order: { timestamp: 'DESC' },
-    //   skip: index * musicCommentIndex,
-    //   take: limit,
-    // });
-    // for (let i = 0; i < musicComments.length; ++i) {
-    //   musicComments[i].tags = await this.getMusicCommentTags(
-    //     musicComments[i].id,
-    //   );
-    //   musicComments[i].myLike = isDefined(user)
-    //     ? await this.isExistMusicCommentLike(musicComments[i].id, user)
-    //     : null;
-    // }
-    // return musicComments;
-  }
+  // async getBeatComment(
+  //   beatCommentId: number,
+  //   user?: User,
+  // ): Promise<BeatCommentInfo> {
+  //   // const musicComment = await this.musicCommentInfoRepository.findOne({
+  //   //   id: musicCommentId,
+  //   // });
+  //   // musicComment.tags = await this.getMusicCommentTags(musicComment.id);
+  //   // musicComment.myLike = isDefined(user)
+  //   //   ? await this.isExistMusicCommentLike(musicComment.id, user)
+  //   //   : null;
+  //   // if (isDefined(musicComment.parentId)) {
+  //   //   musicComment.parent = await this.getMusicComment(
+  //   //     musicComment.parentId,
+  //   //     user,
+  //   //   );
+  //   // }
+  //   // return musicComment;
+  // }
 
-  async isExistBeatComment(beatCommentId: number) {
-    // return (
-    //   (await this.musicCommentRepository.count({ id: musicCommentId })) > 0
-    // );
-  }
+  // async getBeatComments(beatId: number, index?: number, user?: User) {
+  //   // const musicCommentIndex = isDefined(index) ? 10 : 2;
+  //   // index = index ?? 0;
+  //   // let limit = musicCommentIndex;
+  //   // const musicComments = await this.musicCommentInfoRepository.find({
+  //   //   where: { musicId: musicId },
+  //   //   order: { timestamp: 'DESC' },
+  //   //   skip: index * musicCommentIndex,
+  //   //   take: limit,
+  //   // });
+  //   // for (let i = 0; i < musicComments.length; ++i) {
+  //   //   musicComments[i].tags = await this.getMusicCommentTags(
+  //   //     musicComments[i].id,
+  //   //   );
+  //   //   musicComments[i].myLike = isDefined(user)
+  //   //     ? await this.isExistMusicCommentLike(musicComments[i].id, user)
+  //   //     : null;
+  //   // }
+  //   // return musicComments;
+  // }
+  //
+  // async isExistBeatComment(beatCommentId: number) {
+  //   // return (
+  //   //   (await this.musicCommentRepository.count({ id: musicCommentId })) > 0
+  //   // );
+  // }
 
 
 }
