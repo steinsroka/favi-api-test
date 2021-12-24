@@ -19,19 +19,19 @@ export class BeatCommentAuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: UserRequest = context.switchToHttp().getRequest();
-    // const commentId = parseInt(request.params.comment_id);
-    // if (!(await this.beatService.isExistBeatComment(commentId))) {
-    //   return true;
-    // }
-    // const beatComment = await this.beatService.getBeatComment(commentId);
-    // if (beatComment.userId !== request.user.id) {
-    //   throw new UnauthorizedException(
-    //     new ErrorMessage(
-    //       `user id ${request.user.id} not has beat comment id ${request.params.comment_id}`,
-    //       ErrorString.FAIL_NOT_AUTHORIZED,
-    //     ),
-    //   );
-    // }
+    const commentId = parseInt(request.params.comment_id);
+    if (!(await this.beatService.isExistBeatComment(commentId))) {
+      return true;
+    }
+    const beatComment = await this.beatService.getBeatComment(commentId);
+    if (beatComment.userId !== request.user.id) {
+      throw new UnauthorizedException(
+        new ErrorMessage(
+          `user id ${request.user.id} not has beat comment id ${request.params.comment_id}`,
+          ErrorString.FAIL_NOT_AUTHORIZED,
+        ),
+      );
+    }
     return true;
   }
 }
