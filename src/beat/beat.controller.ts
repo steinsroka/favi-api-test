@@ -36,7 +36,7 @@ import { VoteBeatTagDto } from './dto/vote-beat-tag.dto';
 import { Tag } from '../common/entity/beat-tag-value.entity';
 import { BeatCommentInfo } from '../common/view/beat-comment-info.entity';
 import { BeatCommentAuthGuard } from './guard/beat-comment-auth.guard';
-import { ValidateBeatPipe } from './pipe/validate-beat.pipe';
+// import { ValidateBeatPipe } from './pipe/validate-beat.pipe';
 
 import { AddBeatCommentDto } from './dto/add-beat-comment.dto';
 import { BeatSmallInfoDto } from './dto/beat-small-info.dto';
