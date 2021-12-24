@@ -105,20 +105,20 @@ export class BeatService {
     beatCommentId: number,
     user?: User,
   ): Promise<BeatCommentInfo> {
-    const musicComment = await this.musicCommentInfoRepository.findOne({
-      id: musicCommentId,
+    const beatComment = await this.beatCommentInfoRepository.findOne({
+      id: beatCommentId,
     });
-    musicComment.tags = await this.getMusicCommentTags(musicComment.id);
-    musicComment.myLike = isDefined(user)
-      ? await this.isExistMusicCommentLike(musicComment.id, user)
+    // beatComment.tags = await this.getMusicCommentTags(musicComment.id);
+    beatComment.myLike = isDefined(user)
+      ? await this.isExistBeatCommentLike(beatComment.id, user)
       : null;
-    if (isDefined(musicComment.parentId)) {
-      musicComment.parent = await this.getMusicComment(
-        musicComment.parentId,
+    if (isDefined(beatComment.parentId)) {
+      beatComment.parent = await this.getBeatComment(
+        beatComment.parentId,
         user,
       );
     }
-    return musicComment;
+    return beatComment;
   }
 
   async getBeatComments(beatId: number, index?: number, user?: User) {
@@ -126,7 +126,7 @@ export class BeatService {
     index = index ?? 0;
     let limit = beatCommentIndex;
     const beatComments = await this.beatCommentInfoRepository.find({
-      where: { musicId: beatId },
+      where: { beatId: beatId },
       order: { timestamp: 'DESC' },
       skip: index * beatCommentIndex,
       take: limit,
@@ -154,9 +154,9 @@ export class BeatService {
     user: User,
     comment: string,
     parent: number,
-  ): Promise<MusicComment> {
+  ): Promise<BeatComment> {
     const beat = await this.beatRepository.findOneOrFail({
-      relations: ['musicComments'],
+      relations: ['beatComments'],
       where: { id: beatId },
     });
     let parentBeatComment = null;
@@ -227,7 +227,7 @@ export class BeatService {
     return this.beatTagRepository.insert({
       beatId: beatId,
       userId: user.id,
-      musicTagValueId: beatTagValue.id,
+      beatTagValueId: beatTagValue.id,
     });
   }
 
