@@ -22,6 +22,8 @@ import {
 import { Album } from './album.entity';
 import { MusicCommentLike } from './music-comment-like.entity';
 import { MusicComment } from './music-comment.entity';
+import { BeatCommentLike } from './beat-comment-like.entity';
+import { BeatComment } from './beat-comment.entity';
 import { MusicLike } from './music-like.entity';
 import { BeatLike } from './beat-like.entity';
 import { MusicTag } from './music-tag.entity';
@@ -118,6 +120,9 @@ export class User {
   @OneToMany(() => MusicComment, (musicComment) => musicComment.user, {cascade: true})
   musicComments: MusicComment[];
 
+  @OneToMany(() => BeatComment, (beatComment) => beatComment.user, {cascade: true})
+  beatComments: BeatComment[];
+
   @OneToMany(() => MusicLike, (musicLike) => musicLike.user, {cascade: true})
   musicLikes: MusicLike[];
 
@@ -130,6 +135,13 @@ export class User {
     {cascade: true}
   )
   musicCommentLikes: MusicCommentLike[];
+
+  @OneToMany(
+    () => BeatCommentLike,
+    (beatCommentLike) => beatCommentLike.user,
+    {cascade: true}
+  )
+  beatCommentLikes: BeatCommentLike[];
 
   @OneToMany(() => MusicTag, (musicTag) => musicTag.music, {cascade: true})
   musicTags: MusicTag[];
