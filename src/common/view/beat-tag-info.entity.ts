@@ -16,7 +16,7 @@ import { BeatTag } from '../entity/beat-tag.entity';
           qb
             .distinct(true)
             .select('beatTagValue.name', 'name')
-            .addSelect('beatTag.musicId', 'musicId')
+            .addSelect('beatTag.beatId', 'beatId')
             .addSelect('beatTagValue.class', 'class')
             .addSelect('beatTagValue.parent', 'parent')
             .addSelect(
