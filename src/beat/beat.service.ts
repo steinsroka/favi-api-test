@@ -101,6 +101,18 @@ export class BeatService {
     );
   }
 
+  async isExistBeatCommentLike(
+    beatCommentId: number,
+    user: User,
+  ): Promise<boolean> {
+    return (
+      (await this.beatCommentLikeRepository.count({
+        beatCommentId: beatCommentId,
+        userId: user.id,
+      })) > 0
+    );
+  }
+
   async getBeatComment(
     beatCommentId: number,
     user?: User,
