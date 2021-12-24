@@ -31,7 +31,7 @@ import { BeatTag } from '../entity/beat-tag.entity';
               'COUNT(*) OVER(PARTITION BY beatTag.beatId, beatTag.beatTagValueId) / COUNT(*) OVER(PARTITION BY beatTag.beatId, beatTagValue.class) * 100',
               'classRatio',
             )
-            .from(MusicTag, 'musicTag')
+            .from(BeatTag, 'beatTag')
             .leftJoin('beatTag.beatTagValue', 'beatTagValue'),
         'tagData',
       )
