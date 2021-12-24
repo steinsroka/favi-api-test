@@ -14,7 +14,7 @@ export class UserFollow {
   userId: number;
 
   @PrimaryColumn()
-  UserFollowId: number;
+  followUserId: number;
 
   @ManyToOne(() => User, (user) => user.userFollows, { onDelete: 'CASCADE' })
   user: User;
