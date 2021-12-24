@@ -48,7 +48,7 @@ export class BeatCommentInfo {
   @ViewColumn()
   userName: string;
 
-  parent: MusicCommentInfo;
+  parent: BeatCommentInfo;
 
   // tags: MusicCommentTagDto[];
 
