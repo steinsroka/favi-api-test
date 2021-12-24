@@ -28,6 +28,7 @@ import { MusicLike } from './music-like.entity';
 import { BeatLike } from './beat-like.entity';
 import { MusicTag } from './music-tag.entity';
 import { Music } from './music.entity';
+import { UserFollow } from './user-follow.entity';
 
 export enum Gender {
   MEN = 'men',
@@ -125,6 +126,9 @@ export class User {
 
   @OneToMany(() => MusicLike, (musicLike) => musicLike.user, {cascade: true})
   musicLikes: MusicLike[];
+
+  @OneToMany(() => UserFollow, (userFollow) => userFollow.user, {cascade: true})
+  userFollows: UserFollow[];
 
   @OneToMany(() => BeatLike, (beatLike) => beatLike.user, {cascade: true})
   beatLikes: BeatLike[];

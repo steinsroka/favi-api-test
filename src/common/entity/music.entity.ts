@@ -123,6 +123,9 @@ export class Music {
   @OneToMany(() => MusicLike, (musicLike) => musicLike.music, { cascade: true })
   musicLikes: MusicLike[];
 
+  // @OneToMany(() => MusicLike, (musicLike) => musicLike.music, { cascade: true })
+  // musicLikes: MusicLike[];
+
   @OneToMany(() => MusicTag, (musicTag) => musicTag.music, { cascade: true })
   musicTags: MusicTag[];
 
