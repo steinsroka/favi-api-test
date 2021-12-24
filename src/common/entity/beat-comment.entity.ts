@@ -42,8 +42,8 @@ export class BeatComment {
   )
   beatCommentLikes: BeatCommentLike[];
 
-  @OneToMany(() => BeatTag, (beatTag) => beatTag.beatComment, {
-    cascade: true,
-  })
-  beatTags: BeatTag[];
+  // @OneToMany(() => BeatTag, (beatTag) => beatTag.beatComment, {
+  //   cascade: true,
+  // })
+  // beatTags: BeatTag[];
 }

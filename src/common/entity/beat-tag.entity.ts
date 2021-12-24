@@ -33,10 +33,10 @@ export class BeatTag {
   @ManyToOne(() => Beat, (beat) => beat.beatTags)
   beat: Beat;
 
-  @ManyToOne(() => BeatComment, (beatComment) => beatComment.beatTags, {
-    onDelete: 'CASCADE',
-  })
-  beatComment: BeatComment;
+  // @ManyToOne(() => BeatComment, (beatComment) => beatComment.beatTags, {
+  //   onDelete: 'CASCADE',
+  // })
+  // beatComment: BeatComment;
 
   // @ManyToOne(() => User, (user) => user.musicTags, {onDelete: 'SET NULL', nullable: true})
   // user: User;
