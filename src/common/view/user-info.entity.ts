@@ -2,6 +2,7 @@ import { MusicCommentTagDto } from '../../music/dto/music-comment-tag.dto';
 import { Connection, ViewColumn, ViewEntity } from 'typeorm';
 import { User,Age,Gender } from '../entity/user.entity';
 import { MusicLike } from '../entity/music-like.entity';
+import { UserFollow } from '../entity/user-follow.entity';
 import { MusicComment } from '../entity/music-comment.entity';
 import { UserTagInfo } from './user-tag-info.entity';
 
@@ -22,6 +23,22 @@ import { UserTagInfo } from './user-tag-info.entity';
             .from(MusicLike, 'musicLike')
             .where('musicLike.userId = user.id'),
         'likedMusicCount',
+      )
+      .addSelect(
+        (qb) =>
+          qb
+            .select('COUNT(*)')
+            .from(UserFollow, 'userFollow')
+            .where('userFollow.userId = user.id'),
+        'followingCount',
+      )
+      .addSelect(
+        (qb) =>
+          qb
+            .select('COUNT(*)')
+            .from(UserFollow, 'userFollow')
+            .where('userFollow.followUserId = user.id'),
+        'followerCount',
       )
       .addSelect(
         (qb) =>
@@ -51,6 +68,12 @@ export class UserInfo {
 
   @ViewColumn()
   testEnd: Date;
+
+  @ViewColumn()
+  followingCount: number;
+
+  @ViewColumn()
+  followerCount: number;
 
   @ViewColumn()
   likedMusicCount: number;
