@@ -15,7 +15,7 @@ export class BeatCommentLike {
 
   @ManyToOne(
     () => BeatComment,
-    (beatComment) => beatComment.musicCommentLikes,
+    (beatComment) => beatComment.beatCommentLikes,
     { onDelete: 'CASCADE' },
   )
   beatComment: BeatComment;
