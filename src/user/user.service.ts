@@ -324,4 +324,31 @@ export class UserService {
     await this.userRepository.save(tester);
     return tester.testerMusics;
   }
+
+
+  addUserFollow(followId: number, user: User) {
+    const userFollow = this.userFollowRepository.create({
+      userId: user.id,
+      followUserId: followId,
+    });
+    return this.userFollowRepository.save(userFollow);
+  }
+
+  deleteUserFollow(followId: number, user: User) {
+    return this.userFollowRepository.delete({
+      followUserId: followId,
+      userId: user.id,
+    });
+  }
+
+  async isExistUserFollow(followId: number, user: User): Promise<boolean> {
+    return (
+      (await this.userFollowRepository.count({
+        followUserId: followId,
+        userId: user.id,
+      })) > 0
+    );
+  }
+
+
 }

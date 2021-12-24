@@ -279,4 +279,24 @@ export class UserController {
 
     // return { result: result };
   }
+
+  @Put(':id/follow')
+  @HttpCode(204)
+  async userFollow(
+    @Request() req: UserRequest,
+    @Param('id') id: number,
+  ): Promise<void> {
+    await this.userService.addUserFollow(id, req.user);
+  }
+
+  @Delete(':id/follow')
+  @HttpCode(204)
+  async hateFollow(
+    @Request() req: UserRequest,
+    @Param('id') id: number,
+  ): Promise<void> {
+    await this.userService.deleteUserFollow(id, req.user);
+  }
+
+
 }
