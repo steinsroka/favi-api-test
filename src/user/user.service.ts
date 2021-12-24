@@ -14,6 +14,7 @@ import { User } from '../common/entity/user.entity';
 import { UserInfo } from '../common/view/user-info.entity';
 import { MusicCommentTagDto } from '../music/dto/music-comment-tag.dto';
 import { UserTagInfo } from '../common/view/user-tag-info.entity';
+import { UserFollow } from '../common/entity/user-follow.entity';
 import { MusicLike } from '../common/entity/music-like.entity';
 import { Music } from '../common/entity/music.entity';
 import { MusicSmallInfoDto } from '../music/dto/music-small-info.dto';
@@ -35,6 +36,8 @@ export class UserService {
     private readonly userInfoRepository: Repository<UserInfo>,
     @InjectRepository(UserTagInfo)
     private readonly userTagInfoRepository: Repository<UserTagInfo>,
+    @InjectRepository(UserFollow)
+    private readonly userFollowRepository: Repository<UserFollow>,
     @InjectRepository(MusicLike)
     private readonly userMusicLikeRepository: Repository<MusicLike>,
     @InjectRepository(Album)
