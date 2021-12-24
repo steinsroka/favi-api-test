@@ -11,9 +11,9 @@ import {
   ManyToOne,
 } from 'typeorm';
 // import { Artist } from './artist.entity';
-// import { MusicComment } from './music-comment.entity';
+import { BeatComment } from './beat-comment.entity';
 import { BeatLike } from './beat-like.entity';
-// import { MusicTag } from './music-tag.entity';
+import { BeatTag } from './beat-tag.entity';
 import { User } from './user.entity';
 
 export enum VocalType {
@@ -97,16 +97,16 @@ export class Beat {
 
   @PrimaryColumn()
   userId: number;
-  // @OneToMany(() => MusicComment, (musicComment) => musicComment.music, {
-  //   cascade: true,
-  // })
-  // musicComments: MusicComment[];
+  @OneToMany(() => BeatComment, (beatComment) => beatComment.beat, {
+    cascade: true,
+  })
+  beatComments: BeatComment[];
 
   @OneToMany(() => BeatLike, (beatLike) => beatLike.beat, { cascade: true })
   beatLikes: BeatLike[];
 
-  // @OneToMany(() => MusicTag, (musicTag) => musicTag.music, { cascade: true })
-  // musicTags: MusicTag[];
+  @OneToMany(() => BeatTag, (beatTag) => beatTag.beat, { cascade: true })
+  beatTags: BeatTag[];
 
 
   @ManyToMany(() => User, (user) => user.testerMusics, {onDelete: 'CASCADE'})
