@@ -11,7 +11,7 @@ import { User } from '../entity/user.entity';
     connection
       .createQueryBuilder()
       .select('MIN(beatComment.id)', 'id')
-      .addSelect('MIN(beatComment.musicId)', 'beatId')
+      .addSelect('MIN(beatComment.beatId)', 'beatId')
       .addSelect('MIN(beatComment.comment)', 'comment')
       .addSelect('MIN(beatComment.timestamp)', 'timestamp')
       .addSelect('MIN(beatComment.parentId)', 'parentId')
