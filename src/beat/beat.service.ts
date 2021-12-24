@@ -38,6 +38,15 @@ export class BeatService {
     private readonly beatCommentInfoRepository: Repository<BeatCommentInfo>,
     @InjectRepository(BeatComment)
     private readonly beatCommentRepository: Repository<BeatComment>,
+
+    @InjectRepository(BeatCommentLike)
+    private readonly beatCommentLikeRepository: Repository<BeatCommentLike>,
+    @InjectRepository(BeatTag)
+    private readonly beatTagRepository: Repository<BeatTag>,
+    @InjectRepository(BeatTagValue)
+    private readonly beatTagValueRepository: Repository<BeatTagValue>,
+    @InjectRepository(BeatTagInfo)
+    private readonly beatTagInfoRepository: Repository<BeatTagInfo>,
   ) {}
     async addBeat(user: User, addBeatDto: AddBeatDto){
       const beat = this.beatRepository.create({
