@@ -69,6 +69,27 @@ export class BeatService {
     return beat;
   }
 
+  async getBeats(beatIds: number[]): Promise<BeatInfo[]> {
+    const beatInfos = await this.beatInfoRepository.find({where: {id: In(beatIds)}, order: {id: 'ASC'}});
+    const tags = await this.beatTagInfoRepository.find({where: {beatId: In(beatIds)}, order: {beatId: 'ASC'}});
+    // const artists = await this.musicRepository.find({where: {id: In(musicIds)}, relations: ['artists'], order: {id: 'ASC'}});
+    let j = 0;
+    for(let i = 0; i < beatInfos.length; ++i) {
+      // musicInfos[i].artists = artists[i].artists;
+      beatInfos[i].tags = [];
+      while(1) {
+        if(j < tags.length && tags[j].beatId === beatInfos[i].id) {
+          beatInfos[i].tags.push(tags[j]);
+          ++j;
+        }
+        else {
+          break;
+        }
+      }
+    }
+    return beatInfos;
+  }
+
   async editBeat(beatId: number, editBeatDto: EditBeatDto) {
     const beat = await this.beatRepository.findOneOrFail(beatId);
     for (const key of Object.keys(editBeatDto)) {

@@ -1,16 +1,21 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { MusicInfo } from '../common/view/music-info.entity';
+import { BeatInfo } from '../common/view/beat-info.entity';
 import { Tag } from '../common/entity/music-tag-value.entity';
 import { TagSearchResultDto } from './dto/tag-search-result.dto';
 import { TagSearchDto } from './dto/tag-search.dto';
+import { TagBeatSearchResultDto } from './dto/tag-beat-search-result.dto';
+import { TagBeatSearchDto } from './dto/tag-beat-search.dto';
 import { SearchService } from './search.service';
 import { MusicService } from '../music/music.service';
+import { BeatService } from '../beat/beat.service';
 
 @Controller('search')
 export class SearchController {
   constructor(
     private readonly searchService: SearchService,
     private readonly musicService: MusicService,
+    private readonly beatService: BeatService,
   ) {}
 
   @Get('music/tag')
@@ -29,6 +34,23 @@ export class SearchController {
     }
     const musics: MusicInfo[] = await this.musicService.getMusics(ids);
     return musics;
+  }
+  @Get('beat/tag')
+  async searchBeatWithTags(
+    @Query() tagBeatSearchDto: TagBeatSearchDto,
+  ): Promise<BeatInfo[]> {
+    const beatIds = await this.searchService.getBeatsMatchedTag(
+      tagBeatSearchDto.tags,
+      parseInt(tagBeatSearchDto.seed),
+      parseInt(tagBeatSearchDto.index),
+      tagBeatSearchDto.size,
+    );
+    const ids: number[] = [];
+    for(const key of beatIds) {
+      ids.push(key.beatId);
+    }
+    const beats: BeatInfo[] = await this.beatService.getBeats(ids);
+    return beats;
   }
 
   @Get()

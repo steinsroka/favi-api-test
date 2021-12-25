@@ -4,8 +4,11 @@ import { Tag } from '../common/entity/music-tag-value.entity';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { MusicTagInfo } from '../common/view/music-tag-info.entity';
 import { TagSearchResultDto } from './dto/tag-search-result.dto';
+import { TagBeatSearchResultDto } from './dto/tag-beat-search-result.dto';
 import { MusicSmallInfoDto } from '../music/dto/music-small-info.dto';
 import { Music } from '../common/entity/music.entity';
+import { Beat } from '../common/entity/beat.entity';
+import { BeatTagInfo } from '../common/view/beat-tag-info.entity';
 
 @Injectable()
 export class SearchService {
@@ -14,6 +17,10 @@ export class SearchService {
     private readonly musicTagInfoRepository: Repository<MusicTagInfo>,
     @InjectRepository(Music)
     private readonly musicRepository: Repository<Music>,
+    @InjectRepository(BeatTagInfo)
+    private readonly beatTagInfoRepository: Repository<BeatTagInfo>,
+    @InjectRepository(Music)
+    private readonly beatRepository: Repository<Beat>,
   ) {}
 
   getMusicsMatchedTag(
@@ -31,6 +38,27 @@ export class SearchService {
       .addSelect('musicId', 'musicId')
       .where('`rank` <= 3')
       .groupBy('musicId')
+      .orderBy('`match`', 'DESC')
+      .addOrderBy(`RAND(${seed})`)
+      .take(size)
+      .skip(index * size)
+      .getRawMany();
+  }
+  getBeatsMatchedTag(
+    tags: Tag[],
+    seed: number,
+    index: number,
+    size: number,
+  ): Promise<TagBeatSearchResultDto[]> {
+    return this.beatTagInfoRepository
+      .createQueryBuilder()
+      .select(
+        `SUM(CASE WHEN name IN("${tags.join('","')}") THEN 1 ELSE 0 END)`,
+        'match',
+      )
+      .addSelect('beatId', 'beatId')
+      .where('`rank` <= 3')
+      .groupBy('beatId')
       .orderBy('`match`', 'DESC')
       .addOrderBy(`RAND(${seed})`)
       .take(size)
