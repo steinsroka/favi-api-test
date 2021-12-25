@@ -16,7 +16,7 @@ import {
   // RhythmBeat,
   // VocalType,
 } from '../entity/beat.entity';
-import { Beat } from '../entity/beat.entity';
+// import { Beat } from '../entity/beat.entity';
 import { User } from '../entity/user.entity';
 import { BeatTagInfo } from './beat-tag-info.entity';
 
