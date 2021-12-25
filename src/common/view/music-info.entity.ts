@@ -35,7 +35,7 @@ import { MusicTagInfo } from './music-tag-info.entity';
       .addSelect('music.melodyScale', 'melodyScale')
       .addSelect('music.copyright', 'copyright')
       .addSelect('COUNT(musicLike.userId)', 'likedUserCount')
-      .addSelect('COUNT(musicComment.musicId)', 'commentedCount')
+      .addSelect('COUNT(musicComment.user)', 'commentedCount')
       .from(Music, 'music')
       .leftJoin('music.musicLikes', 'musicLike')
       .leftJoin('music.musicComments', 'musicComment')
