@@ -20,6 +20,9 @@ export class MusicComment {
   @Column({ nullable: true })
   comment: string;
 
+  @PrimaryColumn()
+  musicId: number;
+
   @ManyToOne(() => MusicComment, (musicComment) => musicComment.children)
   parent: MusicComment;
 
