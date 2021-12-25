@@ -78,7 +78,7 @@ export class BeatInfo {
   //
   // artists: Artist[];
   //
-  // tags: MusicTagInfo[];
+  tags: MusicTagInfo[];
 
   myLike: boolean;
 }
