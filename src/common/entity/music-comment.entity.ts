@@ -35,7 +35,7 @@ export class MusicComment {
   @CreateDateColumn()
   timestamp: Date;
 
-  @ManyToOne(() => Music, (music) => music.musicComments, { nullable: false })
+  @ManyToOne(() => Music, (music) => music.musicComments, { nullable: true })
   music: Music;
 
   @ManyToOne(() => User, (user) => user.musicComments, { nullable: false, onDelete: 'CASCADE' })
