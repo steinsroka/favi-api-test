@@ -6,7 +6,7 @@ import {
   ManyToMany,
 } from 'typeorm';
 // import { Artist } from '../entity/artist.entity';
-// import { MusicTagValue } from '../entity/music-tag-value.entity';
+import { BeatTagValue } from '../entity/beat-tag-value.entity';
 import {
   BPM,
   // Copyright,
@@ -16,9 +16,9 @@ import {
   // RhythmBeat,
   // VocalType,
 } from '../entity/beat.entity';
-// import { Beat } from '../entity/beat.entity';
+import { Beat } from '../entity/beat.entity';
 import { User } from '../entity/user.entity';
-// import { MusicTagInfo } from './music-tag-info.entity';
+import { BeatTagInfo } from './beat-tag-info.entity';
 
 @ViewEntity({
   expression: (connection: Connection) =>
@@ -78,7 +78,7 @@ export class BeatInfo {
   //
   // artists: Artist[];
   //
-  tags: MusicTagInfo[];
+  tags: BeatTagInfo[];
 
   myLike: boolean;
 }
