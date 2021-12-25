@@ -35,11 +35,10 @@ import { MusicTagInfo } from './music-tag-info.entity';
       .addSelect('music.melodyScale', 'melodyScale')
       .addSelect('music.copyright', 'copyright')
       .addSelect('COUNT(musicLike.userId)', 'likedUserCount')
-      // .addSelect('COUNT(musicComment.comment)', 'commentedCount')
+      .addSelect('COUNT(musicComment.comment)', 'commentedCount')
       .from(Music, 'music')
       .leftJoin('music.musicLikes', 'musicLike')
       .leftJoin('music.musicComments', 'musicComment')
-      .loadRelationCountAndMap('music.commentedCount', 'music.musicComments')
       .groupBy('music.id'),
 })
 export class MusicInfo {
