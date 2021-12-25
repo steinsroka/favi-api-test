@@ -20,6 +20,9 @@ export class MusicComment {
   @Column({ nullable: true })
   comment: string;
 
+  // @ViewColumn()
+  // userId: number;
+
   @PrimaryColumn()
   musicId: number;
 
