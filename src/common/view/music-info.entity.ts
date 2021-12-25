@@ -38,9 +38,9 @@ import { MusicTagInfo } from './music-tag-info.entity';
       .addSelect('COUNT(musicComment.comment)', 'commentedCount')
       .from(Music, 'music')
       .leftJoin('music.musicLikes', 'musicLike')
-      // .leftJoinAndSelect('a.b', 'b', 'b.a_id = a.ai_id')
-      .innerJoin('music.musicComments', 'musicComment')
+      .leftJoin('music.musicComments', 'musicComment')
       .groupBy('music.id'),
+      .addGroupBy('musicComment.musicId')
 })
 export class MusicInfo {
   @ViewColumn()
