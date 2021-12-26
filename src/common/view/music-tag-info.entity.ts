@@ -31,8 +31,17 @@ import { MusicTag } from '../entity/music-tag.entity';
               'COUNT(*) OVER(PARTITION BY musicTag.musicId, musicTag.musicTagValueId) / COUNT(*) OVER(PARTITION BY musicTag.musicId, musicTagValue.class) * 100',
               'classRatio',
             )
+            .addSelect(
+              'music.bpm',
+              'bpm'
+            )
+            .addSelect(
+              'music.language',
+              'language'
+            )
             .from(MusicTag, 'musicTag')
             .leftJoin('musicTag.musicTagValue', 'musicTagValue'),
+            .leftJoin('musicTag.music', 'music'),
         'tagData',
       )
       .orderBy('count', 'DESC'),

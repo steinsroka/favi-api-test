@@ -27,6 +27,7 @@ export class SearchController {
       parseInt(tagSearchDto.seed),
       parseInt(tagSearchDto.index),
       tagSearchDto.size,
+      tagSearchDto.bpm
     );
     const ids: number[] = [];
     for(const key of musicIds) {

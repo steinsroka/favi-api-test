@@ -28,8 +28,9 @@ export class SearchService {
     seed: number,
     index: number,
     size: number,
+    bpm: string,
   ): Promise<TagSearchResultDto[]> {
-    return this.musicTagInfoRepository
+    const query = this.musicTagInfoRepository
       .createQueryBuilder()
       .select(
         `SUM(CASE WHEN name IN("${tags.join('","')}") THEN 1 ELSE 0 END)`,
@@ -37,12 +38,19 @@ export class SearchService {
       )
       .addSelect('musicId', 'musicId')
       .where('`rank` <= 3')
+
+      .leftJoin('music')
       .groupBy('musicId')
       .orderBy('`match`', 'DESC')
       .addOrderBy(`RAND(${seed})`)
       .take(size)
-      .skip(index * size)
-      .getRawMany();
+      .skip(index * size);
+// .andWhere(`'bpm' = ${bpm}`)
+      if(bpm){
+        query.andWhere("bpm = :search", { search: bpm })
+      }
+
+      return query.getRawMany();
   }
   getBeatsMatchedTag(
     tags: Tag[],
@@ -78,6 +86,7 @@ export class SearchService {
         qb.where('Music.title LIKE :title', {
           title: `%${query}%`,
         }).orWhere('Music__artists.name LIKE :name', { name: `%${query}%` });
+
       },
       take: size,
       skip: index * size,

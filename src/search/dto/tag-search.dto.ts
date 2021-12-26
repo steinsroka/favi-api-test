@@ -8,6 +8,7 @@ import {
   Matches,
 } from 'class-validator';
 import { Tag } from '../../common/entity/music-tag-value.entity';
+import { BPM, Language } from '../../common/entity/music.entity';
 
 export class TagSearchDto {
   @Matches(/^[1-9][0-9]*$/)
@@ -22,4 +23,8 @@ export class TagSearchDto {
 
   @IsOptional()
   size: number = 5;
+
+  @IsOptional()
+  @IsEnum(BPM)
+  bpm: BPM;
 }
