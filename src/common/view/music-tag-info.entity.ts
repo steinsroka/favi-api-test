@@ -38,7 +38,8 @@ import { BPM,Language } from '../entity/music.entity';
             )
             .from(MusicTag, 'musicTag')
             .leftJoin('musicTag.musicTagValue', 'musicTagValue')
-            .leftJoin('musicTag.music', 'music'),
+            .leftJoin('musicTag.music', 'music')
+            ,
         'tagData',
       )
       .orderBy('count', 'DESC'),
