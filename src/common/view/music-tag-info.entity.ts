@@ -1,6 +1,7 @@
 import { Connection, ViewColumn, ViewEntity } from 'typeorm';
 import { MusicTagValue, Tag, TagClass } from '../entity/music-tag-value.entity';
 import { MusicTag } from '../entity/music-tag.entity';
+import { BPM,Language } from '../entity/music.entity';
 
 @ViewEntity({
   expression: (connection: Connection) =>
@@ -32,11 +33,11 @@ import { MusicTag } from '../entity/music-tag.entity';
               'classRatio',
             )
             .addSelect(
-              'music.bpm',
+              'DISTINCT music.bpm',
               'bpm'
             )
             .addSelect(
-              'music.language',
+              'DISTINCT music.language',
               'language'
             )
             .from(MusicTag, 'musicTag')
@@ -52,6 +53,9 @@ export class MusicTagInfo {
 
   @ViewColumn()
   name: Tag;
+
+  @ViewColumn()
+  bpm: BPM;
 
   @ViewColumn()
   class: TagClass;
