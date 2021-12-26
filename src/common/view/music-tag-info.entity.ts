@@ -33,12 +33,8 @@ import { BPM,Language } from '../entity/music.entity';
               'classRatio',
             )
             .addSelect(
-              'DISTINCT music.bpm',
+              'music.bpm',
               'bpm'
-            )
-            .addSelect(
-              'DISTINCT music.language',
-              'language'
             )
             .from(MusicTag, 'musicTag')
             .leftJoin('musicTag.musicTagValue', 'musicTagValue')
