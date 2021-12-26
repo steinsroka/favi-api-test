@@ -40,7 +40,7 @@ import { MusicTag } from '../entity/music-tag.entity';
               'language'
             )
             .from(MusicTag, 'musicTag')
-            .leftJoin('musicTag.musicTagValue', 'musicTagValue'),
+            .leftJoin('musicTag.musicTagValue', 'musicTagValue')
             .leftJoin('musicTag.music', 'music'),
         'tagData',
       )
