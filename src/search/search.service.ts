@@ -6,7 +6,7 @@ import { MusicTagInfo } from '../common/view/music-tag-info.entity';
 import { TagSearchResultDto } from './dto/tag-search-result.dto';
 import { TagBeatSearchResultDto } from './dto/tag-beat-search-result.dto';
 import { MusicSmallInfoDto } from '../music/dto/music-small-info.dto';
-import { Music } from '../common/entity/music.entity';
+import { Music, BPM } from '../common/entity/music.entity';
 import { Beat } from '../common/entity/beat.entity';
 import { BeatTagInfo } from '../common/view/beat-tag-info.entity';
 
@@ -28,7 +28,7 @@ export class SearchService {
     seed: number,
     index: number,
     size: number,
-    bpm: string,
+    bpm: BPM,
   ): Promise<TagSearchResultDto[]> {
     const query = this.musicTagInfoRepository
       .createQueryBuilder()
