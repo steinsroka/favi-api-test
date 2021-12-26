@@ -37,8 +37,8 @@ export class SearchService {
         'match',
       )
       .addSelect('musicId', 'musicId')
-      .where(bpm!==undefined?`'bpm' = ${bpm}`:'1 = 1')
-      .andWhere('`rank` <= 3')
+      .where('`rank` <= 3')
+      .andWhere(bpm!==undefined?`'bpm' = ${bpm}`:'1 = 1')
       .groupBy('musicId')
       .orderBy('`match`', 'DESC')
       .addOrderBy(`RAND(${seed})`)
