@@ -280,6 +280,92 @@ export class UserController {
     // return { result: result };
   }
 
+  @Get('social2')
+  async getUserSocialLogs(
+    @Request() req: UserRequest,
+    @Param('id') id: number,
+    @Query('index') index?: number,
+    @Query('user_id') userId?: number,
+  ) {
+    const now = Date.now();
+    const users: number[] = isDefined(userId)
+      ? [userId]
+      : await this.userService.getUserAllFollower(id);
+    // console.log('social-delay-log-1',Date.now() - now);
+    const socialLogs = await this.userService.getSocialLogs(users, index);
+    // console.log('social-delay-log-2',Date.now() - now);
+    const result: UserSocialLog[] = [];
+    const userInfos: UserInfo[] = [];
+    for (const userId2 of users) {
+      userInfos.push(await this.userService.getUserInfo(userId2));
+    }
+     // const promises = socialLogs.map( async log =>{
+     //   const user = userInfos.find((value) => value.id === log.userId);
+     //   // const user = await this.userService.getUserInfo(log.userId);
+     //   switch (log.type) {
+     //     case 'music_comment':
+     //       const musicCommentLog = new UserSocialLogMusicComment();
+     //       musicCommentLog.user = user;
+     //       // musicCommentLog.user = await this.userService.getUserInfo(log.userId);
+     //       musicCommentLog.musicComment = await this.musicService.getMusicComment(
+     //         log.id,
+     //         req.user,
+     //       );
+     //       musicCommentLog.music = await this.musicService.getMusic(
+     //         musicCommentLog.musicComment.musicId,
+     //         req.user,
+     //       );
+     //       musicCommentLog.timestamp = log.timestamp;
+     //       result.push(musicCommentLog);
+     //       break;
+     //
+     //   }
+     // });
+     //  await Promise.all(promises);
+     // console.log('social-delay-log-3',Date.now() - now);
+     for (const log of socialLogs) {
+      const user = userInfos.find((value) => value.id === log.userId);
+
+      // const user = await this.userService.getUserInfo(log.userId)
+      switch (log.type) {
+        case 'music_comment':
+          const musicCommentLog = new UserSocialLogMusicComment();
+          musicCommentLog.user = user;
+          // musicCommentLog.user = await this.userService.getUserInfo(log.userId);
+          musicCommentLog.musicComment = await this.musicService.getMusicComment(
+            log.id,
+            req.user,
+          );
+          // console.log('social-delay-log-4',Date.now() - now);
+          musicCommentLog.music = await this.musicService.getMusic2(
+            musicCommentLog.musicComment.musicId,
+            req.user,
+          );
+          // console.log('social-delay-log-5',Date.now() - now);
+          musicCommentLog.timestamp = log.timestamp;
+          result.push(musicCommentLog);
+          break;
+
+      }
+    }
+    // console.log('social-delay-log-6',Date.now() - now);
+    return { users: userInfos, result: result };
+
+
+    // case 'music_like':
+    //   const musicLikeLog = new UserSocialLogMusicLike();
+    //   musicLikeLog.user = user;
+    //   musicLikeLog.music = await this.musicService.getMusic(
+    //     log.id,
+    //     req.user,
+    //   );
+    //   musicLikeLog.timestamp = log.timestamp;
+    //   result.push(musicLikeLog);
+    //   break;
+
+    // return { result: result };
+  }
+
   @Put(':id/follow')
   @HttpCode(204)
   async userFollow(

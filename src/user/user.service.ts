@@ -352,6 +352,20 @@ export class UserService {
       })) > 0
     );
   }
+  async getUserAllFollower(userId: number): Promise<number[]> {
+    const userFollowers = await this.userFollowRepository.find({
+      userId: userId,
+    });
+    const ret: number[] = [];
+    for (const i of userFollowers) {
+      ret.push(i.followUserId);
+    }
 
+    return ret;
+    // return this.userRepository.find({
+    //   where: { id: In(userFollowers.map((value) => value.followUserId)) },
+    //   // relations: ['artists'],
+    // });
+  }
 
 }
