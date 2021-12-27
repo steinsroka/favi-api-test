@@ -281,7 +281,7 @@ export class UserController {
   }
 
   @Get('social2')
-  async getUserSocialLogs(
+  async getUserSocialLogs2(
     @Request() req: UserRequest,
     @Param('id') id: number,
     @Query('index') index?: number,
