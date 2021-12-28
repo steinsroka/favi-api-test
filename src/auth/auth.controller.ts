@@ -24,7 +24,9 @@ import { VerifyEmailCodeGuard } from './guard/verify-email-code.guard';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
 import { UserRequest } from '../common/@types/user-request';
 import { GuestableAuthGuard } from './guard/guestable-auth.guard';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -32,6 +34,8 @@ export class AuthController {
     private readonly userService: UserService,
   ) {}
 
+
+  @ApiBody({type:LoginDto})
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req, @Body() loginDto: LoginDto) {

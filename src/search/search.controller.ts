@@ -9,7 +9,9 @@ import { TagBeatSearchDto } from './dto/tag-beat-search.dto';
 import { SearchService } from './search.service';
 import { MusicService } from '../music/music.service';
 import { BeatService } from '../beat/beat.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Search')
 @Controller('search')
 export class SearchController {
   constructor(

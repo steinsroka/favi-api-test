@@ -8,7 +8,8 @@ database:
   type: 'mysql'
   username: 'root'
   password: 'root'
-  synchronize: true
+  #synchronize: true
+  migrationsRun: true
   autoLoadEntities: true
   logging: true
   bigNumberStrings: false

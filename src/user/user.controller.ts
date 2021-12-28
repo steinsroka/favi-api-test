@@ -57,7 +57,10 @@ import {
 } from './dto/user-social-log.dto';
 import { TestUserGuard } from './guard/test-user.guard';
 import { TesterProceedDto } from './dto/tester-remain.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('User')
+@ApiBearerAuth()
 @Controller('user/:id')
 @UsePipes(ValidateUserIdPipe)
 @UseGuards(JwtAuthGuard, UserAuthGuard)

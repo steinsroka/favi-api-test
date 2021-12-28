@@ -3,6 +3,9 @@ import { NoticeService } from './notice.service';
 import { Notice } from '../common/entity/notice.entity';
 import { WriteNoticeDto } from './dto/write-notice.dto';
 import { GetNoticeDto } from './dto/get-notice.dto';
+import { ApiTags } from '@nestjs/swagger';
+
+@ApiTags('Notice')
 @Controller('notice')
 export class NoticeController {
   constructor(private readonly noticeService: NoticeService) {}

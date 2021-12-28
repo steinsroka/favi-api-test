@@ -6,7 +6,9 @@ import { Help } from '../common/entity/help.entity';
 import { GetHelpDto } from './dto/get-help.dto';
 import { WriteHelpDto } from './dto/write-help.dto';
 import { HelpService } from './help.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Help')
 @Controller('help')
 @UseGuards(GuestableAuthGuard)
 export class HelpController {

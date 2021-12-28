@@ -39,7 +39,9 @@ import { isDefined } from 'class-validator';
 import { ErrorMessage } from '../common/class/error-message';
 import { ErrorString } from '../common/const/error-string';
 import { UserService } from '../user/user.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Music')
 @Controller('music')
 @UseGuards(JwtAuthGuard)
 @UsePipes(ValidateMusicPipe)
