@@ -47,7 +47,9 @@ import { isDefined } from 'class-validator';
 import { ErrorMessage } from '../common/class/error-message';
 import { ErrorString } from '../common/const/error-string';
 import { UserService } from '../user/user.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Beat')
 @Controller('beat')
 @UseGuards(JwtAuthGuard)
 @UsePipes(ValidateBeatPipe)
