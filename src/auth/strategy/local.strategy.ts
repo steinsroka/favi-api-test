@@ -14,7 +14,8 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     const user = await this.authService.validateUser(email, password);
     if (user === null) {
       throw new UnauthorizedException({
-        status: HttpStatus.UNAUTHORIZED,
+        statusCode: HttpStatus.BAD_REQUEST,
+        message : "Bad Request",
         error: 'user email or password is different.',
       });
     }

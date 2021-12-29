@@ -27,10 +27,7 @@ export class VerifyEmailCodeGuard implements CanActivate {
       )
     ) {
       throw new UnauthorizedException(
-        new ErrorMessage(
-          'email verification code failed',
-          ErrorString.FAIL_NOT_AUTHORIZED,
-        ),
+          'email verification code failed'
       );
     }
     return true;

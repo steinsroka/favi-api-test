@@ -32,7 +32,7 @@
     "@nestjs/swagger": "^4.8.2",
     "@nestjs/typeorm": "^7.1.5",
     "@types/passport-jwt": "^3.0.5",
-    "class-transformer": "^0.4.0",
+    "class-transformer": "<=0.4.0",
     "class-validator": "^0.13.1",
     "cors": "^2.8.5",
     "crypto-promise": "^2.1.0",
@@ -49,10 +49,12 @@
     "random-number-csprng": "^1.0.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
+    "run-script-webpack-plugin": "^0.0.11",
     "rxjs": "^6.6.6",
     "swagger-ui-express": "^4.3.0",
     "ts-transformer-keys": "^0.4.3",
-    "typeorm": "^0.2.32"
+    "typeorm": "^0.2.32",
+    "webpack": "^5.65.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.6.0",

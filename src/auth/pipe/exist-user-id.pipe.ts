@@ -13,10 +13,7 @@ export class ExistUserIdPipe implements PipeTransform {
     if (metadata.type === 'body') {
       if (await this.userService.isExistUser({ email: value.email })) {
         throw new ConflictException(
-          new ErrorMessage(
-            `user email ${value.email} is already exist.`,
-            ErrorString.FAIL_EXIST,
-          ),
+            `user email ${value.email} is already exist.`
         );
       }
     }
