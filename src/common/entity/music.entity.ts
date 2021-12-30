@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsDate, IsEnum, IsNumber, IsString } from 'class-validator';
 import {
   Entity,

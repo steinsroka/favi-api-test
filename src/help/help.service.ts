@@ -12,15 +12,6 @@ export class HelpService {
   ) {}
 
   async getHelps(index: number, size: number, userId: number): Promise<Help[]> {
-    if (userId === 0) {
-      return await this.helpRepository.find({
-        order: { timestamp: 'DESC' },
-        take: size,
-        skip: index * size,
-        where: {},
-      });
-    }
-
     return await this.helpRepository.find({
       order: { timestamp: 'DESC' },
       take: size,

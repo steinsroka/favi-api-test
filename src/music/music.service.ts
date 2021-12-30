@@ -162,6 +162,11 @@ export class MusicService {
     return (await this.musicRepository.count({ id: musicId })) > 0;
   }
 
+  async isValidComment(musicId: number, commentId : number): Promise<boolean> {
+    return (await this.musicCommentInfoRepository.count({ id: commentId, musicId : musicId })) > 0;
+  }
+
+
   addMusicLike(musicId: number, user: User) {
     const musicLike = this.musicLikeRepository.create({
       userId: user.id,
@@ -219,14 +224,19 @@ export class MusicService {
   }
 
   async getMusicComments(musicId: number, index?: number, user?: User) {
-    const musicCommentIndex = isDefined(index) ? 10 : 2;
-    index = index ?? 0;
-    let limit = musicCommentIndex;
+
+    // 10개씩 가져옴
+    const stride = 10;
+    // index 정의되어 있지 않으면 index = 0
+    if(isNaN(index)){
+      index = 0
+    }
+    
     const musicComments = await this.musicCommentInfoRepository.find({
       where: { musicId: musicId },
       order: { timestamp: 'DESC' },
-      skip: index * musicCommentIndex,
-      take: limit,
+      skip: index * stride,
+      take: stride,
     });
     for (let i = 0; i < musicComments.length; ++i) {
       musicComments[i].tags = await this.getMusicCommentTags(
@@ -251,44 +261,62 @@ export class MusicService {
     comment: string,
     parent: number,
   ): Promise<MusicComment> {
+    // 해당 Music ID 서버에서 찾음
     const music = await this.musicRepository.findOneOrFail({
       relations: ['musicComments'],
       where: { id: musicId },
     });
+    
+    // parent는 기본 Null, 만약 parent 정의되어 있으면 (대댓글이면) 부모 댓글 가져옴
     let parentMusicComment = null;
     if (isDefined(parent)) {
       parentMusicComment = await this.getMusicComment(parent);
     }
+    
+    // 댓글 추가
     const musicComment = this.musicCommentRepository.create({
       comment: comment,
       user: user,
       parent: parentMusicComment,
     });
+    
+    // 찾아온 음악에 push
     music.musicComments.push(musicComment);
     const newMusic = await this.musicRepository.save(music);
+    // 이후 Comment 반환
     return newMusic.musicComments.pop();
   }
 
-  async deleteMusicComment(musicCommentId: number): Promise<DeleteResult> {
-    return this.musicCommentRepository.delete(musicCommentId);
+  async deleteMusicComment(musicId : number, commentId: number): Promise<DeleteResult> {
+    return this.musicCommentRepository.delete({id : commentId, musicId : musicId});
   }
 
   async updateMusicComment(
+    musicId: number,
     musicCommentId: number,
     newComment: string,
   ): Promise<MusicComment> {
+    try{
     const musicComment = await this.musicCommentRepository.findOneOrFail({
-      where: { id: musicCommentId },
+      where: { id: musicCommentId, musicId : musicId },
     });
     musicComment.comment = newComment;
     return this.musicCommentRepository.save(musicComment);
+  }catch {
+    throw new NotFoundException("Music id or comment id is not valid")
+  }
   }
 
-  addMusicCommentLike(musicCommentId: number, user: User) {
+  addMusicCommentLike(musicId: number, musicCommentId: number, user: User) {
+    if(!this.isValidComment(musicId, musicCommentId)){
+      throw new NotFoundException("Music id or comment id is not valid")
+    }
+    
     const musicCommentLike = this.musicCommentLikeRepository.create({
       musicCommentId: musicCommentId,
       userId: user.id,
     });
+
     return this.musicCommentLikeRepository.save(musicCommentLike);
   }
 
@@ -304,7 +332,6 @@ export class MusicService {
 
   async getMusicTags(
     musicId: number,
-    tagClass?: TagClass,
   ): Promise<MusicTagInfo[]> {
     return await this.musicTagInfoRepository.find({ musicId: musicId });
   }
@@ -338,17 +365,6 @@ export class MusicService {
       userId: user.id,
       musicTagValueId: musicTagValue.id,
     });
-  }
-  async getMusicReview(){
-    // const music = (await this.musicRepository
-    //   .createQueryBuilder('music')
-    //   .select('COUNT(music.id)')
-    //   .leftJoin(MusicTag, 'musicTag', 'music.id = musicTag.musicId')
-    //   .where('select exists (select * from musicTag where music.id = music_tag.musicId)')
-    //   .getRawOne()
-    // )
-    // console.log('get-total-log',music);
-
   }
 
   async getUserDistributionInMusic(id: number) {

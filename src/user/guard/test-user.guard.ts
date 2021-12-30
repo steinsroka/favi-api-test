@@ -2,6 +2,7 @@ import {
   BadRequestException,
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -17,7 +18,9 @@ export class TestUserGuard implements CanActivate {
     const request: UserRequest = context.switchToHttp().getRequest();
     const curTime: Date = new Date();
     if (request.user.testEnd < curTime) {
-      return false;
+      throw new ForbiddenException(
+        "the validity period of the test user has expired."
+      )
     }
     return true;
   }
