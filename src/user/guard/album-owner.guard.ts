@@ -34,10 +34,7 @@ export class AlbumOwnerGuard implements CanActivate {
           
           if (request.user.id !== album.userId) {
             throw new UnauthorizedException(
-              new ErrorMessage(
-                'you are not authorized to edit different album',
-                ErrorString.FAIL_NOT_AUTHORIZED,
-              ),
+                'you are not authorized to edit different album'
             );
           }
           break;

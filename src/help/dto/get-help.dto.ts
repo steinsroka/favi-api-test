@@ -6,8 +6,4 @@ export class GetHelpDto {
 
   @IsNumber()
   size: number;
-
-  @IsOptional()
-  @IsNumber()
-  userId?: number;
 }

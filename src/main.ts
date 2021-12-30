@@ -7,6 +7,8 @@ import { ConfigService } from '@nestjs/config';
 import { HttpConfig } from './config/configInterface';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
+declare const module: any;
+
 async function bootstrap() {
   if (
     process.env.NODE_ENV !== 'production' &&
@@ -35,6 +37,7 @@ async function bootstrap() {
     .setTitle('Favi API Document')
     .setDescription('Develop version of Favi api')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
     const document = SwaggerModule.createDocument(app, documentOptions);
     SwaggerModule.setup('apidocs',app,document); 
@@ -45,5 +48,6 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const httpConfig = configService.get<HttpConfig>('http');
   await app.listen(httpConfig.port);
+
 }
 bootstrap();

@@ -57,9 +57,13 @@ import {
 } from './dto/user-social-log.dto';
 import { TestUserGuard } from './guard/test-user.guard';
 import { TesterProceedDto } from './dto/tester-remain.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags, PickType } from '@nestjs/swagger';
 
-@ApiTags('User')
+@ApiTags('User(유저) 정보 관련 API')
+@ApiResponse({
+  status:401,
+  description: "JWT 토큰 만료, 혹은 유저가 해당 권한이 없음",
+})
 @ApiBearerAuth()
 @Controller('user/:id')
 @UsePipes(ValidateUserIdPipe)
@@ -71,12 +75,45 @@ export class UserController {
     private readonly musicService: MusicService,
   ) {}
 
+  @ApiOperation({summary: "유저 정보 조회"})
+  @ApiParam({
+    name:"id",
+    description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "433"
+  })
+  @ApiResponse({
+    status:200,
+    description: "유저 데이터 전송 성공",
+    type: UserInfo
+  })
+  @ApiResponse({
+    status:401,
+    description: "JWT 토큰이 없거나 만료됨, 도는 권한이 없는 다른 사용자 데이터 요청함"
+  })
   @Get()
   async getUser(@Param('id') id: number): Promise<UserInfo> {
     const user = await this.userService.getUserInfo(id);
     return user;
   }
 
+  @ApiOperation({summary: "좋아요 한 음악 조회"})
+  @ApiParam({
+    name:"id",
+    description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "433"
+  })
+  @ApiQuery({
+    name:"tag",
+    description:"유저가 검색할 태그 (하나)",
+    required:false,
+    enum:Tag
+  })
+  @ApiResponse({
+    status:200,
+    description: "요청 성공 (Music Array 반환)",
+    isArray: true,
+    type:Music
+  })
   @Get('liked_musics')
   async getUserLikedMusics(@Param('id') id: number, @Query('tag') tag?: Tag) {
     if (isDefined(tag)) {
@@ -85,17 +122,55 @@ export class UserController {
     return await this.userService.getUserLikedAllMusic(id);
   }
 
+  
   @Get('liked_albums')
   async getUserLikedAlbums(@Param('id') id: number) {
     return await this.userService.getUserLikedAlbums(id);
   }
 
+  @ApiOperation({summary: "유저 삭제"})
+  @ApiParam({
+    name:"id",
+    description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "433"
+  })
+  @ApiResponse({
+    status:204,
+    description: "유저 데이터 삭제 성공",
+  })
+  @ApiResponse({
+    status:401,
+    description: "JWT 토큰 만료, 혹은 권한이 없는 유저 삭제 요청함",
+  })
   @Delete()
   @HttpCode(204)
   async deleteUser(@Param('id') id: number): Promise<void> {
     await this.userService.deleteUser(id);
   }
 
+  @ApiOperation({summary: "유저 데이터 변경"})
+  @ApiParam({
+    name:"id",
+    description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "433"
+  })
+  @ApiBody({
+    description:"age : [ 10,20,30,40,50 ], gender : [ men, women, default ] 중 선택, name : 사용자 이름. 입력되지 않은 Field는 무시됩니다.",
+    type:PickType(User, ['age', 'gender', 'name'])
+  })
+  @ApiResponse({
+    status:200,
+    description: "유저 데이터 변경 성공 (변경된 User Data 반환)",
+    type:UserInfo
+  })
+  @ApiResponse({
+    status:400,
+    description: "입력된 Field가 유효하지 않음.",
+  })
+  @ApiResponse({
+    status:401,
+    description: "JWT 토큰 만료, 혹은 권한이 없는 유저 삭제 요청함",
+  })
   @Patch()
   async updateUser(
     @Req() req: UserRequest,
@@ -108,16 +183,58 @@ export class UserController {
     return await this.userService.getUserInfo(req.user.id);
   }
 
+  @ApiOperation({summary: "테스터 API - 음악 정보 배열 조회"})
+  @ApiParam({
+    name:"id",
+    description:"테스터 유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "433"
+  })
+  @ApiQuery({
+    name:'index',
+    description:"쿼리 인덱스",
+    example: 0,
+  })
+  @ApiQuery({
+    name:"size",
+    description:"쿼리 사이즈",
+    example:5,
+  })
+  @ApiResponse({
+    status:200,
+    description: "API 요청 성공 (음악 Array 반환)",
+    isArray: true,
+    type:Music
+  })
+  @ApiResponse({
+    status:403,
+    description: "테스터의 테스트 기간이 만료되었거나, 유저가 테스터가 아님",
+  })
   @Get('tester')
   @UseGuards(TestUserGuard)
   async getTesterMusics(
     @Req() req: UserRequest,
-    @Query('index') index: number = 0,
-    @Query('size') size: number = 5,
+    @Query('index') index: number,
+    @Query('size') size: number,
   ): Promise<Music[]> {
     return await this.userService.getTesterMusics(req.user, index, size);
   }
 
+  @ApiOperation({summary: "테스터 API - 진행 상황 조회"})
+  @ApiParam({
+    name:"id",
+    description:"테스터 유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "433"
+  })
+  @ApiResponse({
+    status:200,
+    description: "API 요청 성공 (전체 개수와 남은 개수 반환))",
+    isArray: true,
+    type:TesterProceedDto
+  })
+  @ApiResponse({
+    status:403,
+    description: "테스터의 테스트 기간이 만료되었거나, 유저가 테스터가 아님",
+  })
   @Get('tester/proceed')
   @UseGuards(TestUserGuard)
   async getTesterProceedCount(

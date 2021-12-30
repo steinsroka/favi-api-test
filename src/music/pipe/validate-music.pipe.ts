@@ -20,20 +20,14 @@ export class ValidateMusicPipe implements PipeTransform {
         case 'id':
           if (!(await this.musicService.isExistMusic(value))) {
             throw new NotFoundException(
-              new ErrorMessage(
-                `music id ${value} is not exist`,
-                ErrorString.FAIL_EXIST,
-              ),
+                `music id ${value} is not exist`
             );
           }
           break;
         case 'comment_id':
           if (!(await this.musicService.isExistMusicComment(value))) {
             throw new NotFoundException(
-              new ErrorMessage(
-                `music comment id ${value} is not exist`,
-                ErrorString.FAIL_EXIST,
-              ),
+                `music comment id ${value} is not exist`
             );
           }
           break;

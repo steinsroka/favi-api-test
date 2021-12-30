@@ -23,10 +23,7 @@ export class UserAuthGuard implements CanActivate {
         case 'id':
           if (request.user.id.toString() !== request.params.id) {
             throw new UnauthorizedException(
-              new ErrorMessage(
                 'you are not authorized to edit different user',
-                ErrorString.FAIL_NOT_AUTHORIZED,
-              ),
             );
           }
           break;
