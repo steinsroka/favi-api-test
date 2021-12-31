@@ -8,14 +8,15 @@ import {
 import { UserService } from '../../user/user.service';
 
 @Injectable()
-export class ValidateAlbumIdPipe implements PipeTransform {
+export class ValidateMuiscIdPipe implements PipeTransform {
   constructor(private readonly userService: UserService) {}
 
   async transform(value: any, metadata: ArgumentMetadata) {
-    if (metadata.type === 'param' && metadata.data === 'album_id') {
-      if (!(await this.userService.isExistAlbum({ id: value }))) {
+    console.log(`pipe : ${metadata}`);
+    if (metadata.type === 'param' && metadata.data === 'music_id') {
+      if (!(await this.userService.isExistMusic({id: parseInt(value)}))) {
         throw new NotFoundException(
-            `album id ${value} is not exist.`
+            `music id ${value} is not exist.`
         );
       }
     }

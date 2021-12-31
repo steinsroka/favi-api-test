@@ -3,10 +3,12 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Album } from 'src/common/entity/album.entity';
+import { isUndefined } from 'util';
 import { UserRequest } from '../../common/@types/user-request';
 import { ErrorMessage } from '../../common/class/error-message';
 import { ErrorString } from '../../common/const/error-string';
@@ -31,7 +33,13 @@ export class AlbumOwnerGuard implements CanActivate {
           let album: Album = await this.userService.getAlbum(
             parseInt(request.params.album_id),
           );
-          
+
+          if(album === undefined){
+            throw new NotFoundException(
+              'album is not exist'
+            )
+          }
+
           if (request.user.id !== album.userId) {
             throw new UnauthorizedException(
                 'you are not authorized to edit different album'

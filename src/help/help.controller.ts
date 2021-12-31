@@ -19,12 +19,12 @@ export class HelpController {
   @ApiQuery({
     name:"index",
     description:"Page 번호입니다. 예를 들어 2이고, size = 10인 경우 20~30번 글을 불러옵니다. 0이 가장 최신 글입니다.",
-    example: "0"
+    example: 0
   })
   @ApiQuery({
-    name:"size",
+    name:"size",
     description:"한 번에 가져올 개수입니다.",
-    example: "10"
+    example: 10
   })
   @ApiResponse({
     status:200,
@@ -39,7 +39,6 @@ export class HelpController {
   @Get()
   @UseGuards(JwtAuthGuard)
   async getHelps(@Request() req: UserRequest, @Query() getHelpDto: GetHelpDto): Promise<Help[]> {
-    // 10개씩 가져오도록 고정
     return await this.helpService.getHelps(getHelpDto.index, getHelpDto.size, req.user.id);
   }
   

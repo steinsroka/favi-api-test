@@ -1,4 +1,6 @@
 import { IsNumber, IsString } from 'class-validator';
+import { Artist } from 'src/common/entity/artist.entity';
+import { JoinArtistDTO } from 'src/search/dto/joined-search-atrist.dto';
 
 export class MusicSmallInfoDto {
   @IsNumber()
@@ -10,4 +12,5 @@ export class MusicSmallInfoDto {
   @IsString()
   composer: string;
 
+  artists: JoinArtistDTO[];
 }

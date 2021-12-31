@@ -6,8 +6,6 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { isDefined } from 'class-validator';
-import { ErrorString } from '../../common/const/error-string';
-import { ErrorMessage } from '../../common/class/error-message';
 import { UserService } from '../../user/user.service';
 
 @Injectable()
@@ -22,10 +20,7 @@ export class ValidateUserIdPipe implements PipeTransform {
       if (!isDefined(value) || isNaN(value)) return undefined;
       if (!(await this.userService.isExistUser({ id: value }))) {
         throw new NotFoundException(
-          new ErrorMessage(
-            `user id ${value} is not exist.`,
-            ErrorString.FAIL_EXIST,
-          ),
+            `user id ${value} is not exist.`
         );
       }
     }

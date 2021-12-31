@@ -26,6 +26,7 @@ import { SocialLog } from '../common/view/social-log.entity';
 import { max, min } from 'class-validator';
 import { MusicInfo } from '../common/view/music-info.entity';
 import { TesterProceedDto } from './dto/tester-remain.dto';
+import { MusicPartialDto } from './dto/music-partial.dto';
 
 @Injectable()
 export class UserService {
@@ -215,6 +216,11 @@ export class UserService {
   async isExistAlbum(albumPartial: AlbumPartialDto): Promise<boolean> {
     return (await this.userAlbumRepository.count({ where: albumPartial })) > 0;
   }
+
+  async isExistMusic(musicPartial: MusicPartialDto): Promise<boolean> {
+    return (await this.userMusicRepository.count({ where: musicPartial})) > 0;
+  }
+
 
   //아래의 메소드들은 유저가 앨범을 가지고 있는지는 controller에서 guard를 통해 할 예정
   //getMusicsInAlbum, addMusicInAlbum, updateAlbum, deleteAlbum, deleteMusicInAlbum

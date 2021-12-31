@@ -58,6 +58,8 @@ import {
 import { TestUserGuard } from './guard/test-user.guard';
 import { TesterProceedDto } from './dto/tester-remain.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags, PickType } from '@nestjs/swagger';
+import { UserLikedAlbumDto } from './dto/user-liked-album.dto';
+import { ValidateMuiscIdPipe } from './pipe/validate-music-id.pipe copy';
 
 @ApiTags('User(유저) 정보 관련 API')
 @ApiResponse({
@@ -122,7 +124,18 @@ export class UserController {
     return await this.userService.getUserLikedAllMusic(id);
   }
 
-  
+  @ApiOperation({summary: "좋아요 한 데이터를 기반으로 추천 앨범 조회 (TODO : 동적 쿼리 확인 필요)"})
+  @ApiParam({
+    name:"id",
+    description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "433"
+  })
+  @ApiResponse({
+    status:200,
+    description: "요청 성공 (Music Array 반환)",
+    isArray: true,
+    type:UserLikedAlbumDto
+  })
   @Get('liked_albums')
   async getUserLikedAlbums(@Param('id') id: number) {
     return await this.userService.getUserLikedAlbums(id);
@@ -243,6 +256,17 @@ export class UserController {
     return await this.userService.getTesterMusicCount(req.user);
   }
 
+  @ApiOperation({summary: "사용자 앨범 생성"})
+  @ApiParam({
+    name:"id",
+    description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "433"
+  })
+  @ApiResponse({
+    status:201,
+    description: "API 요청 성공 (생성된 앨범 반환)",
+    type:Album
+  })
   @Post('album')
   async addAlbum(
     @Param('id') userId: number,
@@ -255,11 +279,43 @@ export class UserController {
     );
   }
 
+  @ApiOperation({summary: "사용자 앨범 전체 조회"})
+  @ApiParam({
+    name:"id",
+    description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "433"
+  })
+  @ApiResponse({
+    status:200,
+    description: "API 요청 성공 (해당 사용자의 모든 앨범 반환)",
+    type:Album
+  })
   @Get('album')
   async getAlbum(@Param('id') id: number): Promise<Album[]> {
     return await this.userService.getAlbums(id);
   }
 
+  @ApiOperation({summary: "해당 앨범에 들어있는 음악 조회"})
+  @ApiParam({
+    name:"id",
+    description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "433"
+  })
+  @ApiParam({
+    name:"album_id",
+    description:"앨범 ID",
+    example: "37"
+  })
+  @ApiResponse({
+    status:200,
+    description: "API 요청 성공 (음악 배열 반환)",
+    isArray:true,
+    type: Music
+    })
+  @ApiResponse({
+    status:404,
+    description: "앨범 ID가 유효하지 않음"
+  })
   @Get('album/:album_id')
   @UsePipes(ValidateAlbumIdPipe)
   @UseGuards(AlbumOwnerGuard)
@@ -270,24 +326,74 @@ export class UserController {
     return await this.userService.getMusicsInAlbum(id, albumId);
   }
 
+  @ApiOperation({summary: "사용자 앨범에 곡 추가"})
+  @ApiParam({
+    name:"id",
+    description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "433"
+  })
+  @ApiParam({
+    name:"album_id",
+    description:"앨범 ID",
+    example: "37"
+  })
+  @ApiParam({
+    name:"music_id",
+    description:"음악 ID",
+    example: "560"
+  })
+  @ApiResponse({
+    status:201,
+    description: "API 요청 성공 (노래가 추가된 해당 앨범 반환) 노래가 중복되어 보일 수 있지만, 실제로 DB에서는 중복 값은 무시하고 저장됨.",
+    type:Album
+  })
+  @ApiResponse({
+    status:404,
+    description: "앨범 ID 혹은 음악 ID가 유효하지 않음"
+  })
   @Post('album/:album_id/:music_id')
   @UsePipes(ValidateAlbumIdPipe)
+  @UsePipes(ValidateMuiscIdPipe)
   @UseGuards(AlbumOwnerGuard)
   async addMusicInAlbum(
+    @Param('id') id : number,
     @Param('album_id') albumId: number,
     @Param('music_id') musicId: number,
   ) {
     return await this.userService.addMusicInAlbum(albumId, musicId);
   }
 
+  @ApiOperation({summary: "사용자 앨범 이름 / 공개여부 변경"})
+  @ApiParam({
+    name:"id",
+    description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "433"
+  })
+  @ApiParam({
+    name:"album_id",
+    description:"앨범 ID",
+    example: "37"
+  })
+  @ApiBody({
+    type:AddAlbumDto
+  })
+  @ApiResponse({
+    status:200,
+    description: "API 요청 성공 (변경된 앨범 반환)",
+    type:Album
+    })
+  @ApiResponse({
+    status:404,
+    description: "앨범 ID가 유효하지 않음"
+  })
   @Patch('album/:album_id')
   @UsePipes(ValidateAlbumIdPipe)
   @UseGuards(AlbumOwnerGuard)
   async updateAlbum(
+    @Param('id') id : number,
     @Param('album_id') albumId: number,
     @Body() updateAlbumDto: AddAlbumDto,
   ) {
-    // console.log('update-name',updateAlbumDto.name);
     return await this.userService.updateAlbum(
       albumId,
       updateAlbumDto.name,
@@ -295,19 +401,66 @@ export class UserController {
     );
   }
 
+  @ApiOperation({summary: "앨범 삭제"})
+  @ApiParam({
+    name:"id",
+    description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "433"
+  })
+  @ApiParam({
+    name:"album_id",
+    description:"앨범 ID",
+    example: "38"
+  })
+  @ApiResponse({
+    status:204,
+    description: "API 요청 성공"
+    })
+  @ApiResponse({
+    status:404,
+    description: "앨범 ID가 유효하지 않음"
+  })
   @Delete('album/:album_id')
   @UsePipes(ValidateAlbumIdPipe)
   @UseGuards(AlbumOwnerGuard)
   @HttpCode(204)
-  async deleteAlbum(@Param('album_id') albumId: number): Promise<void> {
+  async deleteAlbum(
+    @Param('id') id : number,
+    @Param('album_id') albumId: number): Promise<void> {
     await this.userService.deleteAlbum(albumId);
   }
 
+  @ApiOperation({summary: "해당 앨범의 노래 삭제"})
+  @ApiParam({
+    name:"id",
+    description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "433"
+  })
+  @ApiParam({
+    name:"album_id",
+    description:"앨범 ID",
+    example: "37"
+  })
+  @ApiParam({
+    name:"music_id",
+    description:"음악 ID",
+    example: "560"
+  })
+  @ApiResponse({
+    status:204,
+    description: "API 요청 성공"
+    })
+  @ApiResponse({
+    status:404,
+    description: "앨범 ID 혹은 음악 ID가 유효하지 않음"
+  })
   @Delete('album/:album_id/:music_id')
   @UsePipes(ValidateAlbumIdPipe)
+  @UsePipes(ValidateMuiscIdPipe)
   @UseGuards(AlbumOwnerGuard)
   @HttpCode(204)
   async deleteMusicInAlbum(
+    @Param('id') id:number,
     @Param('album_id') albumId: number,
     @Param('music_id') musicId: number,
   ): Promise<void> {
