@@ -11,7 +11,7 @@ import { MusicService } from '../music/music.service';
 import { BeatService } from '../beat/beat.service';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('Search')
+@ApiTags('Search(검색) 관련 APi')
 @Controller('search')
 export class SearchController {
   constructor(
