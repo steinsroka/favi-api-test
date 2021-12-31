@@ -9,6 +9,7 @@ import { MusicSmallInfoDto } from '../music/dto/music-small-info.dto';
 import { Music, BPM } from '../common/entity/music.entity';
 import { Beat } from '../common/entity/beat.entity';
 import { BeatTagInfo } from '../common/view/beat-tag-info.entity';
+import { type } from 'os';
 
 @Injectable()
 export class SearchService {

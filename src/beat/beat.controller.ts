@@ -47,13 +47,13 @@ import { isDefined } from 'class-validator';
 import { ErrorMessage } from '../common/class/error-message';
 import { ErrorString } from '../common/const/error-string';
 import { UserService } from '../user/user.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Beat')
+@ApiBearerAuth()
 @Controller('beat')
 @UseGuards(JwtAuthGuard)
 @UsePipes(ValidateBeatPipe)
-// @UseGuards(GuestableAuthGuard)
 export class BeatController {
   constructor(
     private readonly beatService: BeatService,
@@ -61,11 +61,10 @@ export class BeatController {
     private readonly userService: UserService,
   ) {}
 
+  
   @Post()
-  @HttpCode(204)
   async addBeat(
     @Request() req: UserRequest,
-    // @Param('id') id: number,
     @Body() addBeatDto: AddBeatDto,
   ): Promise<Message> {
     await this.beatService.addBeat(
