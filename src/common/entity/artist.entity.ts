@@ -15,7 +15,4 @@ export class Artist {
   @JoinTable()
   musics: MusicInfo[];
 
-  // @Column()
-  // tags: MusicTag[];
-
 }

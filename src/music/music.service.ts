@@ -1,6 +1,4 @@
 import {
-  HttpException,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -15,18 +13,17 @@ import { MusicLike } from '../common/entity/music-like.entity';
 import { MusicCommentLike } from '../common/entity/music-comment-like.entity';
 import { MusicTag } from '../common/entity/music-tag.entity';
 import { Artist } from '../common/entity/artist.entity';
-import { MusicArtist } from '../common/entity/music-artist.entity';
 import {
   MusicTagValue,
   Tag,
-  TagClass,
 } from '../common/entity/music-tag-value.entity';
-import { Message } from '../common/class/message';
 import { MusicCommentInfo } from '../common/view/music-comment-info.entity';
 import { MusicCommentTagDto } from './dto/music-comment-tag.dto';
 import { MusicTagInfo } from '../common/view/music-tag-info.entity';
 
 import { EditMusicDto } from './dto/edit-music.dto';
+import { MusicWithLikeDto } from './dto/music-with-like.dto';
+import { table } from 'console';
 
 @Injectable()
 export class MusicService {
@@ -37,8 +34,6 @@ export class MusicService {
     private readonly musicInfoRepository: Repository<MusicInfo>,
     @InjectRepository(Artist)
     private readonly artistRepository: Repository<Artist>,
-    @InjectRepository(MusicArtist)
-    private readonly musicArtistRepository: Repository<MusicArtist>,
     @InjectRepository(MusicCommentInfo)
     private readonly musicCommentInfoRepository: Repository<MusicCommentInfo>,
     @InjectRepository(MusicComment)
@@ -101,37 +96,43 @@ export class MusicService {
     return musicInfos;
   }
   async getMusicWithArtist(artistId: number,user?: User): Promise<Artist> {
-    // const artistInfos = await this.artistRepository.findOneOrFail({where: {id: artistId}});
-    const now = Date.now();
-    const artist = await this.artistRepository.findOneOrFail({
-      relations: ['musics'],
+    
+    const artist: any = await this.artistRepository.findOneOrFail({
       where: { id: artistId },
-
     });
-    // const tags = [];
-     const promises = artist.musics.map( async music =>{
-       music.tags = await this.getMusicTags(music.id);
-       music.myLike = isDefined(user)
-         ? await this.isExistMusicLike(music.id, user)
-         : null;
-       music.artists = await this.getMusicArtists(music.id);
-     });
-    await Promise.all(promises);
 
-    // for (const music of artist.musics){
-    //   const tag = await this.getMusicTags(music.id);
-    //   // tags.push(tag);
-    //
-    //   music.tags = tag;
-    //   music.myLike = isDefined(user)
-    //     ? await this.isExistMusicLike(music.id, user)
-    //     : null;
-    //   music.artists = await this.getMusicArtists(music.id);
-    // }
+
+    const musicWithLikes : MusicWithLikeDto[] = await this.artistRepository
+    .createQueryBuilder('a')
+    .select('m.*')
+    .addSelect('if(isnull(l.userId),false, true)', 'myLike')
+    .innerJoin(
+      'music_artists_artist',
+      'ma',
+      'a.id = ma.artistId'
+    )
+    .innerJoin(
+      Music,
+      'm',
+      'm.id = ma.musicId'
+    )
+    .leftJoin(
+      MusicLike,
+      'l',
+      'l.userId= :userId and l.musicId=m.id',
+      {userId : user.id}
+    )
+    .where('a.id = :artistId', {artistId : artistId})
+    .getRawMany();
+
+    musicWithLikes.map(item => {
+      item.myLike == 0 ? item.myLike = false : item.myLike = true;
+      return item;
+    })
+
+    artist.musics = musicWithLikes;
 
     return artist;
-    // artistInfos.musics = await this.musicInfoRepository.find({where: {musicId: In(musicIds)}, order: {musicId: 'ASC'}});
-    // return artistInfos;
   }
 
   async editMusic(musicId: number, editMusicDto: EditMusicDto) {
@@ -150,13 +151,6 @@ export class MusicService {
     });
     return music.artists;
   }
-  // async getArtistMusics(artistId: number): Promise<Artist[]> {
-  //   const artist = await this.artistRepository.findOneOrFail({
-  //     relations: ['musics'],
-  //     where: { artistId: artistId },
-  //   });
-  //   return artist.musics;
-  // }
 
   async isExistMusic(musicId: number): Promise<boolean> {
     return (await this.musicRepository.count({ id: musicId })) > 0;

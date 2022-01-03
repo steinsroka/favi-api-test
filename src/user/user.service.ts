@@ -1,29 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { keys } from 'ts-transformer-keys';
 import {
   Repository,
   DeleteResult,
   In,
-  getRepository,
   createQueryBuilder,
 } from 'typeorm';
 import { UserPartialDto } from './dto/user-partial.dto';
 import { AlbumPartialDto } from './dto/album-partial.dto';
 import { User } from '../common/entity/user.entity';
 import { UserInfo } from '../common/view/user-info.entity';
-import { MusicCommentTagDto } from '../music/dto/music-comment-tag.dto';
 import { UserTagInfo } from '../common/view/user-tag-info.entity';
 import { UserFollow } from '../common/entity/user-follow.entity';
 import { MusicLike } from '../common/entity/music-like.entity';
 import { Music } from '../common/entity/music.entity';
 import { MusicSmallInfoDto } from '../music/dto/music-small-info.dto';
-import { Tag, TagClass } from '../common/entity/music-tag-value.entity';
+import { Tag } from '../common/entity/music-tag-value.entity';
 import { MusicTagInfo } from '../common/view/music-tag-info.entity';
 import { Album } from '../common/entity/album.entity';
 import { UserLikedAlbumDto } from './dto/user-liked-album.dto';
 import { SocialLog } from '../common/view/social-log.entity';
-import { max, min } from 'class-validator';
 import { MusicInfo } from '../common/view/music-info.entity';
 import { TesterProceedDto } from './dto/tester-remain.dto';
 import { MusicPartialDto } from './dto/music-partial.dto';
@@ -106,6 +102,7 @@ export class UserService {
       .andWhere('musicTagInfo.name = :tag', { tag: tag })
       .orderBy('musicLike.timestamp','DESC')
       .getRawMany();
+      
     return this.userMusicRepository.find({
       where: { id: In(musicLikes.map((value) => value.id)) },
       relations: ['artists']
