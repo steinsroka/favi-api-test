@@ -40,7 +40,7 @@ import { ErrorMessage } from '../common/class/error-message';
 import { ErrorString } from '../common/const/error-string';
 import { UserService } from '../user/user.service';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags, PickType } from '@nestjs/swagger';
-import { Music } from 'src/common/entity/music.entity';
+import { Music } from '../common/entity/music.entity';
 import { MusicTagInfo } from 'src/common/view/music-tag-info.entity';
 
 @ApiTags('Music(음악) 관련 API')
@@ -79,7 +79,7 @@ export class MusicController {
     return music;
   }
 
-  @ApiOperation({summary: "특정 아티스트의 음악 조회 (TODO : 속도 개선 필요)"})
+  @ApiOperation({summary: "특정 아티스트의 음악 조회"})
   @ApiParam({
     name:"id",
     description:"아티스트 ID",

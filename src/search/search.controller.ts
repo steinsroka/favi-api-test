@@ -10,8 +10,8 @@ import { SearchService } from './search.service';
 import { MusicService } from '../music/music.service';
 import { BeatService } from '../beat/beat.service';
 import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { MusicSmallInfoDto } from 'src/music/dto/music-small-info.dto';
-import { BPM } from 'src/common/entity/music.entity';
+import { MusicSmallInfoDto } from '../music/dto/music-small-info.dto';
+import { BPM } from '../common/entity/music.entity';
 
 @ApiTags('Search(검색) 관련 APi')
 @Controller('search')

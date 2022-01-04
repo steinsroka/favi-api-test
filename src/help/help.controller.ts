@@ -7,7 +7,7 @@ import { GetHelpDto } from './dto/get-help.dto';
 import { WriteHelpDto } from './dto/write-help.dto';
 import { HelpService } from './help.service';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags, PickType } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 
 @ApiTags('Help(홈페이지 문의사항) 관련 API')
 @Controller('help')
