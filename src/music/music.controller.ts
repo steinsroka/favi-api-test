@@ -30,14 +30,12 @@ import { MusicComment } from '../common/entity/music-comment.entity';
 import { EditMusicCommentDto } from './dto/edit-music-comment.dto';
 import { VoteMusicTagDto } from './dto/vote-music-tag.dto';
 import { Tag } from '../common/entity/music-tag-value.entity';
-import { DeleteResult, InsertResult } from 'typeorm';
+import { InsertResult } from 'typeorm';
 import { MusicCommentInfo } from '../common/view/music-comment-info.entity';
 import { MusicCommentAuthGuard } from './guard/music-comment-auth.guard';
 import { ValidateMusicPipe } from './pipe/validate-music.pipe';
 import { EditMusicDto } from './dto/edit-music.dto';
 import { isDefined } from 'class-validator';
-import { ErrorMessage } from '../common/class/error-message';
-import { ErrorString } from '../common/const/error-string';
 import { UserService } from '../user/user.service';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags, PickType } from '@nestjs/swagger';
 import { Music } from '../common/entity/music.entity';
@@ -61,7 +59,7 @@ export class MusicController {
 
   @ApiOperation({summary: "음악 정보 조회"})
   @ApiParam({
-    name:"id",
+    name:"music_id",
     description:"음악 ID",
     example: "650"
   })
@@ -70,18 +68,18 @@ export class MusicController {
     description: "조회 성공(음악 데이터 반환)",
     type:MusicInfo
   })
-  @Get(':id')
+  @Get(':music_id')
   async getMusicInfo(
     @Request() req: UserRequest,
-    @Param('id') id: number,
+    @Param('music_id') musicId: number,
   ): Promise<MusicInfo> {
-    const music = await this.musicService.getMusic(id, req.user);
+    const music = await this.musicService.getMusic(musicId, req.user);
     return music;
   }
 
   @ApiOperation({summary: "특정 아티스트의 음악 조회"})
   @ApiParam({
-    name:"id",
+    name:"artist_id",
     description:"아티스트 ID",
     example: "7"
   })
@@ -90,18 +88,18 @@ export class MusicController {
     description: "조회 성공(아티스트와 해당 아티스트의 음악 데이터 반환)",
     type:Artist
   })
-  @Get('artist/:id')
+  @Get('artist/:artist_id')
   async getMusicWithArtist(
     @Request() req: UserRequest,
-    @Param('id') id: number,
+    @Param('artist_id') artistId: number,
   ): Promise<Artist> {
-    const music = await this.musicService.getMusicWithArtist(id, req.user);
+    const music = await this.musicService.getMusicWithArtist(artistId, req.user);
     return music;
   }
 
   @ApiOperation({summary: "테스터 API - 곡 수정"})
   @ApiParam({
-    name:"id",
+    name:"music_id",
     description:"음악 ID",
     example: "650"
   })
@@ -122,40 +120,40 @@ export class MusicController {
     description: "수정 성공(아티스트와 해당 아티스트의 음악 데이터 반환)",
     type:Artist
   })
-  @Patch(':id')
+  @Patch(':music_id')
   @UseGuards(TestUserGuard)
   async editMusic(
     @Req() req: UserRequest,
-    @Param('id') id: number,
+    @Param('music_id') musicId: number,
     @Body() editMusicDto: EditMusicDto,
   ) {
-    if (!(await this.userService.isExistTesterMusic(req.user, id))) {
+    if (!(await this.userService.isExistTesterMusic(req.user, musicId))) {
       throw new ForbiddenException();
     }
-    const result = await this.musicService.editMusic(id, editMusicDto);
-    await this.userService.deleteTesterMusic(req.user, id);
+    const result = await this.musicService.editMusic(musicId, editMusicDto);
+    await this.userService.deleteTesterMusic(req.user, musicId);
     return result;
   }
 
   @ApiOperation({summary: "음악에 유저의 좋아요 추가"})
   @ApiParam({
-    name:"id",
+    name:"music_id",
     description:"음악 ID",
     example: "650"
   })
-  @Put(':id/like')
+  @Put(':music_id/like')
   @HttpCode(204)
   async likeMusic(
     @Request() req: UserRequest,
-    @Param('id') id: number,
+    @Param('music_id') musicId: number,
   ): Promise<void> {
-    await this.musicService.addMusicLike(id, req.user);
+    await this.musicService.addMusicLike(musicId, req.user);
   }
 
 
   @ApiOperation({summary: "음악에 유저의 좋아요 삭제"})
   @ApiParam({
-    name:"id",
+    name:"music_id",
     description:"음악 ID",
     example: "650"
   })
@@ -163,18 +161,18 @@ export class MusicController {
     status:204,
     description: "삭제 성공",
   })
-  @Delete(':id/like')
+  @Delete(':music_id/like')
   @HttpCode(204)
   async hateMusic(
     @Request() req: UserRequest,
-    @Param('id') id: number,
+    @Param('music_id') musicId: number,
   ): Promise<void> {
-    await this.musicService.deleteMusicLike(id, req.user);
+    await this.musicService.deleteMusicLike(musicId, req.user);
   }
 
   @ApiOperation({summary: "해당 음악 댓글 조회 (10개 단위, 최신순)"})
   @ApiParam({
-    name:"id",
+    name:"music_id",
     description:"음악 ID",
     example: "252"
   })
@@ -189,14 +187,14 @@ export class MusicController {
     isArray: true,
     type:MusicCommentInfo,
   })
-  @Get(':id/comment')
+  @Get(':music_id/comment')
   async getMusicComments(
     @Request() req: UserRequest,
-    @Param('id') id: number,
+    @Param('music_id') musicId: number,
     @Query('index') index?: number,
   ): Promise<MusicCommentInfo[]> {
     const musicComments = await this.musicService.getMusicComments(
-      id,
+      musicId,
       index,
       req.user,
     );
@@ -205,7 +203,7 @@ export class MusicController {
 
   @ApiOperation({summary: "해당 음악에 댓글 작성"})
   @ApiParam({
-    name:"id",
+    name:"music_id",
     description:"음악 ID",
     example: "252"
   })
@@ -221,10 +219,10 @@ export class MusicController {
     status:404,
     description: "(대댓글 작성 시) 해당 댓글이 서버에 존재하지 않음",
   })
-  @Post(':id/comment')
+  @Post(':music_id/comment')
   async addMusicComment(
     @Request() req: UserRequest,
-    @Param('id') id: number,
+    @Param('music_id') musicId: number,
     @Body() addMusicCommentDto: AddMusicCommentDto,
   ): Promise<Message> {
 
@@ -240,7 +238,7 @@ export class MusicController {
 
     // 댓글 추가
     const comment = await this.musicService.addMusicComment(
-      id,
+      musicId,
       req.user,
       addMusicCommentDto.comment,
       addMusicCommentDto.parent,
@@ -250,7 +248,7 @@ export class MusicController {
     const addMusicPromise:
       | Promise<InsertResult>[]
       | undefined = addMusicCommentDto.tags?.map((value: Tag) =>
-      this.musicService.addMusicTag(id, value, req.user, comment.id),
+      this.musicService.addMusicTag(musicId, value, req.user, comment.id),
     );
     await Promise.all(addMusicPromise ?? []);
 
@@ -260,7 +258,7 @@ export class MusicController {
 
   @ApiOperation({summary: "댓글 삭제"})
   @ApiParam({
-    name:"id",
+    name:"music_id",
     description:"음악 ID",
     example: "252"
   })
@@ -282,13 +280,13 @@ export class MusicController {
     description: "해당 음악 id, comment id가 유효하지 않음 (서버에 해당 댓글이 없음)",
   })
   @UseGuards(MusicCommentAuthGuard)
-  @Delete(':id/comment/:comment_id')
+  @Delete(':music_id/comment/:comment_id')
   @HttpCode(204)
   async deleteMusicComment(
-    @Param('id') id: number,
+    @Param('music_id') musicId: number,
     @Param('comment_id') commentId: number,
   ): Promise<void> {
-    const result = await this.musicService.deleteMusicComment(id, commentId);
+    const result = await this.musicService.deleteMusicComment(musicId, commentId);
     if(result.affected === 0){
       throw new NotFoundException("Music id or comment id is not valid");
     }
@@ -296,7 +294,7 @@ export class MusicController {
 
   @ApiOperation({summary: "댓글 수정"})
   @ApiParam({
-    name:"id",
+    name:"music_id",
     description:"음악 ID",
     example: "252"
   })
@@ -318,14 +316,14 @@ export class MusicController {
     description: "해당 음악 id, comment id가 유효하지 않음 (서버에 해당 댓글이 없음)",
   })
   @UseGuards(MusicCommentAuthGuard)
-  @Patch(':id/comment/:comment_id')
+  @Patch(':music_id/comment/:comment_id')
   async editMusicComment(
-    @Param('id') id: number,
+    @Param('music_id') musicId: number,
     @Param('comment_id') commentId: number,
     @Body() editMusicCommentDto: EditMusicCommentDto,
   ): Promise<MusicComment> {
     return await this.musicService.updateMusicComment(
-      id,
+      musicId,
       commentId,
       editMusicCommentDto.newComment,
     );
@@ -334,7 +332,7 @@ export class MusicController {
 
   @ApiOperation({summary: "댓글에 좋아요 추가" })
   @ApiParam({
-    name:"id",
+    name:"music_id",
     description:"음악 ID",
     example: "252"
   })
@@ -351,19 +349,19 @@ export class MusicController {
     status:404,
     description: "해당 음악 id, comment id가 유효하지 않음 (서버에 해당 댓글이 없음)",
   })
-  @Put(':id/comment/:comment_id/like')
+  @Put(':music_id/comment/:comment_id/like')
   @HttpCode(204)
   async likeMusicComment(
     @Request() req: UserRequest,
-    @Param('id') id: number,
+    @Param('music_id') musicId: number,
     @Param('comment_id') commentId: number,
   ): Promise<void> {
-    await this.musicService.addMusicCommentLike(id, commentId, req.user);
+    await this.musicService.addMusicCommentLike(musicId, commentId, req.user);
   }
 
   @ApiOperation({summary: "댓글에 좋아요 삭제" })
   @ApiParam({
-    name:"id",
+    name:"music_id",
     description:"음악 ID",
     example: "252"
   })
@@ -380,11 +378,11 @@ export class MusicController {
     status:404,
     description: "해당 음악 id, comment id가 유효하지 않음 (서버에 해당 댓글이 없음)",
   })
-  @Delete(':id/comment/:comment_id/like')
+  @Delete(':music_id/comment/:comment_id/like')
   @HttpCode(204)
   async hateMusicComment(
     @Request() req: UserRequest,
-    @Param('id') id : number,
+    @Param('music_id') musicId : number,
     @Param('comment_id') commentId: number,
   ): Promise<void> {
     const result = await this.musicService.deleteMusicCommentLike(commentId, req.user);
@@ -395,7 +393,7 @@ export class MusicController {
 
   @ApiOperation({summary: "음악 태그 조회" })
   @ApiParam({
-    name:"id",
+    name:"music_id",
     description:"음악 ID",
     example: "252"
   })
@@ -403,14 +401,14 @@ export class MusicController {
     status:404,
     description: "해당 음악 id가 유효하지 않음",
   })
-  @Get(':id/tag')
-  async getMusicTag(@Param('id') id: number) : Promise<MusicTagInfo[]> {
-    return await this.musicService.getMusicTags(id);
+  @Get(':music_id/tag')
+  async getMusicTag(@Param('music_id') musicId: number) : Promise<MusicTagInfo[]> {
+    return await this.musicService.getMusicTags(musicId);
   }
 
   @ApiOperation({summary: "음악 태그 추가" })
   @ApiParam({
-    name:"id",
+    name:"music_id",
     description:"음악 ID",
     example: "252"
   })
@@ -421,13 +419,13 @@ export class MusicController {
     status:404,
     description: "해당 음악 id가 유효하지 않음",
   })
-  @Put(':id/tag')
+  @Put(':music_id/tag')
   async voteMusicTag(
     @Request() req: UserRequest,
-    @Param('id') id: number,
+    @Param('music_id') musicId: number,
     @Body() voteMusicTagDto: VoteMusicTagDto,
   ) {
-    await this.musicService.addMusicTag(id, voteMusicTagDto.tag, req.user);
+    await this.musicService.addMusicTag(musicId, voteMusicTagDto.tag, req.user);
     return new Message('success');
   }
 
@@ -452,7 +450,7 @@ export class MusicController {
     }
   ]`})
   @ApiParam({
-    name:"id",
+    name:"music_id",
     description:"음악 ID",
     example: "252"
   })
@@ -465,8 +463,8 @@ export class MusicController {
     status:404,
     description: "해당 음악 id가 유효하지 않음",
   })
-  @Get(':id/users')
-  async getUserDistribution(@Param('id') id: number) {
-    return await this.musicService.getUserDistributionInMusic(id);
+  @Get(':music_id/users')
+  async getUserDistribution(@Param('music_id') musicId: number) {
+    return await this.musicService.getUserDistributionInMusic(musicId);
   }
 }

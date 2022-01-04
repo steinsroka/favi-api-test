@@ -21,13 +21,10 @@ import {
 //nest?
 import { UserRequest } from '../common/@types/user-request';
 import { isDefined } from 'class-validator';
-import { use } from 'passport';
-import { get } from 'node:http';
 
 //Pipe
 import { ValidateUserIdPipe } from './pipe/validate-user-id.pipe';
 import { ValidateAlbumIdPipe } from './pipe/validate-album-id.pipe';
-import { ValidateMusicPipe } from '../music/pipe/validate-music.pipe';
 
 //Guard
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
@@ -41,19 +38,17 @@ import { AddAlbumDto } from './dto/add-album.dto';
 
 //Entity
 import { UserInfo } from '../common/view/user-info.entity';
-import { Tag, TagClass } from '../common/entity/music-tag-value.entity';
+import { Tag } from '../common/entity/music-tag-value.entity';
 import { User } from '../common/entity/user.entity';
 import { Album } from '../common/entity/album.entity';
 import { Music } from '../common/entity/music.entity';
 
 //Service
 import { UserService } from './user.service';
-import { from } from 'rxjs';
 import { MusicService } from '../music/music.service';
 import {
   UserSocialLog,
   UserSocialLogMusicComment,
-  // UserSocialLogMusicLike,
 } from './dto/user-social-log.dto';
 import { TestUserGuard } from './guard/test-user.guard';
 import { TesterProceedDto } from './dto/tester-remain.dto';
@@ -61,13 +56,26 @@ import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, 
 import { UserLikedAlbumDto } from './dto/user-liked-album.dto';
 import { ValidateMuiscIdPipe } from './pipe/validate-music-id.pipe copy';
 
+
+/*
+TODO : JWT 안에 이미 userId가 있기 떄문에, 자신의 정보 요청하는 경우 굳이 user_id 쓸 필요 없음
+
+JWT Format : {
+  "userId": 432,
+  "iat": 1640755573,
+  "exp": 1643347573
+}
+
+버전업 한다면 user_id 들어내서 API 줄일 수 있음
+*/
+
 @ApiTags('User(유저) 정보 관련 API')
 @ApiResponse({
   status:401,
   description: "JWT 토큰 만료, 혹은 유저가 해당 권한이 없음",
 })
 @ApiBearerAuth()
-@Controller('user/:id')
+@Controller('user/:user_id')
 @UsePipes(ValidateUserIdPipe)
 @UseGuards(JwtAuthGuard, UserAuthGuard)
 export class UserController {
@@ -79,7 +87,7 @@ export class UserController {
 
   @ApiOperation({summary: "유저 정보 조회"})
   @ApiParam({
-    name:"id",
+    name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
     example: "433"
   })
@@ -93,14 +101,14 @@ export class UserController {
     description: "JWT 토큰이 없거나 만료됨, 도는 권한이 없는 다른 사용자 데이터 요청함"
   })
   @Get()
-  async getUser(@Param('id') id: number): Promise<UserInfo> {
-    const user = await this.userService.getUserInfo(id);
+  async getUser(@Param('user_id') user_id: number): Promise<UserInfo> {
+    const user = await this.userService.getUserInfo(user_id);
     return user;
   }
 
   @ApiOperation({summary: "좋아요 한 음악 조회"})
   @ApiParam({
-    name:"id",
+    name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
     example: "433"
   })
@@ -117,16 +125,16 @@ export class UserController {
     type:Music
   })
   @Get('liked_musics')
-  async getUserLikedMusics(@Param('id') id: number, @Query('tag') tag?: Tag) {
+  async getUserLikedMusics(@Param('user_id') userId: number, @Query('tag') tag?: Tag) {
     if (isDefined(tag)) {
-      return await this.userService.getUserLikedTagMusic(id, tag);
+      return await this.userService.getUserLikedTagMusic(userId, tag);
     }
-    return await this.userService.getUserLikedAllMusic(id);
+    return await this.userService.getUserLikedAllMusic(userId);
   }
 
   @ApiOperation({summary: "좋아요 한 데이터를 기반으로 추천 앨범 조회 (TODO : 동적 쿼리 확인 필요)"})
   @ApiParam({
-    name:"id",
+    name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
     example: "433"
   })
@@ -137,13 +145,13 @@ export class UserController {
     type:UserLikedAlbumDto
   })
   @Get('liked_albums')
-  async getUserLikedAlbums(@Param('id') id: number) {
-    return await this.userService.getUserLikedAlbums(id);
+  async getUserLikedAlbums(@Param('user_id') userId: number) {
+    return await this.userService.getUserLikedAlbums(userId);
   }
 
   @ApiOperation({summary: "유저 삭제"})
   @ApiParam({
-    name:"id",
+    name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
     example: "433"
   })
@@ -157,13 +165,13 @@ export class UserController {
   })
   @Delete()
   @HttpCode(204)
-  async deleteUser(@Param('id') id: number): Promise<void> {
-    await this.userService.deleteUser(id);
+  async deleteUser(@Param('user_id') userId: number): Promise<void> {
+    await this.userService.deleteUser(userId);
   }
 
   @ApiOperation({summary: "유저 데이터 변경"})
   @ApiParam({
-    name:"id",
+    name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
     example: "433"
   })
@@ -186,6 +194,7 @@ export class UserController {
   })
   @Patch()
   async updateUser(
+    @Param('user_id') userId: number,
     @Req() req: UserRequest,
     @Body() user: UpdateUserDto,
   ): Promise<UserPartialDto> {
@@ -198,7 +207,7 @@ export class UserController {
 
   @ApiOperation({summary: "테스터 API - 음악 정보 배열 조회"})
   @ApiParam({
-    name:"id",
+    name:"user_id",
     description:"테스터 유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
     example: "433"
   })
@@ -226,6 +235,7 @@ export class UserController {
   @UseGuards(TestUserGuard)
   async getTesterMusics(
     @Req() req: UserRequest,
+    @Param('user_id') userId: number,
     @Query('index') index: number,
     @Query('size') size: number,
   ): Promise<Music[]> {
@@ -234,7 +244,7 @@ export class UserController {
 
   @ApiOperation({summary: "테스터 API - 진행 상황 조회"})
   @ApiParam({
-    name:"id",
+    name:"user_id",
     description:"테스터 유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
     example: "433"
   })
@@ -252,13 +262,14 @@ export class UserController {
   @UseGuards(TestUserGuard)
   async getTesterProceedCount(
     @Req() req: UserRequest,
+    @Param('user_id') userId: number,
   ): Promise<TesterProceedDto> {
     return await this.userService.getTesterMusicCount(req.user);
   }
 
   @ApiOperation({summary: "사용자 앨범 생성"})
   @ApiParam({
-    name:"id",
+    name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
     example: "433"
   })
@@ -269,7 +280,7 @@ export class UserController {
   })
   @Post('album')
   async addAlbum(
-    @Param('id') userId: number,
+    @Param('user_id') userId: number,
     @Body() addAlbumDto: AddAlbumDto,
   ) {
     return await this.userService.addAlbum(
@@ -281,7 +292,7 @@ export class UserController {
 
   @ApiOperation({summary: "사용자 앨범 전체 조회"})
   @ApiParam({
-    name:"id",
+    name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
     example: "433"
   })
@@ -291,13 +302,13 @@ export class UserController {
     type:Album
   })
   @Get('album')
-  async getAlbum(@Param('id') id: number): Promise<Album[]> {
-    return await this.userService.getAlbums(id);
+  async getAlbum(@Param('user_id') userId: number): Promise<Album[]> {
+    return await this.userService.getAlbums(userId);
   }
 
   @ApiOperation({summary: "해당 앨범에 들어있는 음악 조회"})
   @ApiParam({
-    name:"id",
+    name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
     example: "433"
   })
@@ -320,15 +331,15 @@ export class UserController {
   @UsePipes(ValidateAlbumIdPipe)
   @UseGuards(AlbumOwnerGuard)
   async getMusicInAlbum(
-    @Param('id') id: number,
+    @Param('user_id') userId: number,
     @Param('album_id') albumId: number,
   ): Promise<Music[]> {
-    return await this.userService.getMusicsInAlbum(id, albumId);
+    return await this.userService.getMusicsInAlbum(userId, albumId);
   }
 
   @ApiOperation({summary: "사용자 앨범에 곡 추가"})
   @ApiParam({
-    name:"id",
+    name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
     example: "433"
   })
@@ -356,7 +367,7 @@ export class UserController {
   @UsePipes(ValidateMuiscIdPipe)
   @UseGuards(AlbumOwnerGuard)
   async addMusicInAlbum(
-    @Param('id') id : number,
+    @Param('user_id') userId : number,
     @Param('album_id') albumId: number,
     @Param('music_id') musicId: number,
   ) {
@@ -365,7 +376,7 @@ export class UserController {
 
   @ApiOperation({summary: "사용자 앨범 이름 / 공개여부 변경"})
   @ApiParam({
-    name:"id",
+    name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
     example: "433"
   })
@@ -390,7 +401,7 @@ export class UserController {
   @UsePipes(ValidateAlbumIdPipe)
   @UseGuards(AlbumOwnerGuard)
   async updateAlbum(
-    @Param('id') id : number,
+    @Param('user_id') userId : number,
     @Param('album_id') albumId: number,
     @Body() updateAlbumDto: AddAlbumDto,
   ) {
@@ -403,7 +414,7 @@ export class UserController {
 
   @ApiOperation({summary: "앨범 삭제"})
   @ApiParam({
-    name:"id",
+    name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
     example: "433"
   })
@@ -425,14 +436,14 @@ export class UserController {
   @UseGuards(AlbumOwnerGuard)
   @HttpCode(204)
   async deleteAlbum(
-    @Param('id') id : number,
+    @Param('user_id') userId : number,
     @Param('album_id') albumId: number): Promise<void> {
     await this.userService.deleteAlbum(albumId);
   }
 
   @ApiOperation({summary: "해당 앨범의 노래 삭제"})
   @ApiParam({
-    name:"id",
+    name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
     example: "433"
   })
@@ -460,12 +471,14 @@ export class UserController {
   @UseGuards(AlbumOwnerGuard)
   @HttpCode(204)
   async deleteMusicInAlbum(
-    @Param('id') id:number,
+    @Param('user_id') userId:number,
     @Param('album_id') albumId: number,
     @Param('music_id') musicId: number,
   ): Promise<void> {
     await this.userService.deleteMusicInAlbum(albumId, musicId);
   }
+
+  /* 여기 밑으로는 개발중이었던 API */
 
   @Get('social')
   async getUserSocialLogs(

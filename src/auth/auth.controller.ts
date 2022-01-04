@@ -2,8 +2,6 @@ import {
   BadRequestException,
   Body,
   Controller,
-  Get,
-  HttpCode,
   Patch,
   Post,
   Request,
@@ -19,11 +17,9 @@ import { ExistUserIdPipe } from './pipe/exist-user-id.pipe';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { LoginDto } from './dto/login.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
-import userVerifyCode from '../common/class/user-verify-code';
 import { VerifyEmailCodeGuard } from './guard/verify-email-code.guard';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
 import { UserRequest } from '../common/@types/user-request';
-import { GuestableAuthGuard } from './guard/guestable-auth.guard';
 import { ApiBearerAuth, ApiBody, ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TokenResponseDto } from './dto/token-response.dto';
 
@@ -42,7 +38,6 @@ export class AuthController {
     status: 201,
     description : "토큰 발급 성공 (로그인 성공)",
     type : TokenResponseDto
-    
   })
   @ApiResponse({
     status: 400,
