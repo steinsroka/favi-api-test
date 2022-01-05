@@ -483,14 +483,14 @@ export class UserController {
   @Get('social')
   async getUserSocialLogs(
     @Request() req: UserRequest,
-    @Param('id') id: number,
+    @Param('user_id') user_id: number,
     @Query('index') index?: number,
-    @Query('user_id') userId?: number,
+    @Query('user_id') specificUser?: number,
   ) {
     const now = Date.now();
-    const users: number[] = isDefined(userId)
-      ? [userId]
-      : await this.userService.getNearUsers(id);
+    const users: number[] = isDefined(specificUser)
+      ? [specificUser]
+      : await this.userService.getNearUsers(user_id);
     // console.log('social-delay-log-1',Date.now() - now);
     const socialLogs = await this.userService.getSocialLogs(users, index);
     // console.log('social-delay-log-2',Date.now() - now);
