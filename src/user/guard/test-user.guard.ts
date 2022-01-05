@@ -1,16 +1,10 @@
 import {
-  BadRequestException,
   CanActivate,
   ExecutionContext,
   ForbiddenException,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
-import { UserInfo } from '../../common/view/user-info.entity';
-import { Observable } from 'rxjs';
 import { UserRequest } from '../../common/@types/user-request';
-import { ErrorMessage } from '../../common/class/error-message';
-import { ErrorString } from '../../common/const/error-string';
 
 @Injectable()
 export class TestUserGuard implements CanActivate {

@@ -6,12 +6,8 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { Album } from 'src/common/entity/album.entity';
-import { isUndefined } from 'util';
 import { UserRequest } from '../../common/@types/user-request';
-import { ErrorMessage } from '../../common/class/error-message';
-import { ErrorString } from '../../common/const/error-string';
 import { UserService } from '../../user/user.service';
 
 @Injectable()
@@ -24,7 +20,7 @@ export class AlbumOwnerGuard implements CanActivate {
     for (const key of Object.keys(request.params)) {
 
       switch (key) {
-        case 'id':
+        case 'user_id':
           break;
         case 'music_id':
           break;

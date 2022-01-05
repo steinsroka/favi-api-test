@@ -3,7 +3,6 @@ import {
   Injectable,
   ArgumentMetadata,
   NotFoundException,
-  HttpStatus,
 } from '@nestjs/common';
 import { isDefined } from 'class-validator';
 import { UserService } from '../../user/user.service';
@@ -14,7 +13,7 @@ export class ValidateUserIdPipe implements PipeTransform {
 
   async transform(value: any, metadata: ArgumentMetadata) {
     if (
-      (metadata.type === 'param' && metadata.data === 'id') ||
+      (metadata.type === 'param' && metadata.data === 'user_id') ||
       (metadata.type === 'query' && metadata.data === 'user_id')
     ) {
       if (!isDefined(value) || isNaN(value)) return undefined;

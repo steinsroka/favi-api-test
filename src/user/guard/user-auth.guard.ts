@@ -7,8 +7,6 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { UserRequest } from '../../common/@types/user-request';
-import { ErrorMessage } from '../../common/class/error-message';
-import { ErrorString } from '../../common/const/error-string';
 
 @Injectable()
 export class UserAuthGuard implements CanActivate {
@@ -17,11 +15,10 @@ export class UserAuthGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request: UserRequest = context.switchToHttp().getRequest();
     for (const key of Object.keys(request.params)) {
-      console.log('user-auth-key',key);
 
       switch (key) {
-        case 'id':
-          if (request.user.id.toString() !== request.params.id) {
+        case 'user_id':
+          if (request.user.id.toString() !== request.params.user_id) {
             throw new UnauthorizedException(
                 'you are not authorized to edit different user',
             );

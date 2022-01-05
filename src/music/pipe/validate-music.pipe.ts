@@ -6,8 +6,6 @@ import {
   HttpStatus,
   BadRequestException,
 } from '@nestjs/common';
-import { ErrorString } from 'src/common/const/error-string';
-import { ErrorMessage } from '../../common/class/error-message';
 import { MusicService } from '../music.service';
 
 @Injectable()
@@ -17,7 +15,7 @@ export class ValidateMusicPipe implements PipeTransform {
   async transform(value: any, metadata: ArgumentMetadata) {
     if (metadata.type === 'param') {
       switch (metadata.data) {
-        case 'id':
+        case 'music_id':
           if (!(await this.musicService.isExistMusic(value))) {
             throw new NotFoundException(
                 `music id ${value} is not exist`
