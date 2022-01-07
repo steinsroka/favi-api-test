@@ -51,14 +51,25 @@ export class MusicService {
   ) {}
 
   async getMusic(musicId: number, user?: User): Promise<MusicInfo> {
+    console.log(`Get Music`);
     const music = await this.musicInfoRepository.findOneOrFail({ id: musicId });
+    console.log(`MusicInfo Finished`);
+
+    console.log(`Get Music Tags`);
     music.tags = await this.getMusicTags(musicId);
+
+    console.log(`Get Music Tags Fin`);
+
+    console.log(`Get myLike`);
     music.myLike = isDefined(user)
       ? await this.isExistMusicLike(musicId, user)
       : null;
+
+    console.log(`Get myLike Fin`);
     music.artists = await this.getMusicArtists(musicId);
     return music;
   }
+
   async getMusic2(musicId: number, user?: User): Promise<MusicInfo> {
     const music = await this.musicInfoRepository.findOneOrFail({ id: musicId });
     music.artists = await this.getMusicArtists(musicId);
@@ -75,22 +86,30 @@ export class MusicService {
     return this.musicRepository.save(music);
   }
 
-  async getMusics(musicIds: number[]): Promise<MusicInfo[]> {
+  //needResponseTags : 0 : response에 태그 필요없음, 1 : 태그 필요함
+  async getMusics(musicIds: number[], needReseponseTags : number): Promise<MusicInfo[]> {
     const musicInfos = await this.musicInfoRepository.find({where: {id: In(musicIds)}, order: {id: 'ASC'}});
-    const tags = await this.musicTagInfoRepository.find({where: {musicId: In(musicIds)}, order: {musicId: 'ASC'}});
     const artists = await this.musicRepository.find({where: {id: In(musicIds)}, relations: ['artists'], order: {id: 'ASC'}});
-    let j = 0;
-    for(let i = 0; i < musicInfos.length; ++i) {
-      musicInfos[i].artists = artists[i].artists;
-      musicInfos[i].tags = [];
-      while(1) {
-        if(j < tags.length && tags[j].musicId === musicInfos[i].id) {
-          musicInfos[i].tags.push(tags[j]);
-          ++j;
+    if(needReseponseTags === 1){// 태그 정보까지 넣어줌
+      const tags = await this.musicTagInfoRepository.find({where: {musicId: In(musicIds)}, order: {musicId: 'ASC'}});
+      let j = 0;
+      for(let i = 0; i < musicInfos.length; ++i) {
+        musicInfos[i].artists = artists[i].artists;
+        musicInfos[i].tags = [];
+        while(1) {
+          if(j < tags.length && tags[j].musicId === musicInfos[i].id) {
+            musicInfos[i].tags.push(tags[j]);
+            ++j;
+          }
+          else {
+            break;
+          }
         }
-        else {
-          break;
-        }
+      }
+    }else{
+      let j = 0;
+      for(let i = 0; i < musicInfos.length; ++i) {
+        musicInfos[i].artists = artists[i].artists;
       }
     }
     return musicInfos;

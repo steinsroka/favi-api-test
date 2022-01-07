@@ -651,23 +651,23 @@ export class UserController {
 
     // return { result: result };
   }
-
-  @Put(':id/follow')
+  
+  @Put(':user_id/follow')
   @HttpCode(204)
   async userFollow(
     @Request() req: UserRequest,
-    @Param('id') id: number,
+    @Param('user_id') userId: number,
   ): Promise<void> {
-    await this.userService.addUserFollow(id, req.user);
+    await this.userService.addUserFollow(userId, req.user);
   }
 
-  @Delete(':id/follow')
+  @Delete(':user_id/follow')
   @HttpCode(204)
   async hateFollow(
     @Request() req: UserRequest,
-    @Param('id') id: number,
+    @Param('user_id') userId: number,
   ): Promise<void> {
-    await this.userService.deleteUserFollow(id, req.user);
+    await this.userService.deleteUserFollow(userId, req.user);
   }
 
 

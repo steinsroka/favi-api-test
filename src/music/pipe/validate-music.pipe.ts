@@ -29,8 +29,6 @@ export class ValidateMusicPipe implements PipeTransform {
             );
           }
           break;
-        default:
-          throw new BadRequestException();
       }
     }
     return value;

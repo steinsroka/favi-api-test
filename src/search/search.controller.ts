@@ -36,6 +36,11 @@ export class SearchController {
     required:false
   })
   @ApiQuery({
+    name : 'tag_response',
+    description: "Response Data에 태그 필요한지? 0: 태그 미포함, 1: 태그 포함",
+    enum : [0,1]
+  })
+  @ApiQuery({
     name:'index',
     description:"index (예를 들어 size = 10, index = 2 인 경우 20~30번째 결과 가져옴)",
     example: 0
@@ -73,7 +78,7 @@ export class SearchController {
     for(const key of musicIds) {
       ids.push(key.musicId);
     }
-    const musics: MusicInfo[] = await this.musicService.getMusics(ids);
+    const musics: MusicInfo[] = await this.musicService.getMusics(ids, tagSearchDto.tag_response);
     return musics;
   }
   @Get('beat/tag')
