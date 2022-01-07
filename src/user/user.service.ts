@@ -23,6 +23,8 @@ import { SocialLog } from '../common/view/social-log.entity';
 import { MusicInfo } from '../common/view/music-info.entity';
 import { TesterProceedDto } from './dto/tester-remain.dto';
 import { MusicPartialDto } from './dto/music-partial.dto';
+import { userCommentDto } from './dto/user-comment.dto';
+import { MusicComment } from 'src/common/entity/music-comment.entity';
 
 @Injectable()
 export class UserService {
@@ -45,11 +47,16 @@ export class UserService {
     private readonly musicInfoRepository: Repository<MusicInfo>,
     @InjectRepository(SocialLog)
     private readonly socialLogRepository: Repository<SocialLog>,
+    @InjectRepository(MusicComment)
+    private readonly musicCommentRepository : Repository<MusicComment>,
   ) {}
 
-  async getUserInfo(userId: number): Promise<UserInfo> {
+  // specificUser가 Define 되어 있다면 tag 포함 돌려줌, 없다면 tag는 제외
+  async getUserInfo(userId: number, needTags: boolean): Promise<UserInfo> {
     const user = await this.userInfoRepository.findOneOrFail({ id: userId });
-    user.tags = await this.getUserTags(userId);
+    if(needTags){
+      user.tags = await this.getUserTags(userId);
+    }
     return user;
   }
 
@@ -156,6 +163,50 @@ export class UserService {
       take: 5,
       skip: index * 5,
     });
+  }
+
+  async getUserComments(userId : number, index : number, size : number): Promise<userCommentDto[]>{
+    const comments : userCommentDto[] = await this.musicCommentRepository
+    .createQueryBuilder('c')
+    .select('c.comment', 'commentContents')
+    .addSelect('c.timestamp', 'timestamp')
+    .addSelect('m.title', 'musicName')
+    .addSelect('a.name', 'artistName')
+    .addSelect('count(l.userId)', 'likedCount')
+    .addSelect('count(rc.comment)','reCommentCount')
+    .innerJoin(
+      'music',
+      'm',
+      'c.musicId=m.id'
+    )
+    .innerJoin(
+      'music_artists_artist',
+      'ma',
+      'm.id = ma.musicId'
+    )
+    .innerJoin(
+      'artist',
+      'a',
+      'ma.artistId = a.id'
+    )
+    .leftJoin(
+      'music_comment_like',
+      'l',
+      'l.musicCommentId = c.id'
+    )
+    .leftJoin(
+      'music_comment',
+      'rc',
+      'rc.parentId = c.id'
+    ).where('c.userId = :userId', {userId : userId})
+    .groupBy('c.comment, c.timestamp, m.title, a.name')
+    .orderBy('c.timestamp','DESC')
+    .limit(size)
+    .offset(index * size)
+    .getRawMany();
+
+    console.log(comments.length)
+    return comments;
   }
 
   async getUserLikedAlbums(id: number): Promise<UserLikedAlbumDto[]> {

@@ -51,21 +51,11 @@ export class MusicService {
   ) {}
 
   async getMusic(musicId: number, user?: User): Promise<MusicInfo> {
-    console.log(`Get Music`);
     const music = await this.musicInfoRepository.findOneOrFail({ id: musicId });
-    console.log(`MusicInfo Finished`);
-
-    console.log(`Get Music Tags`);
     music.tags = await this.getMusicTags(musicId);
-
-    console.log(`Get Music Tags Fin`);
-
-    console.log(`Get myLike`);
     music.myLike = isDefined(user)
       ? await this.isExistMusicLike(musicId, user)
       : null;
-
-    console.log(`Get myLike Fin`);
     music.artists = await this.getMusicArtists(musicId);
     return music;
   }

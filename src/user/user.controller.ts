@@ -8,6 +8,7 @@ import {
   HttpCode,
   Inject,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Put,
@@ -55,6 +56,7 @@ import { TesterProceedDto } from './dto/tester-remain.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags, PickType } from '@nestjs/swagger';
 import { UserLikedAlbumDto } from './dto/user-liked-album.dto';
 import { ValidateMuiscIdPipe } from './pipe/validate-music-id.pipe copy';
+import { userCommentDto } from './dto/user-comment.dto';
 
 
 /*
@@ -89,7 +91,7 @@ export class UserController {
   @ApiParam({
     name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
-    example: "433"
+    example: "432"
   })
   @ApiResponse({
     status:200,
@@ -102,7 +104,7 @@ export class UserController {
   })
   @Get()
   async getUser(@Param('user_id') user_id: number): Promise<UserInfo> {
-    const user = await this.userService.getUserInfo(user_id);
+    const user = await this.userService.getUserInfo(user_id, true);
     return user;
   }
 
@@ -110,7 +112,7 @@ export class UserController {
   @ApiParam({
     name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
-    example: "433"
+    example: "432"
   })
   @ApiQuery({
     name:"tag",
@@ -136,7 +138,7 @@ export class UserController {
   @ApiParam({
     name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
-    example: "433"
+    example: "432"
   })
   @ApiResponse({
     status:200,
@@ -149,11 +151,48 @@ export class UserController {
     return await this.userService.getUserLikedAlbums(userId);
   }
 
+  @ApiOperation({summary: "해당 유저가 작성한 댓글을 가져옴"})
+  @ApiParam({
+    name:"user_id",
+    description:"본인의 유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "432"
+  })
+  @ApiQuery({
+    name:"user_id",
+    description:"검색할 해당 유저의 user_id",
+    example: "69"
+  })
+  @ApiQuery({
+    name:'index',
+    description:"index (예를 들어 size = 10, index = 2 인 경우 20~30번째 결과 가져옴)",
+    example: 0
+  })
+  @ApiQuery({
+    name:"size",
+    description:"한 번에 가져올 개수입니다.",
+    example: 10
+  })
+  @ApiResponse({
+    status:200,
+    description: "",
+    isArray: true,
+    type:UserLikedAlbumDto
+  })
+  @Get('comment')
+  async getUserComment(
+    @Param('user_id') userId: number,
+    @Query('user_id') specificId : number,
+    @Query('index', ParseIntPipe) index : number,
+    @Query('size', ParseIntPipe) size : number
+    ) : Promise<userCommentDto[]> {
+    return await this.userService.getUserComments(specificId, index, size);
+  }
+
   @ApiOperation({summary: "유저 삭제"})
   @ApiParam({
     name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
-    example: "433"
+    example: "432"
   })
   @ApiResponse({
     status:204,
@@ -173,7 +212,7 @@ export class UserController {
   @ApiParam({
     name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
-    example: "433"
+    example: "432"
   })
   @ApiBody({
     description:"age : [ 10,20,30,40,50 ], gender : [ men, women, default ] 중 선택, name : 사용자 이름. 입력되지 않은 Field는 무시됩니다.",
@@ -202,14 +241,14 @@ export class UserController {
       req.user[key] = user[key];
     }
     await this.userService.saveUser(req.user);
-    return await this.userService.getUserInfo(req.user.id);
+    return await this.userService.getUserInfo(req.user.id, true);
   }
 
   @ApiOperation({summary: "테스터 API - 음악 정보 배열 조회"})
   @ApiParam({
     name:"user_id",
     description:"테스터 유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
-    example: "433"
+    example: "432"
   })
   @ApiQuery({
     name:'index',
@@ -246,7 +285,7 @@ export class UserController {
   @ApiParam({
     name:"user_id",
     description:"테스터 유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
-    example: "433"
+    example: "432"
   })
   @ApiResponse({
     status:200,
@@ -271,7 +310,7 @@ export class UserController {
   @ApiParam({
     name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
-    example: "433"
+    example: "432"
   })
   @ApiResponse({
     status:201,
@@ -294,7 +333,7 @@ export class UserController {
   @ApiParam({
     name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
-    example: "433"
+    example: "432"
   })
   @ApiResponse({
     status:200,
@@ -310,7 +349,7 @@ export class UserController {
   @ApiParam({
     name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
-    example: "433"
+    example: "432"
   })
   @ApiParam({
     name:"album_id",
@@ -341,7 +380,7 @@ export class UserController {
   @ApiParam({
     name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
-    example: "433"
+    example: "432"
   })
   @ApiParam({
     name:"album_id",
@@ -378,7 +417,7 @@ export class UserController {
   @ApiParam({
     name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
-    example: "433"
+    example: "432"
   })
   @ApiParam({
     name:"album_id",
@@ -416,7 +455,7 @@ export class UserController {
   @ApiParam({
     name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
-    example: "433"
+    example: "432"
   })
   @ApiParam({
     name:"album_id",
@@ -445,7 +484,7 @@ export class UserController {
   @ApiParam({
     name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
-    example: "433"
+    example: "432"
   })
   @ApiParam({
     name:"album_id",
@@ -478,8 +517,24 @@ export class UserController {
     await this.userService.deleteMusicInAlbum(albumId, musicId);
   }
 
-  /* 여기 밑으로는 개발중이었던 API */
 
+
+  @ApiOperation({summary: "소셜 로그 요청"})
+  @ApiParam({
+    name:"user_id",
+    description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "432"
+  })
+  @ApiQuery({
+    name:"index",
+    description:"가져올 Index",
+    example: "0"
+  })
+  @ApiQuery({
+    name:"user_id",
+    description:"특정한 유저 ID(지정시), 지정시 특정 유저의 Tags 정보도 같이 가져옴, 미지정시 Tag 없이 가까운 10명 데이터 가져옴",
+    required: false
+  })
   @Get('social')
   async getUserSocialLogs(
     @Request() req: UserRequest,
@@ -487,83 +542,44 @@ export class UserController {
     @Query('index') index?: number,
     @Query('user_id') specificUser?: number,
   ) {
-    const now = Date.now();
+
+    // 특정 유저 지정 안할 시 주변사람 10명 뽑아옴
     const users: number[] = isDefined(specificUser)
       ? [specificUser]
       : await this.userService.getNearUsers(user_id);
-    // console.log('social-delay-log-1',Date.now() - now);
+    const isSpecificUser = isDefined(specificUser);
+
     const socialLogs = await this.userService.getSocialLogs(users, index);
-    // console.log('social-delay-log-2',Date.now() - now);
     const result: UserSocialLog[] = [];
     const userInfos: UserInfo[] = [];
+
     for (const userId2 of users) {
-      userInfos.push(await this.userService.getUserInfo(userId2));
+      userInfos.push(await this.userService.getUserInfo(userId2, isSpecificUser));
     }
-     // const promises = socialLogs.map( async log =>{
-     //   const user = userInfos.find((value) => value.id === log.userId);
-     //   // const user = await this.userService.getUserInfo(log.userId);
-     //   switch (log.type) {
-     //     case 'music_comment':
-     //       const musicCommentLog = new UserSocialLogMusicComment();
-     //       musicCommentLog.user = user;
-     //       // musicCommentLog.user = await this.userService.getUserInfo(log.userId);
-     //       musicCommentLog.musicComment = await this.musicService.getMusicComment(
-     //         log.id,
-     //         req.user,
-     //       );
-     //       musicCommentLog.music = await this.musicService.getMusic(
-     //         musicCommentLog.musicComment.musicId,
-     //         req.user,
-     //       );
-     //       musicCommentLog.timestamp = log.timestamp;
-     //       result.push(musicCommentLog);
-     //       break;
-     //
-     //   }
-     // });
-     //  await Promise.all(promises);
-     // console.log('social-delay-log-3',Date.now() - now);
      for (const log of socialLogs) {
       const user = userInfos.find((value) => value.id === log.userId);
 
-      // const user = await this.userService.getUserInfo(log.userId)
       switch (log.type) {
         case 'music_comment':
           const musicCommentLog = new UserSocialLogMusicComment();
           musicCommentLog.user = user;
-          // musicCommentLog.user = await this.userService.getUserInfo(log.userId);
           musicCommentLog.musicComment = await this.musicService.getMusicComment(
             log.id,
             req.user,
           );
-          // console.log('social-delay-log-4',Date.now() - now);
           musicCommentLog.music = await this.musicService.getMusic2(
             musicCommentLog.musicComment.musicId,
             req.user,
           );
-          // console.log('social-delay-log-5',Date.now() - now);
           musicCommentLog.timestamp = log.timestamp;
           result.push(musicCommentLog);
           break;
 
       }
     }
-    // console.log('social-delay-log-6',Date.now() - now);
+
+
     return { users: userInfos, result: result };
-
-
-    // case 'music_like':
-    //   const musicLikeLog = new UserSocialLogMusicLike();
-    //   musicLikeLog.user = user;
-    //   musicLikeLog.music = await this.musicService.getMusic(
-    //     log.id,
-    //     req.user,
-    //   );
-    //   musicLikeLog.timestamp = log.timestamp;
-    //   result.push(musicLikeLog);
-    //   break;
-
-    // return { result: result };
   }
 
   @Get('social2')
@@ -583,7 +599,7 @@ export class UserController {
     const result: UserSocialLog[] = [];
     const userInfos: UserInfo[] = [];
     for (const userId2 of users) {
-      userInfos.push(await this.userService.getUserInfo(userId2));
+      userInfos.push(await this.userService.getUserInfo(userId2, true));
     }
      // const promises = socialLogs.map( async log =>{
      //   const user = userInfos.find((value) => value.id === log.userId);
