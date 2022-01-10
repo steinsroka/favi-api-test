@@ -169,6 +169,7 @@ export class UserService {
     const comments : userCommentDto[] = await this.musicCommentRepository
     .createQueryBuilder('c')
     .select('c.comment', 'commentContents')
+    .addSelect('m.id' , 'musicId')
     .addSelect('c.timestamp', 'timestamp')
     .addSelect('m.title', 'musicName')
     .addSelect('a.name', 'artistName')
@@ -199,13 +200,11 @@ export class UserService {
       'rc',
       'rc.parentId = c.id'
     ).where('c.userId = :userId', {userId : userId})
-    .groupBy('c.comment, c.timestamp, m.title, a.name')
+    .groupBy('c.comment, c.timestamp, m.title, a.name, m.id')
     .orderBy('c.timestamp','DESC')
     .limit(size)
     .offset(index * size)
     .getRawMany();
-
-    console.log(comments.length)
     return comments;
   }
 
