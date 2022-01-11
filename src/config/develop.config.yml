@@ -1,19 +1,19 @@
 http:
   port: 3000
 
-database:
+default:
   port: 3306
   database: 'favi_test'
   host: 'localhost'
   type: 'mysql'
   username: 'root'
   password: 'root'
-  #synchronize: true
-  migrationsRun: true
+  synchronize: true
+  #migrationsRun: true
   autoLoadEntities: true
   logging: true
   bigNumberStrings: false
-
+  entities : ["src/common/entity/**/*.ts"]
 auth:
   hashIter: 56718
   jwtSecret: 'arcaneservicemurekabackendbyskeep194'

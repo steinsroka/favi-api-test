@@ -1,14 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { IsDate, IsEnum, IsNumber, IsString } from 'class-validator';
 import {
   Entity,
   Column,
-  CreateDateColumn,
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToMany,
   JoinTable,
-  ManyToOne,
 } from 'typeorm';
 import { Artist } from './artist.entity';
 import { MusicComment } from './music-comment.entity';
@@ -134,6 +131,5 @@ export class Music {
 
   @ManyToMany(() => User, (user) => user.testerMusics, {onDelete: 'CASCADE'})
   testerMusicUsers: User[];
-
 
 }

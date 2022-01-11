@@ -10,6 +10,7 @@ import {
   DeleteDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { MusicTagValue } from './music-tag-value.entity';
 
 @Entity()
 export class Album {
@@ -34,6 +35,12 @@ export class Album {
   @ManyToMany(() => Music, { cascade: true })
   @JoinTable()
   musics: Music[];
+
+  @ManyToMany(() => MusicTagValue, { cascade: true })
+  @JoinTable({
+    name: "album_tags"
+  })
+  tags: MusicTagValue[];
 
   @DeleteDateColumn()
   deletedAt?: Date;

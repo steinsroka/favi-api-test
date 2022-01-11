@@ -15,7 +15,7 @@ import { UserFollow } from '../common/entity/user-follow.entity';
 import { MusicLike } from '../common/entity/music-like.entity';
 import { Music } from '../common/entity/music.entity';
 import { MusicSmallInfoDto } from '../music/dto/music-small-info.dto';
-import { Tag } from '../common/entity/music-tag-value.entity';
+import { MusicTagValue, Tag } from '../common/entity/music-tag-value.entity';
 import { MusicTagInfo } from '../common/view/music-tag-info.entity';
 import { Album } from '../common/entity/album.entity';
 import { UserLikedAlbumDto } from './dto/user-liked-album.dto';
@@ -25,6 +25,8 @@ import { TesterProceedDto } from './dto/tester-remain.dto';
 import { MusicPartialDto } from './dto/music-partial.dto';
 import { userCommentDto } from './dto/user-comment.dto';
 import { MusicComment } from 'src/common/entity/music-comment.entity';
+import { isDefined } from 'class-validator';
+import { AlbumResponseDto } from './dto/album-response.dto';
 
 @Injectable()
 export class UserService {
@@ -49,6 +51,8 @@ export class UserService {
     private readonly socialLogRepository: Repository<SocialLog>,
     @InjectRepository(MusicComment)
     private readonly musicCommentRepository : Repository<MusicComment>,
+    @InjectRepository(MusicTagValue)
+    private readonly musicTagValueRepository : Repository<MusicTagValue>,
   ) {}
 
   // specificUser가 Define 되어 있다면 tag 포함 돌려줌, 없다면 tag는 제외
@@ -236,12 +240,17 @@ export class UserService {
     return result;
   }
 
-  async addAlbum(userId: number, albumName: string, isPublic: boolean) {
+  async addAlbum(userId: number, albumName: string, isPublic: boolean, tagsName : Tag[]) {
     const user: User = await this.userRepository.findOne({ id: userId });
+    const tags : MusicTagValue[] =  await this.musicTagValueRepository.createQueryBuilder('tags')
+    .where('tags.name in (:tagsName)', {tagsName : tagsName})
+    .getMany();
+
     const album = this.userAlbumRepository.create({
       name: albumName,
       isPublic: isPublic,
       user: user,
+      tags : tags
     });
 
     return this.userAlbumRepository.save(album);
@@ -250,14 +259,27 @@ export class UserService {
   async getAlbum(albumId: number): Promise<Album> {
     return await this.userAlbumRepository.findOne({ id: albumId });
   }
-  async getAlbums(userId: number): Promise<Album[]> {
+  async getAlbums(userId: number): Promise<AlbumResponseDto[]> {
     const user = await this.userRepository.findOne({ id: userId });
     const albums = await this.userAlbumRepository.find({
-       user: user
+      relations: ['tags', 'musics'],
+      where : {user: user},
      });
-    // console.log('get-albums-user',albums);
 
-    return albums;
+     const response : AlbumResponseDto[] = [];
+     
+     albums.map((item)=> {
+       if(item.musics.length > 0){
+         const representImageId = item.musics[0].id;
+         delete item.musics;
+         response.push({...item, representImageId : representImageId});
+         return;
+       }
+       delete item.musics;
+       response.push({...item, representImageId : null});
+       
+     })
+    return response;
   }
 
   async isExistAlbum(albumPartial: AlbumPartialDto): Promise<boolean> {
@@ -313,8 +335,8 @@ export class UserService {
 
   async deleteMusicInAlbum(albumId: number, musicId: number) {
     let album = await this.userAlbumRepository.findOneOrFail({
-      relations: ['musics'],
       where: {id: albumId },
+      relations: []
      });
     const findMusicIdx = album.musics.findIndex((music) => {
       return music.id === musicId;

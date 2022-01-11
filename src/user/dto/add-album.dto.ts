@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsString } from 'class-validator';
+import { isArray, IsBoolean, IsEnum, IsOptional, IsString } from 'class-validator';
+import { Tag } from 'src/common/entity/music-tag-value.entity';
 
 export class AddAlbumDto {
   @ApiProperty({
     description: "앨범 이름",
-    example: "리듬 비트"
+    example: "내 앨범"
   })
   @IsString()
   name: string;
@@ -15,4 +16,13 @@ export class AddAlbumDto {
   })
   @IsBoolean()
   isPublic: boolean;
+
+  @ApiProperty({
+    description: "앨범에 추가할 태그",
+    enum : Tag,
+    isArray: true,
+    example: ["confidence", "rain"]
+  })
+  @IsOptional()
+  tags : Tag[];
 }

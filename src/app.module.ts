@@ -16,6 +16,7 @@ import { HelpModule } from './help/help.module';
 import { NoticeController } from './notice/notice.controller';
 import { NoticeService } from './notice/notice.service';
 import { NoticeModule } from './notice/notice.module';
+import { Album } from './common/entity/album.entity';
 
 @Module({
   imports: [

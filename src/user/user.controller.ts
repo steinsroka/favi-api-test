@@ -57,6 +57,7 @@ import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, 
 import { UserLikedAlbumDto } from './dto/user-liked-album.dto';
 import { ValidateMuiscIdPipe } from './pipe/validate-music-id.pipe copy';
 import { userCommentDto } from './dto/user-comment.dto';
+import { AlbumResponseDto } from './dto/album-response.dto';
 
 
 /*
@@ -326,6 +327,7 @@ export class UserController {
       userId,
       addAlbumDto.name,
       addAlbumDto.isPublic,
+      addAlbumDto.tags
     );
   }
 
@@ -341,7 +343,7 @@ export class UserController {
     type:Album
   })
   @Get('album')
-  async getAlbum(@Param('user_id') userId: number): Promise<Album[]> {
+  async getAlbum(@Param('user_id') userId: number): Promise<AlbumResponseDto[]> {
     return await this.userService.getAlbums(userId);
   }
 
