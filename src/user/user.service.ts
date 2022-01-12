@@ -25,7 +25,6 @@ import { TesterProceedDto } from './dto/tester-remain.dto';
 import { MusicPartialDto } from './dto/music-partial.dto';
 import { userCommentDto } from './dto/user-comment.dto';
 import { MusicComment } from 'src/common/entity/music-comment.entity';
-import { isDefined } from 'class-validator';
 import { AlbumResponseDto } from './dto/album-response.dto';
 
 @Injectable()
@@ -72,10 +71,17 @@ export class UserService {
     return this.userRepository.delete(userId);
   }
 
-  getUserAuthInfo(userPartial: UserPartialDto): Promise<User> {
-    return this.userRepository.findOne({
-      where: userPartial,
-    });
+  async getUserAuthInfo(userPartial: UserPartialDto): Promise<User> {
+    const data : User =  await this.userRepository.createQueryBuilder('user')
+    .select('user.id','id')
+    .addSelect('user.email', 'email')
+    .addSelect('user.password', 'password')
+    .addSelect('user.pw_salt', 'pwSalt')
+    .where(userPartial)
+    .getRawOne();
+
+    console.log(data);
+    return data;
   }
 
   saveUser(user: User): Promise<User> {
@@ -157,11 +163,13 @@ export class UserService {
     return ret;
   }
 
-  getSocialLogs(
+
+  // 5개씩 가져옴 
+  async getSocialLogs(
     userIds: number[],
     index: number = 0,
   ): Promise<SocialLog[]> {
-    return this.socialLogRepository.find({
+    return await this.socialLogRepository.find({
       where: { userId: In(userIds) },
       order: { timestamp: 'DESC' },
       take: 5,
@@ -259,6 +267,7 @@ export class UserService {
   async getAlbum(albumId: number): Promise<Album> {
     return await this.userAlbumRepository.findOne({ id: albumId });
   }
+  
   async getAlbums(userId: number): Promise<AlbumResponseDto[]> {
     const user = await this.userRepository.findOne({ id: userId });
     const albums = await this.userAlbumRepository.find({
@@ -403,8 +412,27 @@ export class UserService {
     return tester.testerMusics;
   }
 
+  async getUserFollow(followId: number) {
+    const followingUser = await this.userFollowRepository.find({
+      userId: followId,
+    });
+    const followedUser = await this.userFollowRepository.find({
+      followUserId : followId,
+    });
 
-  addUserFollow(followId: number, user: User) {
+    const followingUserIdArray =  followingUser.map(item => item.followUserId);
+    const followedUserIdArray = followedUser.map(item => item.userId);
+
+    const followingUserData = await this.userRepository.find({
+      where : {id : In(followingUserIdArray)}
+    })
+    const followedUserData  = await this.userRepository.find({
+      where : {id : In(followedUserIdArray)}
+    })
+    return { followingUser : followingUserData , followedUser : followedUserData};
+  }
+
+  async addUserFollow(followId: number, user: User) {
     const userFollow = this.userFollowRepository.create({
       userId: user.id,
       followUserId: followId,
@@ -412,7 +440,7 @@ export class UserService {
     return this.userFollowRepository.save(userFollow);
   }
 
-  deleteUserFollow(followId: number, user: User) {
+  async deleteUserFollow(followId: number, user: User) {
     return this.userFollowRepository.delete({
       followUserId: followId,
       userId: user.id,

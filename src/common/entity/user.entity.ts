@@ -62,11 +62,11 @@ export class User {
   email: string;
 
   @IsBase64()
-  @Column()
+  @Column({select : false})
   password: string;
 
   @IsBase64()
-  @Column({ name: 'pw_salt' })
+  @Column({ name: 'pw_salt', select: false })
   pwSalt: string;
 
   @IsOptional()

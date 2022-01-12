@@ -19,6 +19,7 @@ export class UserFollow {
   @ManyToOne(() => User, (user) => user.userFollows, { onDelete: 'CASCADE' })
   user: User;
 
+
   @CreateDateColumn()
   timestamp: Date;
 }

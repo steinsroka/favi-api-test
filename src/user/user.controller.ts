@@ -26,6 +26,7 @@ import { isDefined } from 'class-validator';
 //Pipe
 import { ValidateUserIdPipe } from './pipe/validate-user-id.pipe';
 import { ValidateAlbumIdPipe } from './pipe/validate-album-id.pipe';
+import {ValidateFollowingUserIdPipe } from './pipe/validate-following-user-id.pipe';
 
 //Guard
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
@@ -69,7 +70,8 @@ JWT Format : {
   "exp": 1643347573
 }
 
-버전업 한다면 user_id 들어내서 API 줄일 수 있음
+user_id 가 중복으로 사용되고, user-auth.guard.ts 에서도 의미없는 check를 하고 있는데, 프론트엔드와의 호환성 문제로
+수정 못 하는 중... 누군가 나중에 이 주석을 본다면 프론트랑 상의해서 다 빼는게 좋을 것 같읍니다
 */
 
 @ApiTags('User(유저) 정보 관련 API')
@@ -584,109 +586,94 @@ export class UserController {
     return { users: userInfos, result: result };
   }
 
-  @Get('social2')
-  async getUserSocialLogs2(
+  @ApiOperation({summary: "유저 팔로우 조회"})
+  @ApiParam({
+    name:"user_id",
+    description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "432"
+  })
+  @ApiParam({
+    name:"following_user",
+    description:"조회할 유저 ID",
+    example: "32"
+  })
+  @ApiResponse({
+    status:204,
+    description: "API 요청 성공"
+    })
+  @ApiResponse({
+      status:404,
+      description: "유저 ID나 following_user ID가 유효하지 않음"
+  })
+  @UsePipes(ValidateFollowingUserIdPipe)
+  @Get('/:following_user/follow')
+  async getFollowingList(
     @Request() req: UserRequest,
-    @Param('id') id: number,
-    @Query('index') index?: number,
-    @Query('user_id') userId?: number,
-  ) {
-    const now = Date.now();
-    const users: number[] = isDefined(userId)
-      ? [userId]
-      : await this.userService.getUserAllFollower(id);
-    // console.log('social-delay-log-1',Date.now() - now);
-    const socialLogs = await this.userService.getSocialLogs(users, index);
-    // console.log('social-delay-log-2',Date.now() - now);
-    const result: UserSocialLog[] = [];
-    const userInfos: UserInfo[] = [];
-    for (const userId2 of users) {
-      userInfos.push(await this.userService.getUserInfo(userId2, true));
-    }
-     // const promises = socialLogs.map( async log =>{
-     //   const user = userInfos.find((value) => value.id === log.userId);
-     //   // const user = await this.userService.getUserInfo(log.userId);
-     //   switch (log.type) {
-     //     case 'music_comment':
-     //       const musicCommentLog = new UserSocialLogMusicComment();
-     //       musicCommentLog.user = user;
-     //       // musicCommentLog.user = await this.userService.getUserInfo(log.userId);
-     //       musicCommentLog.musicComment = await this.musicService.getMusicComment(
-     //         log.id,
-     //         req.user,
-     //       );
-     //       musicCommentLog.music = await this.musicService.getMusic(
-     //         musicCommentLog.musicComment.musicId,
-     //         req.user,
-     //       );
-     //       musicCommentLog.timestamp = log.timestamp;
-     //       result.push(musicCommentLog);
-     //       break;
-     //
-     //   }
-     // });
-     //  await Promise.all(promises);
-     // console.log('social-delay-log-3',Date.now() - now);
-     for (const log of socialLogs) {
-      const user = userInfos.find((value) => value.id === log.userId);
-
-      // const user = await this.userService.getUserInfo(log.userId)
-      switch (log.type) {
-        case 'music_comment':
-          const musicCommentLog = new UserSocialLogMusicComment();
-          musicCommentLog.user = user;
-          // musicCommentLog.user = await this.userService.getUserInfo(log.userId);
-          musicCommentLog.musicComment = await this.musicService.getMusicComment(
-            log.id,
-            req.user,
-          );
-          // console.log('social-delay-log-4',Date.now() - now);
-          musicCommentLog.music = await this.musicService.getMusic2(
-            musicCommentLog.musicComment.musicId,
-            req.user,
-          );
-          // console.log('social-delay-log-5',Date.now() - now);
-          musicCommentLog.timestamp = log.timestamp;
-          result.push(musicCommentLog);
-          break;
-
-      }
-    }
-    // console.log('social-delay-log-6',Date.now() - now);
-    return { users: userInfos, result: result };
-
-
-    // case 'music_like':
-    //   const musicLikeLog = new UserSocialLogMusicLike();
-    //   musicLikeLog.user = user;
-    //   musicLikeLog.music = await this.musicService.getMusic(
-    //     log.id,
-    //     req.user,
-    //   );
-    //   musicLikeLog.timestamp = log.timestamp;
-    //   result.push(musicLikeLog);
-    //   break;
-
-    // return { result: result };
+    @Param('user_id') userId:number,
+    @Param('following_user') followingUser: number,
+  ): Promise<any> {
+   return  this.userService.getUserFollow(followingUser);
   }
-  
-  @Put(':user_id/follow')
+
+
+  @ApiOperation({summary: "유저 팔로우 추가"})
+  @ApiParam({
+    name:"user_id",
+    description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "432"
+  })
+  @ApiParam({
+    name:"following_user",
+    description:"팔로우할 유저 ID",
+    example: "32"
+  })
+  @ApiResponse({
+    status:204,
+    description: "API 요청 성공"
+    })
+  @ApiResponse({
+      status:404,
+      description: "유저 ID나 following_user ID가 유효하지 않음"
+  })
+  @UsePipes(ValidateFollowingUserIdPipe)
+  @Put('/:following_user/follow')
   @HttpCode(204)
   async userFollow(
     @Request() req: UserRequest,
-    @Param('user_id') userId: number,
+    @Param('user_id') userId:number,
+    @Param('following_user') followingUser: number,
   ): Promise<void> {
-    await this.userService.addUserFollow(userId, req.user);
+    await this.userService.addUserFollow(followingUser, req.user);
   }
 
-  @Delete(':user_id/follow')
+
+  @ApiOperation({summary: "유저 언팔로우"})
+  @ApiParam({
+    name:"user_id",
+    description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "432"
+  })
+  @ApiParam({
+    name:"following_user",
+    description:"팔로우할 유저 ID",
+    example: "32"
+  })
+  @ApiResponse({
+    status:204,
+    description: "API 요청 성공"
+    })
+  @ApiResponse({
+      status:404,
+      description: "유저 ID나 following_user ID가 유효하지 않음"
+  })
+  @UsePipes(ValidateFollowingUserIdPipe)
+  @Delete('/:following_user/follow')
   @HttpCode(204)
   async hateFollow(
     @Request() req: UserRequest,
-    @Param('user_id') userId: number,
+    @Param('user_id') userId:number,
+    @Param('following_user') followingUser: number,
   ): Promise<void> {
-    await this.userService.deleteUserFollow(userId, req.user);
+    await this.userService.deleteUserFollow(followingUser, req.user);
   }
-
-
 }

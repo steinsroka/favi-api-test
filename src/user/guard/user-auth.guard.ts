@@ -19,21 +19,13 @@ export class UserAuthGuard implements CanActivate {
       switch (key) {
         case 'user_id':
           console.log(request.user.id.toString())
-          console.log(request.params.id)
+          console.log(request.params.user_id)
           if (request.user.id.toString() !== request.params.user_id) {
             throw new UnauthorizedException(
                 'you are not authorized to edit different user',
             );
           }
           break;
-        case 'album_id':
-
-          break;
-        case 'music_id':
-
-          break;
-        default:
-          throw new BadRequestException();
       }
     }
     return true;
