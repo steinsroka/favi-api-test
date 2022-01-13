@@ -1,12 +1,8 @@
-import { IsDate, IsEnum, isNumber, IsNumber, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  OneToMany,
-  ManyToMany,
-  JoinTable,
-  ManyToOne,
   CreateDateColumn,
 } from 'typeorm';
 

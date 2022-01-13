@@ -1,7 +1,7 @@
 http:
   port: 3000
 
-database:
+default:
   port: 3306
   database: 'favi'
   host: 'arcanedb.cyu9nbnbjetu.ap-northeast-2.rds.amazonaws.com'

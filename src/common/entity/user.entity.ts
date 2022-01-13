@@ -27,6 +27,8 @@ import { BeatLike } from './beat-like.entity';
 import { MusicTag } from './music-tag.entity';
 import { Music } from './music.entity';
 import { UserFollow } from './user-follow.entity';
+import { ApiProperty } from '@nestjs/swagger';
+import { UserBlock } from './user-block.entity';
 
 export enum Gender {
   MEN = 'men',
@@ -49,10 +51,18 @@ export class User {
     this.password = password;
   }
 
+  @ApiProperty({
+    example: "1",
+    description: "유저의 고유 ID"
+  })
   @IsNumber()
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty({
+    example: "wahowed331@zoeyy.com",
+    description: "유저 email"
+  })
   @IsEmail()
   @Column({
     unique: true,
@@ -67,6 +77,11 @@ export class User {
   @Column({ name: 'pw_salt', select: false })
   pwSalt: string;
 
+
+  @ApiProperty({
+    example: "휘군",
+    description: "유저의 닉네임"
+  })
   @IsOptional()
   @IsString()
   @Column({
@@ -74,11 +89,21 @@ export class User {
   })
   name: string;
 
+  @ApiProperty({
+    example: "20",
+    description: "유저의 연령대",
+    enum : Age
+  })
   @IsOptional()
   @IsEnum(Age)
   @Column({ type: 'enum', enum: Age, nullable: true })
   age: number;
 
+  @ApiProperty({
+    example: "women",
+    description: "유저의 성별",
+    enum : Gender
+  })
   @IsOptional()
   @IsEnum(Gender)
   @Column({
@@ -88,10 +113,19 @@ export class User {
   })
   gender: Gender;
 
+  @ApiProperty({
+    example: "2021-02-26 07:06:30.000000",
+    description: "등록 시간",
+  })
   @IsDate()
   @CreateDateColumn()
   timestamp: Date;
 
+
+  @ApiProperty({
+    example: "1",
+    description: "유저의 권한",
+  })
   @IsNumber()
   @Column({
     default: 1,
@@ -132,6 +166,9 @@ export class User {
 
   @OneToMany(() => UserFollow, (userFollow) => userFollow.user, {cascade: true})
   userFollows: UserFollow[];
+
+  @OneToMany(() => UserBlock, (userBlock) => userBlock.blockingUser, {cascade: true})
+  blockingUser: UserBlock[];
 
   @OneToMany(() => BeatLike, (beatLike) => beatLike.user, {cascade: true})
   beatLikes: BeatLike[];

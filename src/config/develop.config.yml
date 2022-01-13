@@ -8,12 +8,11 @@ default:
   type: 'mysql'
   username: 'root'
   password: 'root'
-  synchronize: true
-  #migrationsRun: true
+  migrationsRun: true
   autoLoadEntities: true
   logging: true
   bigNumberStrings: false
-  entities : ["src/common/entity/**/*.ts"]
+
 auth:
   hashIter: 56718
   jwtSecret: 'arcaneservicemurekabackendbyskeep194'

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { isArray, IsBoolean, IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsArray, isArray, IsBoolean, IsEnum, IsOptional, IsString } from 'class-validator';
 import { Tag } from 'src/common/entity/music-tag-value.entity';
 
 export class AddAlbumDto {
@@ -24,5 +24,6 @@ export class AddAlbumDto {
     example: ["confidence", "rain"]
   })
   @IsOptional()
+  @IsEnum(Tag, {each : true})
   tags : Tag[];
 }

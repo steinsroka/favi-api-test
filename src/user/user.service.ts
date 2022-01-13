@@ -26,6 +26,7 @@ import { MusicPartialDto } from './dto/music-partial.dto';
 import { userCommentDto } from './dto/user-comment.dto';
 import { MusicComment } from 'src/common/entity/music-comment.entity';
 import { AlbumResponseDto } from './dto/album-response.dto';
+import { updateAlbumDto } from './dto/update-album.dto';
 
 @Injectable()
 export class UserService {
@@ -324,14 +325,21 @@ export class UserService {
     return this.userAlbumRepository.save(album);
   }
 
-  async updateAlbum(albumId: number, newName: string, isPublic: boolean) {
+  async updateAlbum(albumId: number, updateAlbum : updateAlbumDto) {
     let album = await this.userAlbumRepository.findOneOrFail({
       relations: ['musics'],
       where: {id: albumId },
      });
-    // console.log('update-name',newName);
-    album.name = newName;
-    album.isPublic = isPublic;
+
+     const {tags, ...withoutTagsDto } = updateAlbum;
+
+     album = Object.assign(album, withoutTagsDto);
+
+     const findTags = await this.musicTagValueRepository.find({
+       where : {name : In(tags)}
+     })
+
+     album.tags = findTags;
 
     return this.userAlbumRepository.save(album);
   }
@@ -446,6 +454,12 @@ export class UserService {
     });
   }
 
+  async getUserBlock(user: User) {
+    return this.userRepository.findOneOrFail({
+      where : {id : user.id}
+    })
+  }
+
   async isExistUserFollow(followId: number, user: User): Promise<boolean> {
     return (
       (await this.userFollowRepository.count({
@@ -464,10 +478,6 @@ export class UserService {
     }
 
     return ret;
-    // return this.userRepository.find({
-    //   where: { id: In(userFollowers.map((value) => value.followUserId)) },
-    //   // relations: ['artists'],
-    // });
   }
 
 }

@@ -9,6 +9,7 @@ import { User } from '../common/entity/user.entity';
 export class HelpService {
   constructor(
     @InjectRepository(Help) private readonly helpRepository: Repository<Help>,
+    @InjectRepository(User) private readonly userRepository : Repository<User>,
   ) {}
 
   async getHelps(index: number, size: number, userId: number): Promise<Help[]> {
@@ -21,9 +22,18 @@ export class HelpService {
   }
 
   async writeHelp(writeHelpDto: WriteHelpDto, user: User): Promise<Help> {
-    const newHelp = this.helpRepository.create(writeHelpDto);
-    if(user.id === 0) newHelp.user = undefined;
-    else newHelp.user = user;
+    const writeUser = await this.userRepository.findOneOrFail({
+      where : {id : user.id}
+    })
+    let newHelp = this.helpRepository.create(writeHelpDto);
+    newHelp.email = writeUser.email;
+    newHelp.user = writeUser;
+
+    return await this.helpRepository.save(newHelp);
+  }
+
+  async guestWriteHelp(guestWriteHelpDto: WriteHelpDto): Promise<Help> {
+    const newHelp = this.helpRepository.create(guestWriteHelpDto);
     return await this.helpRepository.save(newHelp);
   }
 }

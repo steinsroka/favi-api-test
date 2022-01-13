@@ -41,7 +41,6 @@ import { AddAlbumDto } from './dto/add-album.dto';
 //Entity
 import { UserInfo } from '../common/view/user-info.entity';
 import { Tag } from '../common/entity/music-tag-value.entity';
-import { User } from '../common/entity/user.entity';
 import { Album } from '../common/entity/album.entity';
 import { Music } from '../common/entity/music.entity';
 
@@ -59,6 +58,8 @@ import { UserLikedAlbumDto } from './dto/user-liked-album.dto';
 import { ValidateMuiscIdPipe } from './pipe/validate-music-id.pipe copy';
 import { userCommentDto } from './dto/user-comment.dto';
 import { AlbumResponseDto } from './dto/album-response.dto';
+import { updateAlbumDto } from './dto/update-album.dto';
+import { ValidateBlockingUserPipe } from './pipe/validate-blocking-user-id.pipe';
 
 
 /*
@@ -218,8 +219,8 @@ export class UserController {
     example: "432"
   })
   @ApiBody({
-    description:"age : [ 10,20,30,40,50 ], gender : [ men, women, default ] 중 선택, name : 사용자 이름. 입력되지 않은 Field는 무시됩니다.",
-    type:PickType(User, ['age', 'gender', 'name'])
+    description:"age : [ 10,20,30,40,50 ], gender : [ men, women, default ] 중 선택, 입력되지 않은 Field는 무시됩니다.",
+    type: UpdateUserDto
   })
   @ApiResponse({
     status:200,
@@ -417,7 +418,7 @@ export class UserController {
     return await this.userService.addMusicInAlbum(albumId, musicId);
   }
 
-  @ApiOperation({summary: "사용자 앨범 이름 / 공개여부 변경"})
+  @ApiOperation({summary: "사용자 앨범 수정(이름 / 공개여부 / 태그)"})
   @ApiParam({
     name:"user_id",
     description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
@@ -429,7 +430,8 @@ export class UserController {
     example: "37"
   })
   @ApiBody({
-    type:AddAlbumDto
+    description: "업데이트할 값, 단 Tag의 경우 추가되는 것이 아니라 덮어씌워지는 것에 유의할 것, 입력되지 않은 필드는 무시됨",
+    type:updateAlbumDto
   })
   @ApiResponse({
     status:200,
@@ -446,12 +448,11 @@ export class UserController {
   async updateAlbum(
     @Param('user_id') userId : number,
     @Param('album_id') albumId: number,
-    @Body() updateAlbumDto: AddAlbumDto,
+    @Body() updateAlbumDto: updateAlbumDto,
   ) {
     return await this.userService.updateAlbum(
       albumId,
-      updateAlbumDto.name,
-      updateAlbumDto.isPublic,
+      updateAlbumDto
     );
   }
 
@@ -675,5 +676,88 @@ export class UserController {
     @Param('following_user') followingUser: number,
   ): Promise<void> {
     await this.userService.deleteUserFollow(followingUser, req.user);
+  }
+
+  @ApiOperation({summary: "본인이 블락한 유저 조회"})
+  @ApiParam({
+    name:"user_id",
+    description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "432"
+  })
+  @ApiResponse({
+    status:204,
+    description: "API 요청 성공"
+    })
+  @ApiResponse({
+      status:404,
+      description: "유저 ID나 blocking_user ID가 유효하지 않음"
+  })
+  @Get('/block')
+  async getBlockingList(
+    @Request() req: UserRequest,
+    @Param('user_id') userId:number,
+  ): Promise<any> {
+   return  this.userService.getUserBlock(req.user);
+  }
+
+  @ApiOperation({summary: "유저 블락 추가"})
+  @ApiParam({
+    name:"user_id",
+    description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "432"
+  })
+  @ApiParam({
+    name:"blocking_user",
+    description:"블락할 유저 ID",
+    example: "32"
+  })
+  @ApiResponse({
+    status:204,
+    description: "API 요청 성공"
+    })
+  @ApiResponse({
+      status:404,
+      description: "유저 ID나 blocking_user ID가 유효하지 않음"
+  })
+  @UsePipes(ValidateBlockingUserPipe)
+  @Put('/:blocking_user/follow')
+  @HttpCode(204)
+  async userBlock(
+    @Request() req: UserRequest,
+    @Param('user_id') userId:number,
+    @Param('blocking_user')blockingUser: number,
+  ): Promise<void> {
+    await this.userService.addUserFollow(blockingUser, req.user);
+  }
+
+
+  @ApiOperation({summary: "유저 언블락"})
+  @ApiParam({
+    name:"user_id",
+    description:"유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.",
+    example: "432"
+  })
+  @ApiParam({
+    name:"blocking_user",
+    description:"언블락할 유저 ID",
+    example: "32"
+  })
+  @ApiResponse({
+    status:204,
+    description: "API 요청 성공"
+    })
+  @ApiResponse({
+      status:404,
+      description: "유저 ID나 blocking_user ID가 유효하지 않음"
+  })
+  @UsePipes(ValidateBlockingUserPipe)
+  @Delete('/:blocking_user/follow')
+  @HttpCode(204)
+  async userUnBlock(
+    @Request() req: UserRequest,
+    @Param('user_id') userId:number,
+    @Param('blocking_user') blockingUser: number,
+  ): Promise<void> {
+    await this.userService.deleteUserFollow(blockingUser, req.user);
   }
 }

@@ -8,6 +8,7 @@ import { WriteHelpDto } from './dto/write-help.dto';
 import { HelpService } from './help.service';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags, PickType } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { GuestWriteHelpDto } from './dto/guest-write-help.dto';
 
 @ApiTags('Help(홈페이지 문의사항) 관련 API')
 @Controller('help')
@@ -47,19 +48,29 @@ export class HelpController {
     description: "작성 성공",
     type:Help,
   })
-  @ApiOperation({summary: "문의사항 작성 (TODO : DB userid가 Unique key임. 확인 후 수정 필요)"})
+  @ApiOperation({summary: "문의사항 작성 (일반 유저)"})
   @ApiBearerAuth()
   @ApiBody({
-    type: PickType(Help, [
-      'contents',
-      'email',
-      'name',
-      'title',
-      'type',
-    ])})
+    type : WriteHelpDto
+  })
   @Post()
-  @UseGuards(GuestableAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async writeHelp(@Request() req: UserRequest, @Body() writeHelpDto: WriteHelpDto): Promise<Help> {
     return await this.helpService.writeHelp(writeHelpDto, req.user);
+  }
+
+  @ApiResponse({
+    status:201,
+    description: "작성 성공",
+    type:Help,
+  })
+  @ApiOperation({summary: "문의사항 작성 (게스트 유저)"})
+  @ApiBody({
+    type : GuestWriteHelpDto
+  })
+  @Post('/guest')
+  @UseGuards(GuestableAuthGuard)
+  async guestWriteHelp(@Request() req: UserRequest, @Body() guestWriteHelpDto: GuestWriteHelpDto): Promise<Help> {
+    return await this.helpService.guestWriteHelp(guestWriteHelpDto);
   }
 }
