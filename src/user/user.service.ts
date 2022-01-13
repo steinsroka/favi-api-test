@@ -27,6 +27,7 @@ import { userCommentDto } from './dto/user-comment.dto';
 import { MusicComment } from 'src/common/entity/music-comment.entity';
 import { AlbumResponseDto } from './dto/album-response.dto';
 import { updateAlbumDto } from './dto/update-album.dto';
+import { UserBlock } from 'src/common/entity/user-block.entity';
 
 @Injectable()
 export class UserService {
@@ -53,6 +54,8 @@ export class UserService {
     private readonly musicCommentRepository : Repository<MusicComment>,
     @InjectRepository(MusicTagValue)
     private readonly musicTagValueRepository : Repository<MusicTagValue>,
+    @InjectRepository(UserBlock)
+    private readonly userBlockRepository : Repository<UserBlock>,
   ) {}
 
   // specificUser가 Define 되어 있다면 tag 포함 돌려줌, 없다면 tag는 제외
@@ -454,10 +457,37 @@ export class UserService {
     });
   }
 
-  async getUserBlock(user: User) {
-    return this.userRepository.findOneOrFail({
-      where : {id : user.id}
+
+  async addUserBlock(blockedUserId: number, user: User) {
+    const blockedUser = await this.userRepository.findOneOrFail({
+      where : {id : blockedUserId}
     })
+    
+    const userBlock = await this.userBlockRepository.create({
+      blockingUser : user,
+      blockedUser : blockedUser
+    });
+
+    return await this.userBlockRepository.save(userBlock);
+  }
+
+  async deleteUserBlock(blockedUserId: number, user: User) {
+    const blockedUser = await this.userRepository.findOneOrFail({
+      where : {id : blockedUserId}
+    })
+    return this.userBlockRepository.delete({
+      blockingUser : user,
+      blockedUser : blockedUser
+    });
+  }
+
+  async getUserBlock(user: User) {
+    const currentUser = await this.userRepository.findOneOrFail({
+      where : {id : user.id},
+      relations: ['blockingUser']
+    })
+    
+    return currentUser.blockingUser;
   }
 
   async isExistUserFollow(followId: number, user: User): Promise<boolean> {

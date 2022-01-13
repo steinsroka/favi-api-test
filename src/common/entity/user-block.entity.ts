@@ -4,10 +4,12 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 import { User } from './user.entity';
 
 @Entity()
+@Unique("unique block", ['blockingUser', 'blockedUser'])
 export class UserBlock {
   @PrimaryGeneratedColumn()
   id: number;

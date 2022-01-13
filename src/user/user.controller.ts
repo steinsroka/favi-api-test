@@ -720,14 +720,14 @@ export class UserController {
       description: "유저 ID나 blocking_user ID가 유효하지 않음"
   })
   @UsePipes(ValidateBlockingUserPipe)
-  @Put('/:blocking_user/follow')
+  @Put('/:blocking_user/block')
   @HttpCode(204)
   async userBlock(
     @Request() req: UserRequest,
     @Param('user_id') userId:number,
     @Param('blocking_user')blockingUser: number,
   ): Promise<void> {
-    await this.userService.addUserFollow(blockingUser, req.user);
+    await this.userService.addUserBlock(blockingUser, req.user);
   }
 
 
@@ -751,13 +751,13 @@ export class UserController {
       description: "유저 ID나 blocking_user ID가 유효하지 않음"
   })
   @UsePipes(ValidateBlockingUserPipe)
-  @Delete('/:blocking_user/follow')
+  @Delete('/:blocking_user/block')
   @HttpCode(204)
   async userUnBlock(
     @Request() req: UserRequest,
     @Param('user_id') userId:number,
     @Param('blocking_user') blockingUser: number,
   ): Promise<void> {
-    await this.userService.deleteUserFollow(blockingUser, req.user);
+    await this.userService.deleteUserBlock(blockingUser, req.user);
   }
 }
