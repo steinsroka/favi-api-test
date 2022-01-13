@@ -23,7 +23,7 @@ import { Album } from './common/entity/album.entity';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
-        return configService.get<TypeOrmModuleOptions>('database');
+        return configService.get<TypeOrmModuleOptions>('default');
       },
       inject: [ConfigService],
     }),
