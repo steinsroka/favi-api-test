@@ -1,14 +1,12 @@
-import { OmitType, PickType } from '@nestjs/mapped-types';
 import {
   IsBase64,
+  IsBoolean,
   IsDate,
   IsEmail,
   IsEnum,
   IsNumber,
   IsOptional,
   IsString,
-  IsUUID,
-  Matches,
 } from 'class-validator';
 import {
   Entity,
@@ -114,6 +112,11 @@ export class User {
   @IsNumber()
   @Column({ nullable: true })
   totalTesterMusicCount: number;
+
+  @IsBoolean()
+  @Column({default : true})
+  isLikePublic : boolean;
+
 
   @OneToMany(() => Album, (album) => album.user, {cascade: true})
   albums: Album[];

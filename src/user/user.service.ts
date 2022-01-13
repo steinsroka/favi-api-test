@@ -80,7 +80,6 @@ export class UserService {
     .where(userPartial)
     .getRawOne();
 
-    console.log(data);
     return data;
   }
 

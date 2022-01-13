@@ -23,7 +23,7 @@ export class TagSearchDto {
 
   @IsIn([0,1])
   @IsOptional()
-  tag_response: number = 0;
+  tag_response: number = 1;
 
   @IsOptional()
   @IsEnum(BPM)
