@@ -253,6 +253,10 @@ export class UserService {
 
   async addAlbum(userId: number, albumName: string, isPublic: boolean, tagsName : Tag[]) {
     const user: User = await this.userRepository.findOne({ id: userId });
+    // tagsName 배열이 빈 배열일때 예외 처리
+    if(Array.isArray(tagsName) && tagsName.length == 0){
+      tagsName = null;
+    }
     const tags : MusicTagValue[] =  await this.musicTagValueRepository.createQueryBuilder('tags')
     .where('tags.name in (:tagsName)', {tagsName : tagsName})
     .getMany();
