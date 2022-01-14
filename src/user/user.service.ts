@@ -168,7 +168,6 @@ export class UserService {
   }
 
 
-  // 5개씩 가져옴 
   async getSocialLogs(
     userIds: number[],
     index: number = 0,
@@ -284,12 +283,13 @@ export class UserService {
      albums.map((item)=> {
        if(item.musics.length > 0){
          const representImageId = item.musics[0].id;
+         const musicCount = item.musics.length;
          delete item.musics;
-         response.push({...item, representImageId : representImageId});
+         response.push({...item, representImageId : representImageId, musicCount: musicCount});
          return;
        }
        delete item.musics;
-       response.push({...item, representImageId : null});
+       response.push({...item, representImageId : null, musicCount : 0});
        
      })
     return response;
