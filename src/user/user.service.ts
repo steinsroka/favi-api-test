@@ -59,11 +59,29 @@ export class UserService {
     private readonly userBlockRepository : Repository<UserBlock>,
   ) {}
 
-  // specificUser가 Define 되어 있다면 tag 포함 돌려줌, 없다면 tag는 제외
-  async getUserInfo(userId: number, needTags: boolean): Promise<UserInfo> {
+  async getUserInfo(userId: number): Promise<UserInfo> {
     const user = await this.userInfoRepository.findOneOrFail({ id: userId });
+    user.tags = await this.getUserTags(userId);
+    return user;
+  }
+
+  // specificUser가 Define 되어 있다면 tag, 내가 팔로우했는지 돌려줌, 없다면 제외
+  async getSocialUserInfo(myId: number, specificUserId: number, needTags: boolean, needFollowInfo : boolean): Promise<UserInfo> {
+    const user = await this.userInfoRepository.findOneOrFail({ id: specificUserId });
     if(needTags){
-      user.tags = await this.getUserTags(userId);
+      user.tags = await this.getUserTags(specificUserId);
+    }
+
+    if(needFollowInfo){
+      const followInfo = await this.userFollowRepository.findOne({
+        where : {userId : myId, followUserId : specificUserId}
+      })
+
+      if(followInfo){
+        user.followedByMe = true;
+      }else{
+        user.followedByMe = false;
+      }
     }
     return user;
   }

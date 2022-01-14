@@ -1,10 +1,10 @@
-import { MusicCommentTagDto } from '../../music/dto/music-comment-tag.dto';
 import { Connection, ViewColumn, ViewEntity } from 'typeorm';
 import { User,Age,Gender } from '../entity/user.entity';
 import { MusicLike } from '../entity/music-like.entity';
 import { UserFollow } from '../entity/user-follow.entity';
 import { MusicComment } from '../entity/music-comment.entity';
 import { UserTagInfo } from './user-tag-info.entity';
+import { IsOptional } from 'class-validator';
 
 @ViewEntity({
   expression: (connection: Connection) =>
@@ -80,6 +80,9 @@ export class UserInfo {
 
   @ViewColumn()
   commentCount: number;
+
+  @IsOptional()
+  followedByMe : boolean;
 
   tags: UserTagInfo[];
 }

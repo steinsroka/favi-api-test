@@ -108,7 +108,7 @@ export class UserController {
   })
   @Get()
   async getUser(@Param('user_id') user_id: number): Promise<UserInfo> {
-    const user = await this.userService.getUserInfo(user_id, true);
+    const user = await this.userService.getUserInfo(user_id);
     return user;
   }
 
@@ -245,7 +245,7 @@ export class UserController {
       req.user[key] = user[key];
     }
     await this.userService.saveUser(req.user);
-    return await this.userService.getUserInfo(req.user.id, true);
+    return await this.userService.getUserInfo(req.user.id);
   }
 
   @ApiOperation({summary: "테스터 API - 음악 정보 배열 조회"})
@@ -558,25 +558,36 @@ export class UserController {
     const result: UserSocialLog[] = [];
     const userInfos: UserInfo[] = [];
 
-    for (const userId2 of users) {
-      userInfos.push(await this.userService.getUserInfo(userId2, isSpecificUser));
-    }
-     for (const log of socialLogs) {
-      const user = userInfos.find((value) => value.id === log.userId);
+    // 기본적으로 특정 유저 지정하지 않았다면, 팔로우 정보와 유저의 태그 정보는 주지 않는다.
+    let needTags = false;
+    let needFollowInfo = false;
 
-      switch (log.type) {
+    // 특정 유저 지정시 팔로우 정보, 유저 태그 정보 준다.
+    if(specificUser){
+      needTags = true;
+      needFollowInfo = true;
+    }
+    for (const socialUser of users) {
+      userInfos.push(await this.userService.getSocialUserInfo(req.user.id, socialUser, needTags, needFollowInfo));
+    }
+  
+
+     for (const socialLog of socialLogs) {
+      const user = userInfos.find((value) => value.id === socialLog.userId);
+
+      switch (socialLog.type) {
         case 'music_comment':
           const musicCommentLog = new UserSocialLogMusicComment();
           musicCommentLog.user = user;
           musicCommentLog.musicComment = await this.musicService.getMusicComment(
-            log.id,
+            socialLog.id,
             req.user,
           );
           musicCommentLog.music = await this.musicService.getMusic2(
             musicCommentLog.musicComment.musicId,
             req.user,
           );
-          musicCommentLog.timestamp = log.timestamp;
+          musicCommentLog.timestamp = socialLog.timestamp;
           result.push(musicCommentLog);
           break;
 
