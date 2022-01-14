@@ -18,7 +18,7 @@ export class UserBlock {
     example: "432",
     description: "블락을 건 유저",
   })
-  @ManyToOne(() => User, (user) => user.blockingUser, {onDelete: 'CASCADE'})
+  @ManyToOne(() => User, (user) => user.blockingUser, { onDelete: 'CASCADE'})
   blockingUser: User;
 
   @ApiProperty({

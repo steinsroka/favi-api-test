@@ -685,8 +685,8 @@ export class UserController {
     example: "432"
   })
   @ApiResponse({
-    status:204,
-    description: "API 요청 성공"
+    status:200,
+    description: "API 요청 성공, (내가 블락한 유저 ID 배열 반환)"
     })
   @ApiResponse({
       status:404,
@@ -696,7 +696,7 @@ export class UserController {
   async getBlockingList(
     @Request() req: UserRequest,
     @Param('user_id') userId:number,
-  ): Promise<any> {
+  ): Promise<number[]> {
    return  this.userService.getUserBlock(req.user);
   }
 

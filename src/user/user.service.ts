@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   Repository,
@@ -28,6 +28,7 @@ import { MusicComment } from 'src/common/entity/music-comment.entity';
 import { AlbumResponseDto } from './dto/album-response.dto';
 import { updateAlbumDto } from './dto/update-album.dto';
 import { UserBlock } from 'src/common/entity/user-block.entity';
+import { type } from 'os';
 
 @Injectable()
 export class UserService {
@@ -467,8 +468,16 @@ export class UserService {
       blockingUser : user,
       blockedUser : blockedUser
     });
-
-    return await this.userBlockRepository.save(userBlock);
+    try{
+      return await this.userBlockRepository.save(userBlock);
+    }catch(err){
+      if(err.code === 'ER_DUP_ENTRY'){
+        // Duplication Entry인 경우, 같은 유저를 두번 블락, 이미 DB에 기록되어 있으므로 이 에러는 무시한다.
+        return;
+      }
+      
+      throw new InternalServerErrorException();
+    }
   }
 
   async deleteUserBlock(blockedUserId: number, user: User) {
@@ -481,13 +490,19 @@ export class UserService {
     });
   }
 
-  async getUserBlock(user: User) {
-    const currentUser = await this.userRepository.findOneOrFail({
-      where : {id : user.id},
-      relations: ['blockingUser']
+  async getUserBlock(user: User): Promise<number[]> {
+    const blockingUserRawData = await this.userBlockRepository.createQueryBuilder('b')
+    .select('b.blockedUserId')
+    .where('b.blockingUserId = :currentUserId', {currentUserId : user.id})
+    .getRawMany();
+
+    const blockingUserArray : number[]= []
+
+    blockingUserRawData.map((item) => {
+      blockingUserArray.push(item.blockedUserId);
     })
     
-    return currentUser.blockingUser;
+    return blockingUserArray ;
   }
 
   async isExistUserFollow(followId: number, user: User): Promise<boolean> {
