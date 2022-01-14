@@ -356,7 +356,7 @@ export class UserService {
   async deleteMusicInAlbum(albumId: number, musicId: number) {
     let album = await this.userAlbumRepository.findOneOrFail({
       where: {id: albumId },
-      relations: []
+      relations: ['musics']
      });
     const findMusicIdx = album.musics.findIndex((music) => {
       return music.id === musicId;
