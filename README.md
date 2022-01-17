@@ -9,6 +9,8 @@
 
 ---
 
+``` yarn build ```로 프로젝트를 빌드합니다. 이후
+
 ``` yarn start:dev ``` 로 개발 모드로 서버를 시작할 수 있습니다.
 
 이 경우, ```http://your-ip:3000/apidocs/```로 접속하면 Swagger API 테스트 문서를 열람할 수 있습니다.
