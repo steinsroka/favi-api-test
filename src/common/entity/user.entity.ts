@@ -41,7 +41,7 @@ export enum Age {
   B = 20,
   C = 30,
   D = 40,
-  E = 50
+  E = 50,
 }
 
 @Entity()
@@ -52,16 +52,16 @@ export class User {
   }
 
   @ApiProperty({
-    example: "1",
-    description: "유저의 고유 ID"
+    example: '1',
+    description: '유저의 고유 ID',
   })
   @IsNumber()
   @PrimaryGeneratedColumn()
   id: number;
 
   @ApiProperty({
-    example: "wahowed331@zoeyy.com",
-    description: "유저 email"
+    example: 'wahowed331@zoeyy.com',
+    description: '유저 email',
   })
   @IsEmail()
   @Column({
@@ -70,17 +70,16 @@ export class User {
   email: string;
 
   @IsBase64()
-  @Column({select : false})
+  @Column({ select: false })
   password: string;
 
   @IsBase64()
   @Column({ name: 'pw_salt', select: false })
   pwSalt: string;
 
-
   @ApiProperty({
-    example: "휘군",
-    description: "유저의 닉네임"
+    example: '휘군',
+    description: '유저의 닉네임',
   })
   @IsOptional()
   @IsString()
@@ -90,9 +89,9 @@ export class User {
   name: string;
 
   @ApiProperty({
-    example: "20",
-    description: "유저의 연령대",
-    enum : Age
+    example: '20',
+    description: '유저의 연령대',
+    enum: Age,
   })
   @IsOptional()
   @IsEnum(Age)
@@ -100,9 +99,9 @@ export class User {
   age: number;
 
   @ApiProperty({
-    example: "women",
-    description: "유저의 성별",
-    enum : Gender
+    example: 'women',
+    description: '유저의 성별',
+    enum: Gender,
   })
   @IsOptional()
   @IsEnum(Gender)
@@ -114,17 +113,16 @@ export class User {
   gender: Gender;
 
   @ApiProperty({
-    example: "2021-02-26 07:06:30.000000",
-    description: "등록 시간",
+    example: '2021-02-26 07:06:30.000000',
+    description: '등록 시간',
   })
   @IsDate()
   @CreateDateColumn()
   timestamp: Date;
 
-
   @ApiProperty({
-    example: "1",
-    description: "유저의 권한",
+    example: '1',
+    description: '유저의 권한',
   })
   @IsNumber()
   @Column({
@@ -148,49 +146,54 @@ export class User {
   totalTesterMusicCount: number;
 
   @IsBoolean()
-  @Column({default : true})
-  isLikePublic : boolean;
+  @Column({ default: true })
+  isLikePublic: boolean;
 
-
-  @OneToMany(() => Album, (album) => album.user, {cascade: true})
+  @OneToMany(() => Album, (album) => album.user, { cascade: true })
   albums: Album[];
 
-  @OneToMany(() => MusicComment, (musicComment) => musicComment.user, {cascade: true})
+  @OneToMany(() => MusicComment, (musicComment) => musicComment.user, {
+    cascade: true,
+  })
   musicComments: MusicComment[];
 
-  @OneToMany(() => BeatComment, (beatComment) => beatComment.user, {cascade: true})
+  @OneToMany(() => BeatComment, (beatComment) => beatComment.user, {
+    cascade: true,
+  })
   beatComments: BeatComment[];
 
-  @OneToMany(() => MusicLike, (musicLike) => musicLike.user, {cascade: true})
+  @OneToMany(() => MusicLike, (musicLike) => musicLike.user, { cascade: true })
   musicLikes: MusicLike[];
 
-  @OneToMany(() => UserFollow, (userFollow) => userFollow.user, {cascade: true})
+  @OneToMany(() => UserFollow, (userFollow) => userFollow.user, {
+    cascade: true,
+  })
   userFollows: UserFollow[];
 
-  @OneToMany(() => UserBlock, (userBlock) => userBlock.blockingUser, {cascade: true})
+  @OneToMany(() => UserBlock, (userBlock) => userBlock.blockingUser, {
+    cascade: true,
+  })
   blockingUser: UserBlock[];
 
-  @OneToMany(() => BeatLike, (beatLike) => beatLike.user, {cascade: true})
+  @OneToMany(() => BeatLike, (beatLike) => beatLike.user, { cascade: true })
   beatLikes: BeatLike[];
 
   @OneToMany(
     () => MusicCommentLike,
     (musicCommentLike) => musicCommentLike.user,
-    {cascade: true}
+    { cascade: true },
   )
   musicCommentLikes: MusicCommentLike[];
 
-  @OneToMany(
-    () => BeatCommentLike,
-    (beatCommentLike) => beatCommentLike.user,
-    {cascade: true}
-  )
+  @OneToMany(() => BeatCommentLike, (beatCommentLike) => beatCommentLike.user, {
+    cascade: true,
+  })
   beatCommentLikes: BeatCommentLike[];
 
-  @OneToMany(() => MusicTag, (musicTag) => musicTag.music, {cascade: true})
+  @OneToMany(() => MusicTag, (musicTag) => musicTag.music, { cascade: true })
   musicTags: MusicTag[];
 
-  @ManyToMany(() => Music, (music) => music.testerMusicUsers, {cascade: true})
+  @ManyToMany(() => Music, (music) => music.testerMusicUsers, { cascade: true })
   @JoinTable({ name: 'tester_music' })
   testerMusics: Music[];
 }

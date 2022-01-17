@@ -113,7 +113,6 @@ export class Music {
   @Column({ nullable: true })
   link: string;
 
-
   @OneToMany(() => MusicComment, (musicComment) => musicComment.music, {
     cascade: true,
   })
@@ -122,7 +121,6 @@ export class Music {
   @OneToMany(() => MusicLike, (musicLike) => musicLike.music, { cascade: true })
   musicLikes: MusicLike[];
 
-
   @OneToMany(() => MusicTag, (musicTag) => musicTag.music, { cascade: true })
   musicTags: MusicTag[];
 
@@ -130,7 +128,6 @@ export class Music {
   @JoinTable()
   artists: Artist[];
 
-  @ManyToMany(() => User, (user) => user.testerMusics, {onDelete: 'CASCADE'})
+  @ManyToMany(() => User, (user) => user.testerMusics, { onDelete: 'CASCADE' })
   testerMusicUsers: User[];
-
 }

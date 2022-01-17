@@ -32,15 +32,15 @@ async function bootstrap() {
   );
 
   /* add swagger documents when env is develop */
-  if(process.env.NODE_ENV == 'develop'){
+  if (process.env.NODE_ENV == 'develop') {
     const documentOptions = new DocumentBuilder()
-    .setTitle('Favi API Document')
-    .setDescription('Develop version of Favi api')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
+      .setTitle('Favi API Document')
+      .setDescription('Develop version of Favi api')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
     const document = SwaggerModule.createDocument(app, documentOptions);
-    SwaggerModule.setup('apidocs',app,document); 
+    SwaggerModule.setup('apidocs', app, document);
   }
   app.use(cors());
   app.use(helmet());
@@ -48,6 +48,5 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const httpConfig = configService.get<HttpConfig>('http');
   await app.listen(httpConfig.port);
-
 }
 bootstrap();

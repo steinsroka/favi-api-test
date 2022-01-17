@@ -9,5 +9,4 @@ export class BeatSmallInfoDto {
 
   @IsString()
   contents: string;
-
 }

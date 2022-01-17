@@ -47,7 +47,14 @@ import { isDefined } from 'class-validator';
 import { ErrorMessage } from '../common/class/error-message';
 import { ErrorString } from '../common/const/error-string';
 import { UserService } from '../user/user.service';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('Beat')
 @ApiBearerAuth()
@@ -61,20 +68,15 @@ export class BeatController {
     private readonly userService: UserService,
   ) {}
 
-  
   @Post()
   async addBeat(
     @Request() req: UserRequest,
     @Body() addBeatDto: AddBeatDto,
   ): Promise<Message> {
-    await this.beatService.addBeat(
-      req.user,
-      addBeatDto
-    );
+    await this.beatService.addBeat(req.user, addBeatDto);
 
     return new Message('success');
   }
-
 
   @Get(':id')
   async getBeatInfo(
@@ -117,7 +119,6 @@ export class BeatController {
   ): Promise<void> {
     await this.beatService.deleteBeatLike(id, req.user);
   }
-
 
   @Get(':id/comment')
   async getBeatComments(
@@ -218,5 +219,4 @@ export class BeatController {
     await this.beatService.addBeatTag(id, voteBeatTagDto.tag, req.user);
     return new Message('success');
   }
-
 }

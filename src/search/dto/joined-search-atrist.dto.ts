@@ -1,4 +1,4 @@
-export class JoinArtistDTO{
-    id: number;
-    name: string;
+export class JoinArtistDTO {
+  id: number;
+  name: string;
 }

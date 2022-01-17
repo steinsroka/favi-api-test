@@ -7,8 +7,8 @@ export enum SocialLogType {
 
 @ViewEntity({
   expression:
-    'SELECT `userId`, `id`, `timestamp`, "music_comment" AS `type` FROM music_comment ORDER BY `timestamp` DESC'
-    // 'SELECT `userId`, `id`, `timestamp`, "music_comment" AS `type` FROM music_comment UNION SELECT `userId`, `musicId` AS id, `timestamp`, "music_like" AS `type` FROM music_like ORDER BY `timestamp` DESC',
+    'SELECT `userId`, `id`, `timestamp`, "music_comment" AS `type` FROM music_comment ORDER BY `timestamp` DESC',
+  // 'SELECT `userId`, `id`, `timestamp`, "music_comment" AS `type` FROM music_comment UNION SELECT `userId`, `musicId` AS id, `timestamp`, "music_like" AS `type` FROM music_like ORDER BY `timestamp` DESC',
 })
 export class SocialLog {
   @ViewColumn()

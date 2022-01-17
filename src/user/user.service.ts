@@ -1,11 +1,10 @@
-import { HttpException, Injectable, InternalServerErrorException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import {
-  Repository,
-  DeleteResult,
-  In,
-  createQueryBuilder,
-} from 'typeorm';
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, DeleteResult, In, createQueryBuilder } from 'typeorm';
 import { UserPartialDto } from './dto/user-partial.dto';
 import { AlbumPartialDto } from './dto/album-partial.dto';
 import { User } from '../common/entity/user.entity';
@@ -24,11 +23,10 @@ import { MusicInfo } from '../common/view/music-info.entity';
 import { TesterProceedDto } from './dto/tester-remain.dto';
 import { MusicPartialDto } from './dto/music-partial.dto';
 import { userCommentDto } from './dto/user-comment.dto';
-import { MusicComment } from 'src/common/entity/music-comment.entity';
 import { AlbumResponseDto } from './dto/album-response.dto';
 import { updateAlbumDto } from './dto/update-album.dto';
-import { UserBlock } from 'src/common/entity/user-block.entity';
-import { type } from 'os';
+import { UserBlock } from '../common/entity/user-block.entity';
+import { MusicComment } from '../common/entity/music-comment.entity';
 
 @Injectable()
 export class UserService {
@@ -52,11 +50,11 @@ export class UserService {
     @InjectRepository(SocialLog)
     private readonly socialLogRepository: Repository<SocialLog>,
     @InjectRepository(MusicComment)
-    private readonly musicCommentRepository : Repository<MusicComment>,
+    private readonly musicCommentRepository: Repository<MusicComment>,
     @InjectRepository(MusicTagValue)
-    private readonly musicTagValueRepository : Repository<MusicTagValue>,
+    private readonly musicTagValueRepository: Repository<MusicTagValue>,
     @InjectRepository(UserBlock)
-    private readonly userBlockRepository : Repository<UserBlock>,
+    private readonly userBlockRepository: Repository<UserBlock>,
   ) {}
 
   async getUserInfo(userId: number): Promise<UserInfo> {
@@ -66,20 +64,27 @@ export class UserService {
   }
 
   // specificUser가 Define 되어 있다면 tag, 내가 팔로우했는지 돌려줌, 없다면 제외
-  async getSocialUserInfo(myId: number, specificUserId: number, needTags: boolean, needFollowInfo : boolean): Promise<UserInfo> {
-    const user = await this.userInfoRepository.findOneOrFail({ id: specificUserId });
-    if(needTags){
+  async getSocialUserInfo(
+    myId: number,
+    specificUserId: number,
+    needTags: boolean,
+    needFollowInfo: boolean,
+  ): Promise<UserInfo> {
+    const user = await this.userInfoRepository.findOneOrFail({
+      id: specificUserId,
+    });
+    if (needTags) {
       user.tags = await this.getUserTags(specificUserId);
     }
 
-    if(needFollowInfo){
+    if (needFollowInfo) {
       const followInfo = await this.userFollowRepository.findOne({
-        where : {userId : myId, followUserId : specificUserId}
-      })
+        where: { userId: myId, followUserId: specificUserId },
+      });
 
-      if(followInfo){
+      if (followInfo) {
         user.followedByMe = true;
-      }else{
+      } else {
         user.followedByMe = false;
       }
     }
@@ -95,13 +100,14 @@ export class UserService {
   }
 
   async getUserAuthInfo(userPartial: UserPartialDto): Promise<User> {
-    const data : User =  await this.userRepository.createQueryBuilder('user')
-    .select('user.id','id')
-    .addSelect('user.email', 'email')
-    .addSelect('user.password', 'password')
-    .addSelect('user.pw_salt', 'pwSalt')
-    .where(userPartial)
-    .getRawOne();
+    const data: User = await this.userRepository
+      .createQueryBuilder('user')
+      .select('user.id', 'id')
+      .addSelect('user.email', 'email')
+      .addSelect('user.password', 'password')
+      .addSelect('user.pw_salt', 'pwSalt')
+      .where(userPartial)
+      .getRawOne();
 
     return data;
   }
@@ -139,12 +145,12 @@ export class UserService {
       .where('musicLike.userId = :userId', { userId: userId })
       .andWhere('musicTagInfo.rank <= 3')
       .andWhere('musicTagInfo.name = :tag', { tag: tag })
-      .orderBy('musicLike.timestamp','DESC')
+      .orderBy('musicLike.timestamp', 'DESC')
       .getRawMany();
-      
+
     return this.userMusicRepository.find({
       where: { id: In(musicLikes.map((value) => value.id)) },
-      relations: ['artists']
+      relations: ['artists'],
     });
   }
 
@@ -176,7 +182,6 @@ export class UserService {
       .limit(10)
       .getRawMany();
 
-
     const ret: number[] = [];
     for (const i of nearUsers) {
       ret.push(i.userId);
@@ -185,11 +190,7 @@ export class UserService {
     return ret;
   }
 
-
-  async getSocialLogs(
-    userIds: number[],
-    index: number = 0,
-  ): Promise<SocialLog[]> {
+  async getSocialLogs(userIds: number[], index = 0): Promise<SocialLog[]> {
     return await this.socialLogRepository.find({
       where: { userId: In(userIds) },
       order: { timestamp: 'DESC' },
@@ -198,46 +199,31 @@ export class UserService {
     });
   }
 
-  async getUserComments(userId : number, index : number, size : number): Promise<userCommentDto[]>{
-    const comments : userCommentDto[] = await this.musicCommentRepository
-    .createQueryBuilder('c')
-    .select('c.comment', 'commentContents')
-    .addSelect('m.id' , 'musicId')
-    .addSelect('c.timestamp', 'timestamp')
-    .addSelect('m.title', 'musicName')
-    .addSelect('a.name', 'artistName')
-    .addSelect('count(l.userId)', 'likedCount')
-    .addSelect('count(rc.comment)','reCommentCount')
-    .innerJoin(
-      'music',
-      'm',
-      'c.musicId=m.id'
-    )
-    .innerJoin(
-      'music_artists_artist',
-      'ma',
-      'm.id = ma.musicId'
-    )
-    .innerJoin(
-      'artist',
-      'a',
-      'ma.artistId = a.id'
-    )
-    .leftJoin(
-      'music_comment_like',
-      'l',
-      'l.musicCommentId = c.id'
-    )
-    .leftJoin(
-      'music_comment',
-      'rc',
-      'rc.parentId = c.id'
-    ).where('c.userId = :userId', {userId : userId})
-    .groupBy('c.comment, c.timestamp, m.title, a.name, m.id')
-    .orderBy('c.timestamp','DESC')
-    .limit(size)
-    .offset(index * size)
-    .getRawMany();
+  async getUserComments(
+    userId: number,
+    index: number,
+    size: number,
+  ): Promise<userCommentDto[]> {
+    const comments: userCommentDto[] = await this.musicCommentRepository
+      .createQueryBuilder('c')
+      .select('c.comment', 'commentContents')
+      .addSelect('m.id', 'musicId')
+      .addSelect('c.timestamp', 'timestamp')
+      .addSelect('m.title', 'musicName')
+      .addSelect('a.name', 'artistName')
+      .addSelect('count(l.userId)', 'likedCount')
+      .addSelect('count(rc.comment)', 'reCommentCount')
+      .innerJoin('music', 'm', 'c.musicId=m.id')
+      .innerJoin('music_artists_artist', 'ma', 'm.id = ma.musicId')
+      .innerJoin('artist', 'a', 'ma.artistId = a.id')
+      .leftJoin('music_comment_like', 'l', 'l.musicCommentId = c.id')
+      .leftJoin('music_comment', 'rc', 'rc.parentId = c.id')
+      .where('c.userId = :userId', { userId: userId })
+      .groupBy('c.comment, c.timestamp, m.title, a.name, m.id')
+      .orderBy('c.timestamp', 'DESC')
+      .limit(size)
+      .offset(index * size)
+      .getRawMany();
     return comments;
   }
 
@@ -269,21 +255,27 @@ export class UserService {
     return result;
   }
 
-  async addAlbum(userId: number, albumName: string, isPublic: boolean, tagsName : Tag[]) {
+  async addAlbum(
+    userId: number,
+    albumName: string,
+    isPublic: boolean,
+    tagsName: Tag[],
+  ) {
     const user: User = await this.userRepository.findOne({ id: userId });
     // tagsName 배열이 빈 배열일때 예외 처리
-    if(Array.isArray(tagsName) && tagsName.length == 0){
+    if (Array.isArray(tagsName) && tagsName.length == 0) {
       tagsName = null;
     }
-    const tags : MusicTagValue[] =  await this.musicTagValueRepository.createQueryBuilder('tags')
-    .where('tags.name in (:tagsName)', {tagsName : tagsName})
-    .getMany();
+    const tags: MusicTagValue[] = await this.musicTagValueRepository
+      .createQueryBuilder('tags')
+      .where('tags.name in (:tagsName)', { tagsName: tagsName })
+      .getMany();
 
     const album = this.userAlbumRepository.create({
       name: albumName,
       isPublic: isPublic,
       user: user,
-      tags : tags
+      tags: tags,
     });
 
     return this.userAlbumRepository.save(album);
@@ -292,28 +284,31 @@ export class UserService {
   async getAlbum(albumId: number): Promise<Album> {
     return await this.userAlbumRepository.findOne({ id: albumId });
   }
-  
+
   async getAlbums(userId: number): Promise<AlbumResponseDto[]> {
     const user = await this.userRepository.findOne({ id: userId });
     const albums = await this.userAlbumRepository.find({
       relations: ['tags', 'musics'],
-      where : {user: user},
-     });
+      where: { user: user },
+    });
 
-     const response : AlbumResponseDto[] = [];
-     
-     albums.map((item)=> {
-       if(item.musics.length > 0){
-         const representImageId = item.musics[0].id;
-         const musicCount = item.musics.length;
-         delete item.musics;
-         response.push({...item, representImageId : representImageId, musicCount: musicCount});
-         return;
-       }
-       delete item.musics;
-       response.push({...item, representImageId : null, musicCount : 0});
-       
-     })
+    const response: AlbumResponseDto[] = [];
+
+    albums.map((item) => {
+      if (item.musics.length > 0) {
+        const representImageId = item.musics[0].id;
+        const musicCount = item.musics.length;
+        delete item.musics;
+        response.push({
+          ...item,
+          representImageId: representImageId,
+          musicCount: musicCount,
+        });
+        return;
+      }
+      delete item.musics;
+      response.push({ ...item, representImageId: null, musicCount: 0 });
+    });
     return response;
   }
 
@@ -322,9 +317,8 @@ export class UserService {
   }
 
   async isExistMusic(musicPartial: MusicPartialDto): Promise<boolean> {
-    return (await this.userMusicRepository.count({ where: musicPartial})) > 0;
+    return (await this.userMusicRepository.count({ where: musicPartial })) > 0;
   }
-
 
   //아래의 메소드들은 유저가 앨범을 가지고 있는지는 controller에서 guard를 통해 할 예정
   //getMusicsInAlbum, addMusicInAlbum, updateAlbum, deleteAlbum, deleteMusicInAlbum
@@ -332,40 +326,40 @@ export class UserService {
   async getMusicsInAlbum(userId: number, albumId: number): Promise<Music[]> {
     const album = await this.userAlbumRepository.findOneOrFail({
       relations: ['musics'],
-      where: {id: albumId },
-     });
+      where: { id: albumId },
+    });
     return album.musics;
   }
 
   async addMusicInAlbum(albumId: number, musicId: number) {
     // console.log('album-music ready');
-    let album = await this.userAlbumRepository.findOneOrFail({
+    const album = await this.userAlbumRepository.findOneOrFail({
       relations: ['musics'],
-      where: {id: albumId },
-     });
+      where: { id: albumId },
+    });
     // console.log('album-music album',album);
-    let musics = await this.userMusicRepository.findOne({ id: musicId });
+    const musics = await this.userMusicRepository.findOne({ id: musicId });
     // console.log('album-music musics',musics);
     album.musics.push(await this.userMusicRepository.findOne({ id: musicId }));
 
     return this.userAlbumRepository.save(album);
   }
 
-  async updateAlbum(albumId: number, updateAlbum : updateAlbumDto) {
+  async updateAlbum(albumId: number, updateAlbum: updateAlbumDto) {
     let album = await this.userAlbumRepository.findOneOrFail({
       relations: ['musics'],
-      where: {id: albumId },
-     });
+      where: { id: albumId },
+    });
 
-     const {tags, ...withoutTagsDto } = updateAlbum;
+    const { tags, ...withoutTagsDto } = updateAlbum;
 
-     album = Object.assign(album, withoutTagsDto);
+    album = Object.assign(album, withoutTagsDto);
 
-     const findTags = await this.musicTagValueRepository.find({
-       where : {name : In(tags)}
-     })
+    const findTags = await this.musicTagValueRepository.find({
+      where: { name: In(tags) },
+    });
 
-     album.tags = findTags;
+    album.tags = findTags;
 
     return this.userAlbumRepository.save(album);
   }
@@ -376,10 +370,10 @@ export class UserService {
   }
 
   async deleteMusicInAlbum(albumId: number, musicId: number) {
-    let album = await this.userAlbumRepository.findOneOrFail({
-      where: {id: albumId },
-      relations: ['musics']
-     });
+    const album = await this.userAlbumRepository.findOneOrFail({
+      where: { id: albumId },
+      relations: ['musics'],
+    });
     const findMusicIdx = album.musics.findIndex((music) => {
       return music.id === musicId;
     });
@@ -450,19 +444,19 @@ export class UserService {
       userId: followId,
     });
     const followedUser = await this.userFollowRepository.find({
-      followUserId : followId,
+      followUserId: followId,
     });
 
-    const followingUserIdArray =  followingUser.map(item => item.followUserId);
-    const followedUserIdArray = followedUser.map(item => item.userId);
+    const followingUserIdArray = followingUser.map((item) => item.followUserId);
+    const followedUserIdArray = followedUser.map((item) => item.userId);
 
     const followingUserData = await this.userRepository.find({
-      where : {id : In(followingUserIdArray)}
-    })
-    const followedUserData  = await this.userRepository.find({
-      where : {id : In(followedUserIdArray)}
-    })
-    return { followingUser : followingUserData , followedUser : followedUserData};
+      where: { id: In(followingUserIdArray) },
+    });
+    const followedUserData = await this.userRepository.find({
+      where: { id: In(followedUserIdArray) },
+    });
+    return { followingUser: followingUserData, followedUser: followedUserData };
   }
 
   async addUserFollow(followId: number, user: User) {
@@ -480,51 +474,51 @@ export class UserService {
     });
   }
 
-
   async addUserBlock(blockedUserId: number, user: User) {
     const blockedUser = await this.userRepository.findOneOrFail({
-      where : {id : blockedUserId}
-    })
-    
-    const userBlock = await this.userBlockRepository.create({
-      blockingUser : user,
-      blockedUser : blockedUser
+      where: { id: blockedUserId },
     });
-    try{
+
+    const userBlock = await this.userBlockRepository.create({
+      blockingUser: user,
+      blockedUser: blockedUser,
+    });
+    try {
       return await this.userBlockRepository.save(userBlock);
-    }catch(err){
-      if(err.code === 'ER_DUP_ENTRY'){
+    } catch (err) {
+      if (err.code === 'ER_DUP_ENTRY') {
         // Duplication Entry인 경우, 같은 유저를 두번 블락, 이미 DB에 기록되어 있으므로 이 에러는 무시한다.
         return;
       }
-      
+
       throw new InternalServerErrorException();
     }
   }
 
   async deleteUserBlock(blockedUserId: number, user: User) {
     const blockedUser = await this.userRepository.findOneOrFail({
-      where : {id : blockedUserId}
-    })
+      where: { id: blockedUserId },
+    });
     return this.userBlockRepository.delete({
-      blockingUser : user,
-      blockedUser : blockedUser
+      blockingUser: user,
+      blockedUser: blockedUser,
     });
   }
 
   async getUserBlock(user: User): Promise<number[]> {
-    const blockingUserRawData = await this.userBlockRepository.createQueryBuilder('b')
-    .select('b.blockedUserId')
-    .where('b.blockingUserId = :currentUserId', {currentUserId : user.id})
-    .getRawMany();
+    const blockingUserRawData = await this.userBlockRepository
+      .createQueryBuilder('b')
+      .select('b.blockedUserId')
+      .where('b.blockingUserId = :currentUserId', { currentUserId: user.id })
+      .getRawMany();
 
-    const blockingUserArray : number[]= []
+    const blockingUserArray: number[] = [];
 
     blockingUserRawData.map((item) => {
       blockingUserArray.push(item.blockedUserId);
-    })
-    
-    return blockingUserArray ;
+    });
+
+    return blockingUserArray;
   }
 
   async isExistUserFollow(followId: number, user: User): Promise<boolean> {
@@ -546,5 +540,4 @@ export class UserService {
 
     return ret;
   }
-
 }

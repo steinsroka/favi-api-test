@@ -1,7 +1,7 @@
 import { Connection, ViewColumn, ViewEntity } from 'typeorm';
 import { MusicTagValue, Tag, TagClass } from '../entity/music-tag-value.entity';
 import { MusicTag } from '../entity/music-tag.entity';
-import { BPM,Language } from '../entity/music.entity';
+import { BPM, Language } from '../entity/music.entity';
 
 @ViewEntity({
   expression: (connection: Connection) =>
@@ -32,14 +32,10 @@ import { BPM,Language } from '../entity/music.entity';
               'COUNT(*) OVER(PARTITION BY musicTag.musicId, musicTag.musicTagValueId) / COUNT(*) OVER(PARTITION BY musicTag.musicId, musicTagValue.class) * 100',
               'classRatio',
             )
-            .addSelect(
-              'music.bpm',
-              'bpm'
-            )
+            .addSelect('music.bpm', 'bpm')
             .from(MusicTag, 'musicTag')
             .leftJoin('musicTag.musicTagValue', 'musicTagValue')
-            .leftJoin('musicTag.music', 'music')
-            ,
+            .leftJoin('musicTag.music', 'music'),
         'tagData',
       )
       .orderBy('count', 'DESC'),

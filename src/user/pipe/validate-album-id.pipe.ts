@@ -14,12 +14,9 @@ export class ValidateAlbumIdPipe implements PipeTransform {
   async transform(value: any, metadata: ArgumentMetadata) {
     if (metadata.type === 'param' && metadata.data === 'album_id') {
       if (!(await this.userService.isExistAlbum({ id: value }))) {
-        throw new NotFoundException(
-            `album id ${value} is not exist.`
-        );
+        throw new NotFoundException(`album id ${value} is not exist.`);
       }
     }
-
 
     return value;
   }

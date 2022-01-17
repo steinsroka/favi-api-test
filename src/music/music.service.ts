@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, InsertResult, Repository } from 'typeorm';
 import { Music } from '../common/entity/music.entity';
@@ -13,17 +10,13 @@ import { MusicLike } from '../common/entity/music-like.entity';
 import { MusicCommentLike } from '../common/entity/music-comment-like.entity';
 import { MusicTag } from '../common/entity/music-tag.entity';
 import { Artist } from '../common/entity/artist.entity';
-import {
-  MusicTagValue,
-  Tag,
-} from '../common/entity/music-tag-value.entity';
+import { MusicTagValue, Tag } from '../common/entity/music-tag-value.entity';
 import { MusicCommentInfo } from '../common/view/music-comment-info.entity';
 import { MusicCommentTagDto } from './dto/music-comment-tag.dto';
 import { MusicTagInfo } from '../common/view/music-tag-info.entity';
 
 import { EditMusicDto } from './dto/edit-music.dto';
 import { MusicWithLikeDto } from './dto/music-with-like.dto';
-import { table } from 'console';
 
 @Injectable()
 export class MusicService {
@@ -65,79 +58,85 @@ export class MusicService {
     music.artists = await this.getMusicArtists(musicId);
     return music;
   }
-  async addMusic(title: string, composer: string, lyricist: string, album: string, link: string){
+  async addMusic(
+    title: string,
+    composer: string,
+    lyricist: string,
+    album: string,
+    link: string,
+  ) {
     const music = this.musicRepository.create({
       title: title,
       composer: composer,
       lyricist: lyricist,
       album: album,
-      link: link
+      link: link,
     });
     return this.musicRepository.save(music);
   }
 
   //needResponseTags : 0 : response에 태그 필요없음, 1 : 태그 필요함
-  async getMusics(musicIds: number[], needReseponseTags : number): Promise<MusicInfo[]> {
-    const musicInfos = await this.musicInfoRepository.find({where: {id: In(musicIds)}, order: {id: 'ASC'}});
-    const artists = await this.musicRepository.find({where: {id: In(musicIds)}, relations: ['artists'], order: {id: 'ASC'}});
-    if(needReseponseTags === 1){// 태그 정보까지 넣어줌
-      const tags = await this.musicTagInfoRepository.find({where: {musicId: In(musicIds)}, order: {musicId: 'ASC'}});
+  async getMusics(
+    musicIds: number[],
+    needReseponseTags: number,
+  ): Promise<MusicInfo[]> {
+    const musicInfos = await this.musicInfoRepository.find({
+      where: { id: In(musicIds) },
+      order: { id: 'ASC' },
+    });
+    const artists = await this.musicRepository.find({
+      where: { id: In(musicIds) },
+      relations: ['artists'],
+      order: { id: 'ASC' },
+    });
+    if (needReseponseTags === 1) {
+      // 태그 정보까지 넣어줌
+      const tags = await this.musicTagInfoRepository.find({
+        where: { musicId: In(musicIds) },
+        order: { musicId: 'ASC' },
+      });
       let j = 0;
-      for(let i = 0; i < musicInfos.length; ++i) {
+      for (let i = 0; i < musicInfos.length; ++i) {
         musicInfos[i].artists = artists[i].artists;
         musicInfos[i].tags = [];
-        while(1) {
-          if(j < tags.length && tags[j].musicId === musicInfos[i].id) {
+        while (1) {
+          if (j < tags.length && tags[j].musicId === musicInfos[i].id) {
             musicInfos[i].tags.push(tags[j]);
             ++j;
-          }
-          else {
+          } else {
             break;
           }
         }
       }
-    }else{
-      let j = 0;
-      for(let i = 0; i < musicInfos.length; ++i) {
+    } else {
+      const j = 0;
+      for (let i = 0; i < musicInfos.length; ++i) {
         musicInfos[i].artists = artists[i].artists;
       }
     }
     return musicInfos;
   }
-  async getMusicWithArtist(artistId: number,user?: User): Promise<Artist> {
-    
+  async getMusicWithArtist(artistId: number, user?: User): Promise<Artist> {
     const artist: any = await this.artistRepository.findOneOrFail({
       where: { id: artistId },
     });
 
+    const musicWithLikes: MusicWithLikeDto[] = await this.artistRepository
+      .createQueryBuilder('a')
+      .select('m.*')
+      .addSelect('if(isnull(l.userId),false, true)', 'myLike')
+      .innerJoin('music_artists_artist', 'ma', 'a.id = ma.artistId')
+      .innerJoin(Music, 'm', 'm.id = ma.musicId')
+      .leftJoin(MusicLike, 'l', 'l.userId= :userId and l.musicId=m.id', {
+        userId: user.id,
+      })
+      .where('a.id = :artistId', { artistId: artistId })
+      .getRawMany();
 
-    const musicWithLikes : MusicWithLikeDto[] = await this.artistRepository
-    .createQueryBuilder('a')
-    .select('m.*')
-    .addSelect('if(isnull(l.userId),false, true)', 'myLike')
-    .innerJoin(
-      'music_artists_artist',
-      'ma',
-      'a.id = ma.artistId'
-    )
-    .innerJoin(
-      Music,
-      'm',
-      'm.id = ma.musicId'
-    )
-    .leftJoin(
-      MusicLike,
-      'l',
-      'l.userId= :userId and l.musicId=m.id',
-      {userId : user.id}
-    )
-    .where('a.id = :artistId', {artistId : artistId})
-    .getRawMany();
-
-    musicWithLikes.map(item => {
-      item.myLike == 0 ? item.myLike = false : item.myLike = true;
+    musicWithLikes.map((item) => {
+      item.myLike == 0 ? (item.myLike = false) : (item.myLike = true);
       return item;
-    })
+    });
 
     artist.musics = musicWithLikes;
 
@@ -165,10 +164,14 @@ export class MusicService {
     return (await this.musicRepository.count({ id: musicId })) > 0;
   }
 
-  async isValidComment(musicId: number, commentId : number): Promise<boolean> {
-    return (await this.musicCommentInfoRepository.count({ id: commentId, musicId : musicId })) > 0;
+  async isValidComment(musicId: number, commentId: number): Promise<boolean> {
+    return (
+      (await this.musicCommentInfoRepository.count({
+        id: commentId,
+        musicId: musicId,
+      })) > 0
+    );
   }
-
 
   addMusicLike(musicId: number, user: User) {
     const musicLike = this.musicLikeRepository.create({
@@ -227,14 +230,13 @@ export class MusicService {
   }
 
   async getMusicComments(musicId: number, index?: number, user?: User) {
-
     // 10개씩 가져옴
     const stride = 10;
     // index 정의되어 있지 않으면 index = 0
-    if(isNaN(index)){
-      index = 0
+    if (isNaN(index)) {
+      index = 0;
     }
-    
+
     const musicComments = await this.musicCommentInfoRepository.find({
       where: { musicId: musicId },
       order: { timestamp: 'DESC' },
@@ -269,20 +271,20 @@ export class MusicService {
       relations: ['musicComments'],
       where: { id: musicId },
     });
-    
+
     // parent는 기본 Null, 만약 parent 정의되어 있으면 (대댓글이면) 부모 댓글 가져옴
     let parentMusicComment = null;
     if (isDefined(parent)) {
       parentMusicComment = await this.getMusicComment(parent);
     }
-    
+
     // 댓글 추가
     const musicComment = this.musicCommentRepository.create({
       comment: comment,
       user: user,
       parent: parentMusicComment,
     });
-    
+
     // 찾아온 음악에 push
     music.musicComments.push(musicComment);
     const newMusic = await this.musicRepository.save(music);
@@ -290,8 +292,14 @@ export class MusicService {
     return newMusic.musicComments.pop();
   }
 
-  async deleteMusicComment(musicId : number, commentId: number): Promise<DeleteResult> {
-    return this.musicCommentRepository.delete({id : commentId, musicId : musicId});
+  async deleteMusicComment(
+    musicId: number,
+    commentId: number,
+  ): Promise<DeleteResult> {
+    return this.musicCommentRepository.delete({
+      id: commentId,
+      musicId: musicId,
+    });
   }
 
   async updateMusicComment(
@@ -299,22 +307,22 @@ export class MusicService {
     musicCommentId: number,
     newComment: string,
   ): Promise<MusicComment> {
-    try{
-    const musicComment = await this.musicCommentRepository.findOneOrFail({
-      where: { id: musicCommentId, musicId : musicId },
-    });
-    musicComment.comment = newComment;
-    return this.musicCommentRepository.save(musicComment);
-  }catch {
-    throw new NotFoundException("Music id or comment id is not valid")
-  }
+    try {
+      const musicComment = await this.musicCommentRepository.findOneOrFail({
+        where: { id: musicCommentId, musicId: musicId },
+      });
+      musicComment.comment = newComment;
+      return this.musicCommentRepository.save(musicComment);
+    } catch {
+      throw new NotFoundException('Music id or comment id is not valid');
+    }
   }
 
   addMusicCommentLike(musicId: number, musicCommentId: number, user: User) {
-    if(!this.isValidComment(musicId, musicCommentId)){
-      throw new NotFoundException("Music id or comment id is not valid")
+    if (!this.isValidComment(musicId, musicCommentId)) {
+      throw new NotFoundException('Music id or comment id is not valid');
     }
-    
+
     const musicCommentLike = this.musicCommentLikeRepository.create({
       musicCommentId: musicCommentId,
       userId: user.id,
@@ -333,9 +341,7 @@ export class MusicService {
     });
   }
 
-  async getMusicTags(
-    musicId: number,
-  ): Promise<MusicTagInfo[]> {
+  async getMusicTags(musicId: number): Promise<MusicTagInfo[]> {
     return await this.musicTagInfoRepository.find({ musicId: musicId });
   }
 

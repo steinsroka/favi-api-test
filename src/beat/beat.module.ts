@@ -28,11 +28,11 @@ import { forwardRef } from '@nestjs/common';
       BeatTag,
       BeatCommentLike,
       BeatTagInfo,
-  ]),
-  forwardRef(() => UserModule),
-],
+    ]),
+    forwardRef(() => UserModule),
+  ],
   controllers: [BeatController],
   providers: [BeatService],
-  exports: [TypeOrmModule,BeatService],
+  exports: [TypeOrmModule, BeatService],
 })
 export class BeatModule {}

@@ -14,13 +14,10 @@ export class ValidateMuiscIdPipe implements PipeTransform {
   async transform(value: any, metadata: ArgumentMetadata) {
     console.log(`pipe : ${metadata}`);
     if (metadata.type === 'param' && metadata.data === 'music_id') {
-      if (!(await this.userService.isExistMusic({id: parseInt(value)}))) {
-        throw new NotFoundException(
-            `music id ${value} is not exist.`
-        );
+      if (!(await this.userService.isExistMusic({ id: parseInt(value) }))) {
+        throw new NotFoundException(`music id ${value} is not exist.`);
       }
     }
-
 
     return value;
   }

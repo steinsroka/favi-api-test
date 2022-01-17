@@ -18,9 +18,7 @@ export class ValidateBlockingUserPipe implements PipeTransform {
     ) {
       if (!isDefined(value) || isNaN(value)) return undefined;
       if (!(await this.userService.isExistUser({ id: value }))) {
-        throw new NotFoundException(
-            `blocking_user id ${value} is not exist.`
-        );
+        throw new NotFoundException(`blocking_user id ${value} is not exist.`);
       }
     }
     return value;

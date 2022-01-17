@@ -108,9 +108,6 @@ export class Beat {
   @OneToMany(() => BeatTag, (beatTag) => beatTag.beat, { cascade: true })
   beatTags: BeatTag[];
 
-
-  @ManyToMany(() => User, (user) => user.testerMusics, {onDelete: 'CASCADE'})
+  @ManyToMany(() => User, (user) => user.testerMusics, { onDelete: 'CASCADE' })
   testerMusicUsers: User[];
-
-
 }

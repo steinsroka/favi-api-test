@@ -10,14 +10,14 @@ export class BeatCommentLike {
   @PrimaryColumn()
   beatCommentId: number;
 
-  @ManyToOne(() => User, (user) => user.beatCommentLikes, {onDelete: 'CASCADE'})
+  @ManyToOne(() => User, (user) => user.beatCommentLikes, {
+    onDelete: 'CASCADE',
+  })
   user: User;
 
-  @ManyToOne(
-    () => BeatComment,
-    (beatComment) => beatComment.beatCommentLikes,
-    { onDelete: 'CASCADE' },
-  )
+  @ManyToOne(() => BeatComment, (beatComment) => beatComment.beatCommentLikes, {
+    onDelete: 'CASCADE',
+  })
   beatComment: BeatComment;
 
   @CreateDateColumn()

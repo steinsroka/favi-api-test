@@ -6,7 +6,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { Language,BPM,MelodyScale } from '../../common/entity/beat.entity';
+import { Language, BPM, MelodyScale } from '../../common/entity/beat.entity';
 
 export class AddBeatDto {
   @IsString()
@@ -26,6 +26,4 @@ export class AddBeatDto {
   @IsEnum(MelodyScale, { each: true })
   @IsOptional()
   melodyScale?: MelodyScale;
-
-
 }

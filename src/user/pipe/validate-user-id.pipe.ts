@@ -18,9 +18,7 @@ export class ValidateUserIdPipe implements PipeTransform {
     ) {
       if (!isDefined(value) || isNaN(value)) return undefined;
       if (!(await this.userService.isExistUser({ id: value }))) {
-        throw new NotFoundException(
-            `user id ${value} is not exist.`
-        );
+        throw new NotFoundException(`user id ${value} is not exist.`);
       }
     }
     return value;

@@ -32,7 +32,10 @@ export class BeatComment {
   @ManyToOne(() => Beat, (beat) => beat.beatComments, { nullable: false })
   beat: Beat;
 
-  @ManyToOne(() => User, (user) => user.beatComments, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.beatComments, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   user: User;
 
   @OneToMany(

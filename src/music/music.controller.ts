@@ -37,15 +37,24 @@ import { ValidateMusicPipe } from './pipe/validate-music.pipe';
 import { EditMusicDto } from './dto/edit-music.dto';
 import { isDefined } from 'class-validator';
 import { UserService } from '../user/user.service';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags, PickType } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+  PickType,
+} from '@nestjs/swagger';
 import { Music } from '../common/entity/music.entity';
 import { MusicTagInfo } from 'src/common/view/music-tag-info.entity';
 
 @ApiTags('Music(음악) 관련 API')
 @ApiBearerAuth()
 @ApiResponse({
-  status:401,
-  description: "JWT 토큰 만료, 혹은 유저가 해당 권한이 없음",
+  status: 401,
+  description: 'JWT 토큰 만료, 혹은 유저가 해당 권한이 없음',
 })
 @Controller('music')
 @UseGuards(JwtAuthGuard)
@@ -57,16 +66,16 @@ export class MusicController {
     private readonly userService: UserService,
   ) {}
 
-  @ApiOperation({summary: "음악 정보 조회"})
+  @ApiOperation({ summary: '음악 정보 조회' })
   @ApiParam({
-    name:"music_id",
-    description:"음악 ID",
-    example: "650"
+    name: 'music_id',
+    description: '음악 ID',
+    example: '650',
   })
   @ApiResponse({
-    status:200,
-    description: "조회 성공(음악 데이터 반환)",
-    type:MusicInfo
+    status: 200,
+    description: '조회 성공(음악 데이터 반환)',
+    type: MusicInfo,
   })
   @Get(':music_id')
   async getMusicInfo(
@@ -77,35 +86,39 @@ export class MusicController {
     return music;
   }
 
-  @ApiOperation({summary: "특정 아티스트의 음악 조회"})
+  @ApiOperation({ summary: '특정 아티스트의 음악 조회' })
   @ApiParam({
-    name:"artist_id",
-    description:"아티스트 ID",
-    example: "7"
+    name: 'artist_id',
+    description: '아티스트 ID',
+    example: '7',
   })
   @ApiResponse({
-    status:200,
-    description: "조회 성공(아티스트와 해당 아티스트의 음악 데이터 반환)",
-    type:Artist
+    status: 200,
+    description: '조회 성공(아티스트와 해당 아티스트의 음악 데이터 반환)',
+    type: Artist,
   })
   @Get('artist/:artist_id')
   async getMusicWithArtist(
     @Request() req: UserRequest,
     @Param('artist_id') artistId: number,
   ): Promise<Artist> {
-    const music = await this.musicService.getMusicWithArtist(artistId, req.user);
+    const music = await this.musicService.getMusicWithArtist(
+      artistId,
+      req.user,
+    );
     return music;
   }
 
-  @ApiOperation({summary: "테스터 API - 곡 수정"})
+  @ApiOperation({ summary: '테스터 API - 곡 수정' })
   @ApiParam({
-    name:"music_id",
-    description:"음악 ID",
-    example: "650"
+    name: 'music_id',
+    description: '음악 ID',
+    example: '650',
   })
   @ApiBody({
-    description:"수정할 Field를 보내면 해당 Field가 수정됩니다. 입력되지 않은 Field는 무시됩니다.",
-    type:PickType(Music, [
+    description:
+      '수정할 Field를 보내면 해당 Field가 수정됩니다. 입력되지 않은 Field는 무시됩니다.',
+    type: PickType(Music, [
       'link',
       'bpm',
       'melodyScale',
@@ -113,12 +126,12 @@ export class MusicController {
       'vocalType',
       'copyright',
       'rhythmBeat',
-    ])
+    ]),
   })
   @ApiResponse({
-    status:200,
-    description: "수정 성공(아티스트와 해당 아티스트의 음악 데이터 반환)",
-    type:Artist
+    status: 200,
+    description: '수정 성공(아티스트와 해당 아티스트의 음악 데이터 반환)',
+    type: Artist,
   })
   @Patch(':music_id')
   @UseGuards(TestUserGuard)
@@ -135,11 +148,11 @@ export class MusicController {
     return result;
   }
 
-  @ApiOperation({summary: "음악에 유저의 좋아요 추가"})
+  @ApiOperation({ summary: '음악에 유저의 좋아요 추가' })
   @ApiParam({
-    name:"music_id",
-    description:"음악 ID",
-    example: "650"
+    name: 'music_id',
+    description: '음악 ID',
+    example: '650',
   })
   @Put(':music_id/like')
   @HttpCode(204)
@@ -150,16 +163,15 @@ export class MusicController {
     await this.musicService.addMusicLike(musicId, req.user);
   }
 
-
-  @ApiOperation({summary: "음악에 유저의 좋아요 삭제"})
+  @ApiOperation({ summary: '음악에 유저의 좋아요 삭제' })
   @ApiParam({
-    name:"music_id",
-    description:"음악 ID",
-    example: "650"
+    name: 'music_id',
+    description: '음악 ID',
+    example: '650',
   })
   @ApiResponse({
-    status:204,
-    description: "삭제 성공",
+    status: 204,
+    description: '삭제 성공',
   })
   @Delete(':music_id/like')
   @HttpCode(204)
@@ -170,22 +182,23 @@ export class MusicController {
     await this.musicService.deleteMusicLike(musicId, req.user);
   }
 
-  @ApiOperation({summary: "해당 음악 댓글 조회 (10개 단위, 최신순)"})
+  @ApiOperation({ summary: '해당 음악 댓글 조회 (10개 단위, 최신순)' })
   @ApiParam({
-    name:"music_id",
-    description:"음악 ID",
-    example: "252"
+    name: 'music_id',
+    description: '음악 ID',
+    example: '252',
   })
   @ApiQuery({
-    name:"index",
-    description:"조회할 index, 비울 시 기본값 : 0 (처음부터 검색), 만약 2라면 20~30번째 댓글 가져옴. 0번이 가장 최신 댓글",
+    name: 'index',
+    description:
+      '조회할 index, 비울 시 기본값 : 0 (처음부터 검색), 만약 2라면 20~30번째 댓글 가져옴. 0번이 가장 최신 댓글',
     required: false,
   })
   @ApiResponse({
-    status:200,
-    description: "조회 성공 (10개 단위로 반환)",
+    status: 200,
+    description: '조회 성공 (10개 단위로 반환)',
     isArray: true,
-    type:MusicCommentInfo,
+    type: MusicCommentInfo,
   })
   @Get(':music_id/comment')
   async getMusicComments(
@@ -201,23 +214,23 @@ export class MusicController {
     return musicComments;
   }
 
-  @ApiOperation({summary: "해당 음악에 댓글 작성"})
+  @ApiOperation({ summary: '해당 음악에 댓글 작성' })
   @ApiParam({
-    name:"music_id",
-    description:"음악 ID",
-    example: "252"
+    name: 'music_id',
+    description: '음악 ID',
+    example: '252',
   })
   @ApiBody({
-    type:AddMusicCommentDto,
+    type: AddMusicCommentDto,
   })
   @ApiResponse({
-    status:201,
-    description: "생성 성공",
-    type:Message,
+    status: 201,
+    description: '생성 성공',
+    type: Message,
   })
   @ApiResponse({
-    status:404,
-    description: "(대댓글 작성 시) 해당 댓글이 서버에 존재하지 않음",
+    status: 404,
+    description: '(대댓글 작성 시) 해당 댓글이 서버에 존재하지 않음',
   })
   @Post(':music_id/comment')
   async addMusicComment(
@@ -225,14 +238,13 @@ export class MusicController {
     @Param('music_id') musicId: number,
     @Body() addMusicCommentDto: AddMusicCommentDto,
   ): Promise<Message> {
-
     // parent 필드가 있을 시 (대댓글일시), 해당 댓글이 서버에 있는지 확인
     if (
       isDefined(addMusicCommentDto.parent) &&
       !(await this.musicService.isExistMusicComment(addMusicCommentDto.parent))
     ) {
       throw new NotFoundException(
-          `music comment id ${addMusicCommentDto.parent} is not exist`
+        `music comment id ${addMusicCommentDto.parent} is not exist`,
       );
     }
 
@@ -245,39 +257,39 @@ export class MusicController {
     );
 
     // Tag는 Promise로 async하게 insert
-    const addMusicPromise:
-      | Promise<InsertResult>[]
-      | undefined = addMusicCommentDto.tags?.map((value: Tag) =>
-      this.musicService.addMusicTag(musicId, value, req.user, comment.id),
-    );
+    const addMusicPromise: Promise<InsertResult>[] | undefined =
+      addMusicCommentDto.tags?.map((value: Tag) =>
+        this.musicService.addMusicTag(musicId, value, req.user, comment.id),
+      );
     await Promise.all(addMusicPromise ?? []);
 
     return new Message('success');
   }
 
-
-  @ApiOperation({summary: "댓글 삭제"})
+  @ApiOperation({ summary: '댓글 삭제' })
   @ApiParam({
-    name:"music_id",
-    description:"음악 ID",
-    example: "252"
+    name: 'music_id',
+    description: '음악 ID',
+    example: '252',
   })
   @ApiParam({
-    name:"comment_id",
-    description:"댓글 ID",
-    example: "955"
+    name: 'comment_id',
+    description: '댓글 ID',
+    example: '955',
   })
   @ApiResponse({
-    status:204,
-    description: "댓글 삭제 성공",
+    status: 204,
+    description: '댓글 삭제 성공',
   })
   @ApiResponse({
-    status:401,
-    description: "JWT 토큰 만료, 혹은 유저가 해당 권한이 없음. 또는 유저가 해당 댓글을 지울 권한이 없음.",
+    status: 401,
+    description:
+      'JWT 토큰 만료, 혹은 유저가 해당 권한이 없음. 또는 유저가 해당 댓글을 지울 권한이 없음.',
   })
   @ApiResponse({
-    status:404,
-    description: "해당 음악 id, comment id가 유효하지 않음 (서버에 해당 댓글이 없음)",
+    status: 404,
+    description:
+      '해당 음악 id, comment id가 유효하지 않음 (서버에 해당 댓글이 없음)',
   })
   @UseGuards(MusicCommentAuthGuard)
   @Delete(':music_id/comment/:comment_id')
@@ -286,34 +298,39 @@ export class MusicController {
     @Param('music_id') musicId: number,
     @Param('comment_id') commentId: number,
   ): Promise<void> {
-    const result = await this.musicService.deleteMusicComment(musicId, commentId);
-    if(result.affected === 0){
-      throw new NotFoundException("Music id or comment id is not valid");
+    const result = await this.musicService.deleteMusicComment(
+      musicId,
+      commentId,
+    );
+    if (result.affected === 0) {
+      throw new NotFoundException('Music id or comment id is not valid');
     }
   }
 
-  @ApiOperation({summary: "댓글 수정"})
+  @ApiOperation({ summary: '댓글 수정' })
   @ApiParam({
-    name:"music_id",
-    description:"음악 ID",
-    example: "252"
+    name: 'music_id',
+    description: '음악 ID',
+    example: '252',
   })
   @ApiParam({
-    name:"comment_id",
-    description:"댓글 ID",
-    example: "955"
+    name: 'comment_id',
+    description: '댓글 ID',
+    example: '955',
   })
   @ApiResponse({
-    status:204,
-    description: "댓글 수정 성공 (수정된 댓글 객체 반환)",
+    status: 204,
+    description: '댓글 수정 성공 (수정된 댓글 객체 반환)',
   })
   @ApiResponse({
-    status:401,
-    description: "JWT 토큰 만료, 혹은 유저가 해당 권한이 없음. 또는 유저가 해당 댓글을 수정할 권한이 없음.",
+    status: 401,
+    description:
+      'JWT 토큰 만료, 혹은 유저가 해당 권한이 없음. 또는 유저가 해당 댓글을 수정할 권한이 없음.',
   })
   @ApiResponse({
-    status:404,
-    description: "해당 음악 id, comment id가 유효하지 않음 (서버에 해당 댓글이 없음)",
+    status: 404,
+    description:
+      '해당 음악 id, comment id가 유효하지 않음 (서버에 해당 댓글이 없음)',
   })
   @UseGuards(MusicCommentAuthGuard)
   @Patch(':music_id/comment/:comment_id')
@@ -329,25 +346,25 @@ export class MusicController {
     );
   }
 
-
-  @ApiOperation({summary: "댓글에 좋아요 추가" })
+  @ApiOperation({ summary: '댓글에 좋아요 추가' })
   @ApiParam({
-    name:"music_id",
-    description:"음악 ID",
-    example: "252"
+    name: 'music_id',
+    description: '음악 ID',
+    example: '252',
   })
   @ApiParam({
-    name:"comment_id",
-    description:"댓글 ID",
-    example: "955"
+    name: 'comment_id',
+    description: '댓글 ID',
+    example: '955',
   })
   @ApiResponse({
-    status:204,
-    description: "댓글 좋아요 성공",
+    status: 204,
+    description: '댓글 좋아요 성공',
   })
   @ApiResponse({
-    status:404,
-    description: "해당 음악 id, comment id가 유효하지 않음 (서버에 해당 댓글이 없음)",
+    status: 404,
+    description:
+      '해당 음악 id, comment id가 유효하지 않음 (서버에 해당 댓글이 없음)',
   })
   @Put(':music_id/comment/:comment_id/like')
   @HttpCode(204)
@@ -359,65 +376,71 @@ export class MusicController {
     await this.musicService.addMusicCommentLike(musicId, commentId, req.user);
   }
 
-  @ApiOperation({summary: "댓글에 좋아요 삭제" })
+  @ApiOperation({ summary: '댓글에 좋아요 삭제' })
   @ApiParam({
-    name:"music_id",
-    description:"음악 ID",
-    example: "252"
+    name: 'music_id',
+    description: '음악 ID',
+    example: '252',
   })
   @ApiParam({
-    name:"comment_id",
-    description:"댓글 ID",
-    example: "955"
+    name: 'comment_id',
+    description: '댓글 ID',
+    example: '955',
   })
   @ApiResponse({
-    status:204,
-    description: "댓글 좋아요 삭제 성공",
+    status: 204,
+    description: '댓글 좋아요 삭제 성공',
   })
   @ApiResponse({
-    status:404,
-    description: "해당 음악 id, comment id가 유효하지 않음 (서버에 해당 댓글이 없음)",
+    status: 404,
+    description:
+      '해당 음악 id, comment id가 유효하지 않음 (서버에 해당 댓글이 없음)',
   })
   @Delete(':music_id/comment/:comment_id/like')
   @HttpCode(204)
   async hateMusicComment(
     @Request() req: UserRequest,
-    @Param('music_id') musicId : number,
+    @Param('music_id') musicId: number,
     @Param('comment_id') commentId: number,
   ): Promise<void> {
-    const result = await this.musicService.deleteMusicCommentLike(commentId, req.user);
-    if(result.affected === 0){
-      throw new NotFoundException("Music id or comment id is not valid");
+    const result = await this.musicService.deleteMusicCommentLike(
+      commentId,
+      req.user,
+    );
+    if (result.affected === 0) {
+      throw new NotFoundException('Music id or comment id is not valid');
     }
   }
 
-  @ApiOperation({summary: "음악 태그 조회" })
+  @ApiOperation({ summary: '음악 태그 조회' })
   @ApiParam({
-    name:"music_id",
-    description:"음악 ID",
-    example: "252"
+    name: 'music_id',
+    description: '음악 ID',
+    example: '252',
   })
   @ApiResponse({
-    status:404,
-    description: "해당 음악 id가 유효하지 않음",
+    status: 404,
+    description: '해당 음악 id가 유효하지 않음',
   })
   @Get(':music_id/tag')
-  async getMusicTag(@Param('music_id') musicId: number) : Promise<MusicTagInfo[]> {
+  async getMusicTag(
+    @Param('music_id') musicId: number,
+  ): Promise<MusicTagInfo[]> {
     return await this.musicService.getMusicTags(musicId);
   }
 
-  @ApiOperation({summary: "음악 태그 추가" })
+  @ApiOperation({ summary: '음악 태그 추가' })
   @ApiParam({
-    name:"music_id",
-    description:"음악 ID",
-    example: "252"
+    name: 'music_id',
+    description: '음악 ID',
+    example: '252',
   })
   @ApiBody({
-    type : VoteMusicTagDto,
+    type: VoteMusicTagDto,
   })
   @ApiResponse({
-    status:404,
-    description: "해당 음악 id가 유효하지 않음",
+    status: 404,
+    description: '해당 음악 id가 유효하지 않음',
   })
   @Put(':music_id/tag')
   async voteMusicTag(
@@ -429,7 +452,9 @@ export class MusicController {
     return new Message('success');
   }
 
-  @ApiOperation({summary: "해당하는 노래를 좋아하는 사람 조회", description : ` 200 Response 예시입니다 : [
+  @ApiOperation({
+    summary: '해당하는 노래를 좋아하는 사람 조회',
+    description: ` 200 Response 예시입니다 : [
     {
        "type": "age",
        "result": {
@@ -448,20 +473,20 @@ export class MusicController {
          "other": 40.0
        }
     }
-  ]`})
+  ]`,
+  })
   @ApiParam({
-    name:"music_id",
-    description:"음악 ID",
-    example: "252"
+    name: 'music_id',
+    description: '음악 ID',
+    example: '252',
   })
   @ApiResponse({
-    status:200,
-    description: "조회 성공",
-
+    status: 200,
+    description: '조회 성공',
   })
   @ApiResponse({
-    status:404,
-    description: "해당 음악 id가 유효하지 않음",
+    status: 404,
+    description: '해당 음악 id가 유효하지 않음',
   })
   @Get(':music_id/users')
   async getUserDistribution(@Param('music_id') musicId: number) {

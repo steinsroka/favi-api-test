@@ -26,7 +26,7 @@ export class MusicCommentAuthGuard implements CanActivate {
     const musicComment = await this.musicService.getMusicComment(commentId);
     if (musicComment.userId !== request.user.id) {
       throw new UnauthorizedException(
-          `user id ${request.user.id} don't have permission on music comment ${request.params.comment_id}`
+        `user id ${request.user.id} don't have permission on music comment ${request.params.comment_id}`,
       );
     }
     return true;

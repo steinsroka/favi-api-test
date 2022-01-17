@@ -12,7 +12,8 @@ import { MusicLike } from '../common/entity/music-like.entity';
 import { Music } from '../common/entity/music.entity';
 import { MusicModule } from '../music/music.module';
 import { SocialLog } from '../common/view/social-log.entity';
-import { UserBlock } from 'src/common/entity/user-block.entity';
+import { UserBlock } from '../common/entity/user-block.entity';
+import { MusicComment } from '../common/entity/music-comment.entity';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { UserBlock } from 'src/common/entity/user-block.entity';
       Music,
       SocialLog,
       UserBlock,
+      MusicComment
     ]),
     forwardRef(() => MusicModule),
   ],

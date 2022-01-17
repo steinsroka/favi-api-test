@@ -48,17 +48,17 @@ export class BeatService {
     @InjectRepository(BeatTagInfo)
     private readonly beatTagInfoRepository: Repository<BeatTagInfo>,
   ) {}
-    async addBeat(user: User, addBeatDto: AddBeatDto){
-      const beat = this.beatRepository.create({
-        title: addBeatDto.title,
-        contents: addBeatDto.contents,
-        userId: user.id,
-        language: addBeatDto.language,
-        bpm: addBeatDto.bpm,
-        melodyScale: addBeatDto.melodyScale
-      });
-      return this.beatRepository.save(beat);
-    }
+  async addBeat(user: User, addBeatDto: AddBeatDto) {
+    const beat = this.beatRepository.create({
+      title: addBeatDto.title,
+      contents: addBeatDto.contents,
+      userId: user.id,
+      language: addBeatDto.language,
+      bpm: addBeatDto.bpm,
+      melodyScale: addBeatDto.melodyScale,
+    });
+    return this.beatRepository.save(beat);
+  }
   async getBeat(beatId: number, user?: User): Promise<BeatInfo> {
     const beat = await this.beatInfoRepository.findOneOrFail({ id: beatId });
     // music.tags = await this.getMusicTags(musicId);
@@ -70,19 +70,24 @@ export class BeatService {
   }
 
   async getBeats(beatIds: number[]): Promise<BeatInfo[]> {
-    const beatInfos = await this.beatInfoRepository.find({where: {id: In(beatIds)}, order: {id: 'ASC'}});
-    const tags = await this.beatTagInfoRepository.find({where: {beatId: In(beatIds)}, order: {beatId: 'ASC'}});
+    const beatInfos = await this.beatInfoRepository.find({
+      where: { id: In(beatIds) },
+      order: { id: 'ASC' },
+    });
+    const tags = await this.beatTagInfoRepository.find({
+      where: { beatId: In(beatIds) },
+      order: { beatId: 'ASC' },
+    });
     // const artists = await this.musicRepository.find({where: {id: In(musicIds)}, relations: ['artists'], order: {id: 'ASC'}});
     let j = 0;
-    for(let i = 0; i < beatInfos.length; ++i) {
+    for (let i = 0; i < beatInfos.length; ++i) {
       // musicInfos[i].artists = artists[i].artists;
       beatInfos[i].tags = [];
-      while(1) {
-        if(j < tags.length && tags[j].beatId === beatInfos[i].id) {
+      while (1) {
+        if (j < tags.length && tags[j].beatId === beatInfos[i].id) {
           beatInfos[i].tags.push(tags[j]);
           ++j;
-        }
-        else {
+        } else {
           break;
         }
       }
@@ -166,7 +171,7 @@ export class BeatService {
   async getBeatComments(beatId: number, index?: number, user?: User) {
     const beatCommentIndex = isDefined(index) ? 10 : 2;
     index = index ?? 0;
-    let limit = beatCommentIndex;
+    const limit = beatCommentIndex;
     const beatComments = await this.beatCommentInfoRepository.find({
       where: { beatId: beatId },
       order: { timestamp: 'DESC' },
@@ -185,11 +190,8 @@ export class BeatService {
   }
 
   async isExistBeatComment(beatCommentId: number) {
-    return (
-      (await this.beatCommentRepository.count({ id: beatCommentId })) > 0
-    );
+    return (await this.beatCommentRepository.count({ id: beatCommentId })) > 0;
   }
-
 
   async addBeatComment(
     beatId: number,
@@ -230,9 +232,6 @@ export class BeatService {
     return this.beatCommentRepository.save(beatComment);
   }
 
-
-
-
   addBeatCommentLike(beatCommentId: number, user: User) {
     const beatCommentLike = this.beatCommentLikeRepository.create({
       beatCommentId: beatCommentId,
@@ -272,7 +271,4 @@ export class BeatService {
       beatTagValueId: beatTagValue.id,
     });
   }
-
-
-
 }

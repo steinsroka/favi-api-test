@@ -1,5 +1,5 @@
 import { Connection, ViewColumn, ViewEntity } from 'typeorm';
-import { User,Age,Gender } from '../entity/user.entity';
+import { User, Age, Gender } from '../entity/user.entity';
 import { MusicLike } from '../entity/music-like.entity';
 import { UserFollow } from '../entity/user-follow.entity';
 import { MusicComment } from '../entity/music-comment.entity';
@@ -82,7 +82,7 @@ export class UserInfo {
   commentCount: number;
 
   @IsOptional()
-  followedByMe : boolean;
+  followedByMe: boolean;
 
   tags: UserTagInfo[];
 }

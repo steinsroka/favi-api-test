@@ -12,7 +12,6 @@ default:
   autoLoadEntities: true
   logging: true
   bigNumberStrings: false
-  entities : ["src/common/entity/**/*.ts"]
   
 auth:
   hashIter: 56718

@@ -16,7 +16,6 @@ import { HelpModule } from './help/help.module';
 import { NoticeController } from './notice/notice.controller';
 import { NoticeService } from './notice/notice.service';
 import { NoticeModule } from './notice/notice.module';
-import { Album } from './common/entity/album.entity';
 
 @Module({
   imports: [
@@ -40,11 +39,7 @@ import { Album } from './common/entity/album.entity';
     HelpModule,
     NoticeModule,
   ],
-  controllers: [
-    SearchController,
-    HelpController,
-    NoticeController,
-  ],
+  controllers: [SearchController, HelpController, NoticeController],
   providers: [
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
     SearchService,

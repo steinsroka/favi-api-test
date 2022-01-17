@@ -29,7 +29,10 @@ export class Album {
   @CreateDateColumn()
   timestamp: Date;
 
-  @ManyToOne(() => User, (user) => user.albums, { primary: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.albums, {
+    primary: true,
+    onDelete: 'CASCADE',
+  })
   user: User;
 
   @ManyToMany(() => Music, { cascade: true })
@@ -38,7 +41,7 @@ export class Album {
 
   @ManyToMany(() => MusicTagValue, { cascade: true })
   @JoinTable({
-    name: "album_tags"
+    name: 'album_tags',
   })
   tags: MusicTagValue[];
 

@@ -13,8 +13,8 @@ export class TestUserGuard implements CanActivate {
     const curTime: Date = new Date();
     if (request.user.testEnd < curTime) {
       throw new ForbiddenException(
-        "the validity period of the test user has expired."
-      )
+        'the validity period of the test user has expired.',
+      );
     }
     return true;
   }

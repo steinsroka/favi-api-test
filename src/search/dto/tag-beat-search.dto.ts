@@ -21,5 +21,5 @@ export class TagBeatSearchDto {
   index: string;
 
   @IsOptional()
-  size: number = 5;
+  size = 5;
 }

@@ -1,4 +1,10 @@
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Music } from './music.entity';
 import { MusicInfo } from '../view/music-info.entity';
 
@@ -13,5 +19,4 @@ export class Artist {
   @ManyToMany(() => Music, (music) => music.artists)
   @JoinTable()
   musics: MusicInfo[];
-
 }

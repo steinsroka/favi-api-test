@@ -1,4 +1,3 @@
-export class GuardResponseDto{
-    status: string;
-    
+export class GuardResponseDto {
+  status: string;
 }

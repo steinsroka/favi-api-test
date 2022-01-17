@@ -21,7 +21,7 @@ export class BeatTag {
   // @Column({ nullable: true })
   // beatCommentId: number;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   userId: number;
 
   @Column()

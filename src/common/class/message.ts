@@ -1,12 +1,12 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class Message {
   constructor(message: string) {
     this.message = message;
   }
-  
+
   @ApiProperty({
-    example:"success"
+    example: 'success',
   })
   message: string;
 }

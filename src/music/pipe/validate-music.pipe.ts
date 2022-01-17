@@ -17,15 +17,13 @@ export class ValidateMusicPipe implements PipeTransform {
       switch (metadata.data) {
         case 'music_id':
           if (!(await this.musicService.isExistMusic(value))) {
-            throw new NotFoundException(
-                `music id ${value} is not exist`
-            );
+            throw new NotFoundException(`music id ${value} is not exist`);
           }
           break;
         case 'comment_id':
           if (!(await this.musicService.isExistMusicComment(value))) {
             throw new NotFoundException(
-                `music comment id ${value} is not exist`
+              `music comment id ${value} is not exist`,
             );
           }
           break;
