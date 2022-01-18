@@ -61,7 +61,6 @@ import {
   ApiQuery,
   ApiResponse,
   ApiTags,
-  PickType,
 } from '@nestjs/swagger';
 import { UserLikedAlbumDto } from './dto/user-liked-album.dto';
 import { ValidateMuiscIdPipe } from './pipe/validate-music-id.pipe copy';
