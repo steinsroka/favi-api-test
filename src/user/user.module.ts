@@ -31,7 +31,7 @@ import { ArtistLike } from '../common/entity/artist-like.entity';
       Music,
       SocialLog,
       UserBlock,
-      MusicComment
+      MusicComment,
     ]),
     forwardRef(() => MusicModule),
   ],

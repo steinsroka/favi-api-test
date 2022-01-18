@@ -43,7 +43,12 @@ import { ArtistModule } from './artist/artist.module';
     NoticeModule,
     ArtistModule,
   ],
-  controllers: [SearchController, HelpController, NoticeController, ArtistController],
+  controllers: [
+    SearchController,
+    HelpController,
+    NoticeController,
+    ArtistController,
+  ],
   providers: [
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
     SearchService,

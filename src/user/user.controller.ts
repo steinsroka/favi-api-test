@@ -163,7 +163,7 @@ export class UserController {
     type: Artist,
   })
   @Get('liked_artists')
-  async getUserLikedArtists( 
+  async getUserLikedArtists(
     @Param('user_id') userId: number,
     @Req() req: UserRequest,
   ) {
@@ -189,7 +189,6 @@ export class UserController {
   async getUserLikedAlbums(@Param('user_id') userId: number) {
     return await this.userService.getUserLikedAlbums(userId);
   }
-
 
   @ApiOperation({ summary: '해당 유저가 작성한 댓글을 가져옴' })
   @ApiParam({

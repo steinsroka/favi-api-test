@@ -2,7 +2,8 @@ import {
   PipeTransform,
   Injectable,
   ArgumentMetadata,
-  NotFoundException} from '@nestjs/common';
+  NotFoundException,
+} from '@nestjs/common';
 import { MusicService } from '../music.service';
 
 @Injectable()

@@ -64,7 +64,7 @@ export class UserService {
   ) {}
 
   async getUserInfo(userId: number): Promise<UserInfo> {
-    const user = await this.userInfoRepository.findOneOrFail({id: userId});
+    const user = await this.userInfoRepository.findOneOrFail({ id: userId });
     user.tags = await this.getUserTags(userId);
     return user;
   }
@@ -138,12 +138,11 @@ export class UserService {
 
   async getUserLikedAllArtist(user: User): Promise<Artist[]> {
     const musicLikes = await this.ArtistLikeRepository.find({
-      where : {likingUser : user},
-      relations : ['likedArtist']
+      where: { likingUser: user },
+      relations: ['likedArtist'],
     });
 
     return musicLikes.map((item) => item.likedArtist);
-
   }
 
   async getUserLikedTagMusic(userId: number, tag: Tag): Promise<Music[]> {
