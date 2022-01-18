@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, In, InsertResult, Repository } from 'typeorm';
 import { Music } from '../common/entity/music.entity';
@@ -173,16 +173,16 @@ export class MusicService {
     );
   }
 
-  addMusicLike(musicId: number, user: User) {
-    const musicLike = this.musicLikeRepository.create({
+  async addMusicLike(musicId: number, user: User) {
+    const musicLike = await this.musicLikeRepository.create({
       userId: user.id,
       musicId: musicId,
     });
     return this.musicLikeRepository.save(musicLike);
   }
 
-  deleteMusicLike(musicId: number, user: User) {
-    return this.musicLikeRepository.delete({
+  async deleteMusicLike(musicId: number, user: User) {
+    return await this.musicLikeRepository.delete({
       musicId: musicId,
       userId: user.id,
     });

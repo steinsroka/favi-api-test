@@ -12,7 +12,8 @@ default:
   autoLoadEntities: true
   logging: true
   bigNumberStrings: false
-  entities : ["src/common/entity/**/*.ts"]
+  # Typeorm: sync 할 땐 아래 줄 주석 취소할 것!
+  #entities : ["src/common/entity/**/*.{ts,js}"]
   
 auth:
   hashIter: 56718

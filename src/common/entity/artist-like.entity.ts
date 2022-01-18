@@ -11,7 +11,7 @@ import { User } from './user.entity';
 
 @Entity()
 @Unique('unique block', ['likingUser', 'likedArtist'])
-export class artistLike {
+export class ArtistLike {
   @PrimaryGeneratedColumn()
   id: number;
 

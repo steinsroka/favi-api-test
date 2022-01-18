@@ -8,7 +8,7 @@
   "scripts": {
     "run": "ttsc && node ./dist/src/main.js",
     "prebuild": "rimraf dist",
-    "build": "nest build && ttsc && cp ./src/config/*.config.yml ./dist/src/config",
+    "build": "nest build && ttsc && cp ./src/config/*.config.yml ./dist/src/config && ttsc",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "export NODE_ENV=production && ttsc && node dist/src/main.js",
     "start:dev": "export NODE_ENV=develop && nest start --watch",
@@ -81,7 +81,7 @@
     "ts-jest": "^26.5.4",
     "ts-loader": "^8.0.18",
     "ts-node": "^9.1.1",
-    "tsconfig-paths": "^3.9.0",
+    "tsconfig-paths": "^3.12.0",
     "ttypescript": "^1.5.12",
     "typescript": "^4.2.3"
   },

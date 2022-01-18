@@ -27,6 +27,8 @@ import { AlbumResponseDto } from './dto/album-response.dto';
 import { updateAlbumDto } from './dto/update-album.dto';
 import { UserBlock } from '../common/entity/user-block.entity';
 import { MusicComment } from '../common/entity/music-comment.entity';
+import { Artist } from '../common/entity/artist.entity';
+import { ArtistLike } from '../common/entity/artist-like.entity';
 
 @Injectable()
 export class UserService {
@@ -55,10 +57,14 @@ export class UserService {
     private readonly musicTagValueRepository: Repository<MusicTagValue>,
     @InjectRepository(UserBlock)
     private readonly userBlockRepository: Repository<UserBlock>,
+    @InjectRepository(Artist)
+    private readonly ArtistRepository: Repository<Artist>,
+    @InjectRepository(ArtistLike)
+    private readonly ArtistLikeRepository: Repository<ArtistLike>,
   ) {}
 
   async getUserInfo(userId: number): Promise<UserInfo> {
-    const user = await this.userInfoRepository.findOneOrFail({ id: userId });
+    const user = await this.userInfoRepository.findOneOrFail({id: userId});
     user.tags = await this.getUserTags(userId);
     return user;
   }
@@ -128,6 +134,16 @@ export class UserService {
       where: { id: In(musicLikes.map((value) => value.musicId)) },
       relations: ['artists'],
     });
+  }
+
+  async getUserLikedAllArtist(user: User): Promise<Artist[]> {
+    const musicLikes = await this.ArtistLikeRepository.find({
+      where : {likingUser : user},
+      relations : ['likedArtist']
+    });
+
+    return musicLikes.map((item) => item.likedArtist);
+
   }
 
   async getUserLikedTagMusic(userId: number, tag: Tag): Promise<Music[]> {

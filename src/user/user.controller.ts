@@ -63,11 +63,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { UserLikedAlbumDto } from './dto/user-liked-album.dto';
-import { ValidateMuiscIdPipe } from './pipe/validate-music-id.pipe copy';
+import { ValidateMuiscIdPipe } from './pipe/validate-music-id.pipe';
 import { userCommentDto } from './dto/user-comment.dto';
 import { AlbumResponseDto } from './dto/album-response.dto';
 import { updateAlbumDto } from './dto/update-album.dto';
 import { ValidateBlockingUserPipe } from './pipe/validate-blocking-user-id.pipe';
+import { Artist } from '../common/entity/artist.entity';
 
 /*
 TODO : JWT 안에 이미 userId가 있기 떄문에, 자신의 정보 요청하는 경우 굳이 user_id 쓸 필요 없음
@@ -149,6 +150,26 @@ export class UserController {
     return await this.userService.getUserLikedAllMusic(userId);
   }
 
+  @ApiOperation({ summary: '좋아요 한 아티스트 조회' })
+  @ApiParam({
+    name: 'user_id',
+    description: '유저 ID, JWT Token Decode시 본인의 ID 얻을 수 있음.',
+    example: '432',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '요청 성공 (Artist Array 반환)',
+    isArray: true,
+    type: Artist,
+  })
+  @Get('liked_artists')
+  async getUserLikedArtists( 
+    @Param('user_id') userId: number,
+    @Req() req: UserRequest,
+  ) {
+    return await this.userService.getUserLikedAllArtist(req.user);
+  }
+
   @ApiOperation({
     summary:
       '좋아요 한 데이터를 기반으로 추천 앨범 조회 (TODO : 동적 쿼리 확인 필요)',
@@ -168,6 +189,7 @@ export class UserController {
   async getUserLikedAlbums(@Param('user_id') userId: number) {
     return await this.userService.getUserLikedAlbums(userId);
   }
+
 
   @ApiOperation({ summary: '해당 유저가 작성한 댓글을 가져옴' })
   @ApiParam({

@@ -14,12 +14,16 @@ import { MusicModule } from '../music/music.module';
 import { SocialLog } from '../common/view/social-log.entity';
 import { UserBlock } from '../common/entity/user-block.entity';
 import { MusicComment } from '../common/entity/music-comment.entity';
+import { Artist } from '../common/entity/artist.entity';
+import { ArtistLike } from '../common/entity/artist-like.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       User,
       Album,
+      Artist,
+      ArtistLike,
       UserInfo,
       UserTagInfo,
       UserFollow,
