@@ -84,6 +84,22 @@ DBMS 는 Mysql을 사용 중입니다.
 
 * 릴리즈 서버에서는 AWS RDS를 사용 중입니다, RDS의 ```arcanedb``` 입니다.
 
+### Tip : 개발/테스트서버 접속시
+
+
+VSCODE IDE를 사용하는 경우, Remote 연결 시 VPS의 사양 문제로 연결이 불안정한 경우가 잦습니다.
+
+[Code-Server](https://github.com/coder/code-server) 를 설치해 두었으므로, 웹 기반으로 IDE를 사용하여 코딩할 수 있습니다.
+
+방법은 다음과 같습니다.
+
+1. AWS web console로 접속
+2. ~/.config/code-server/config.yaml에서 접속 비밀번호 (password) 확인
+3. web console 에서 code-server 를 입력하여 code-server 서버를 활성화
+4. 해당 서버의 8080 포트 (예시 : 3.34.17.87:8080)로 들어가 2. 에서 확인한 비밀번호를 입력
+5. Web IDE 사용하여 프로그래밍
+
+
 ---
 
 ## 하면 좋을 것..
