@@ -104,7 +104,10 @@ VSCODE IDE를 사용하는 경우, Remote 연결 시 VPS의 사양 문제로 연
 
 ## 하면 좋을 것..
 
-해야 할 것 같은데 못 하고 간 것들..
+해야 되는 것
+* Entity 구조 수정 : 예를 들어 music_comment_like 엔티티 같은 경우, PK 설정을 잘못 해서 Cascade delete 적용 안 되는 것으로 보임.
+
+하면 좋을 것 같은데 못 하고 간 것들..
 
 * 최소한의 테스트, Unit Test까진 안 바라니 Happy Path E2E 테스트라도 만들어야 할 것 같음...
 * DB Table 최적화 및 엔티티 설계 고민..
