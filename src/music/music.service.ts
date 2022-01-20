@@ -229,12 +229,15 @@ export class MusicService {
     const musicComment = await this.musicCommentInfoRepository.findOne({
       id: musicCommentId,
     });
+    if(!musicComment){
+      return null;
+    }
     musicComment.tags = await this.getMusicCommentTags(musicComment.id);
     musicComment.myLike = isDefined(user)
       ? await this.isExistMusicCommentLike(musicComment.id, user)
       : null;
     if (isDefined(musicComment.parentId)) {
-      musicComment.parent = await this.getMusicComment(
+      const parentInfo = await this.getMusicComment(
         musicComment.parentId,
         user,
       );
