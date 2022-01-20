@@ -309,10 +309,21 @@ export class MusicService {
     musicId: number,
     commentId: number,
   ): Promise<DeleteResult> {
-    return this.musicCommentRepository.delete({
+    const DeleteComment = await this.musicCommentRepository.findOne({
       id: commentId,
       musicId: musicId,
     });
+    // 대댓글 먼저 삭제
+    await this.musicCommentRepository.createQueryBuilder()
+    .delete()
+    .where("parentId = :parentId and musicId = :musicId", {parentId: DeleteComment.id, musicId : musicId })
+    .execute();
+
+    // 그 뒤 댓글 삭제
+    return this.musicCommentRepository.delete({
+      id : commentId,
+      musicId : musicId
+    })
   }
 
   async updateMusicComment(
