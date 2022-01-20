@@ -86,7 +86,7 @@ export class MusicController {
     return music;
   }
 
-  @ApiOperation({ summary: '특정 아티스트의 음악 조회' })
+  @ApiOperation({ summary: '특정 아티스트 정보와 음악 조회' })
   @ApiParam({
     name: 'artist_id',
     description: '아티스트 ID',

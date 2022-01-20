@@ -21,6 +21,7 @@ import { MusicTagInfo } from '../common/view/music-tag-info.entity';
 
 import { EditMusicDto } from './dto/edit-music.dto';
 import { MusicWithLikeDto } from './dto/music-with-like.dto';
+import { ArtistLike } from '../common/entity/artist-like.entity';
 
 @Injectable()
 export class MusicService {
@@ -45,6 +46,8 @@ export class MusicService {
     private readonly musicTagValueRepository: Repository<MusicTagValue>,
     @InjectRepository(MusicTagInfo)
     private readonly musicTagInfoRepository: Repository<MusicTagInfo>,
+    @InjectRepository(ArtistLike)
+    private readonly artistLikeRepository : Repository<ArtistLike>,
   ) {}
 
   async getMusic(musicId: number, user?: User): Promise<MusicInfo> {
@@ -121,8 +124,12 @@ export class MusicService {
     return musicInfos;
   }
   async getMusicWithArtist(artistId: number, user?: User): Promise<Artist> {
-    const artist: any = await this.artistRepository.findOneOrFail({
+    const artist : any = await this.artistRepository.findOneOrFail({
       where: { id: artistId },
+    });
+    
+    const artistLikedCount : number = await this.artistLikeRepository.count({
+      where : {likedArtist : artist}
     });
 
     const musicWithLikes: MusicWithLikeDto[] = await this.artistRepository
@@ -142,6 +149,8 @@ export class MusicService {
       return item;
     });
 
+
+    artist.LikedUserCount = artistLikedCount;
     artist.musics = musicWithLikes;
 
     return artist;

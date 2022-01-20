@@ -524,6 +524,8 @@ export class UserService {
     const blockingUserRawData = await this.userBlockRepository
       .createQueryBuilder('b')
       .select('b.blockedUserId')
+      .addSelect('u.name',"nickname")
+      .innerJoin(User, 'u', 'b.blockedUserId = u.id')
       .where('b.blockingUserId = :currentUserId', { currentUserId: user.id })
       .getRawMany();
 
@@ -533,7 +535,7 @@ export class UserService {
       blockingUserArray.push(item.blockedUserId);
     });
 
-    return blockingUserArray;
+    return blockingUserRawData;
   }
 
   async isExistUserFollow(followId: number, user: User): Promise<boolean> {
