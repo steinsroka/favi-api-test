@@ -1,6 +1,6 @@
 import { IsEnum, IsOptional, Matches, IsIn } from 'class-validator';
 import { Tag } from '../../common/entity/music-tag-value.entity';
-import { BPM, Language } from '../../common/entity/music.entity';
+import { BPM } from '../../common/entity/music.entity';
 
 export class TagSearchDto {
   @Matches(/^[1-9][0-9]*$/)
@@ -14,11 +14,11 @@ export class TagSearchDto {
   index: string;
 
   @IsOptional()
-  size = 5;
+  size:number = 5;
 
   @IsIn([0, 1])
   @IsOptional()
-  tag_response = 1;
+  tag_response:number = 1;
 
   @IsOptional()
   @IsEnum(BPM)
