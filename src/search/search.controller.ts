@@ -43,13 +43,6 @@ export class SearchController {
     required: false,
   })
   @ApiQuery({
-    name: 'tag_response',
-    description:
-      'Response Data에 태그 필요한지? 0: 태그 미포함, 1: 태그 포함, 기본값 : 1 (태그 포함)',
-    enum: [0, 1],
-    required: false,
-  })
-  @ApiQuery({
     name: 'index',
     description:
       'index (예를 들어 size = 10, index = 2 인 경우 20~30번째 결과 가져옴)',
@@ -66,6 +59,13 @@ export class SearchController {
     enum: BPM,
     required: false,
   })
+  @ApiQuery({
+    name: 'tag_response',
+    description:
+      'Response Data에 태그 필요한지? 0: 태그 미포함, 1: 태그 포함, 기본값 : 1 (태그 포함)',
+    enum: [0, 1],
+    required: false,
+  })
   @ApiResponse({
     status: 200,
     description: '검색 결과 배열 반환',
@@ -76,7 +76,6 @@ export class SearchController {
   async searchMusicWithTags(
     @Query() tagSearchDto: TagSearchDto,
   ): Promise<MusicInfo[]> {
-    console.log(typeof tagSearchDto.tags);
     const musicIds = await this.searchService.getMusicsMatchedTag(
       tagSearchDto.tags,
       parseInt(tagSearchDto.seed),
