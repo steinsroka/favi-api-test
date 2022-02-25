@@ -89,12 +89,13 @@ export class AuthController {
     let salt: string;
     const user = new User(
       registerDto.email,
+      // unique한 salt값과 password를 암호화하는 saltHash에 보냄
       await this.authService.saltHash(
         registerDto.password,
         (salt = randomBytes(64).toString('base64')),
       ),
     );
-    user.pwSalt = salt;
+    user.pwSalt = salt; // salt하는데 사용된 값을 같이 저장함
     const newUser = await this.userService.saveUser(user);
     return await this.authService.login(newUser);
   }

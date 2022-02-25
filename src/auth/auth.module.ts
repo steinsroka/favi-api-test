@@ -19,8 +19,8 @@ import { LocalStrategy } from './strategy/local.strategy';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         return {
-          secret: configService.get<AuthConfig>('auth').jwtSecret,
-          signOptions: { expiresIn: '30d' },
+          secret: configService.get<AuthConfig>('auth').jwtSecret, // 토큰을 만들때 사용하는 Secret텍스트
+          signOptions: { expiresIn: '30d' }, // 30일 이후 더이상 토큰이 유효하지 않음
         };
       },
       inject: [ConfigService],
@@ -29,6 +29,6 @@ import { LocalStrategy } from './strategy/local.strategy';
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy, GuestStrategy],
-  exports: [AuthService],
+  exports: [AuthService], // 다른곳에서도 사용가능하도록
 })
 export class AuthModule {}

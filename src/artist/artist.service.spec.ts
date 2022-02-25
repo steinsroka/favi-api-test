@@ -11,8 +11,4 @@ describe('ArtistService', () => {
 
     service = module.get<ArtistService>(ArtistService);
   });
-
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
 });

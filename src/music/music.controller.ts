@@ -51,13 +51,11 @@ import { Music } from '../common/entity/music.entity';
 import { MusicTagInfo } from 'src/common/view/music-tag-info.entity';
 
 @ApiTags('Music(음악) 관련 API')
-@ApiBearerAuth()
 @ApiResponse({
   status: 401,
   description: 'JWT 토큰 만료, 혹은 유저가 해당 권한이 없음',
 })
 @Controller('music')
-@UseGuards(JwtAuthGuard)
 @UsePipes(ValidateMusicPipe)
 export class MusicController {
   constructor(
@@ -66,7 +64,9 @@ export class MusicController {
     private readonly userService: UserService,
   ) {}
 
+  // TODO: swagger에서 없어짐. 왜? > @Get에서의 키워드가 같아서 그런듯
   @ApiOperation({ summary: '음악 정보 조회' })
+  @ApiBearerAuth()
   @ApiParam({
     name: 'music_id',
     description: '음악 ID',
@@ -78,6 +78,7 @@ export class MusicController {
     type: MusicInfo,
   })
   @Get(':music_id')
+  @UseGuards(JwtAuthGuard)
   async getMusicInfo(
     @Request() req: UserRequest,
     @Param('music_id') musicId: number,
@@ -86,7 +87,27 @@ export class MusicController {
     return music;
   }
 
+  @ApiOperation({ summary: '음악 정보 조회 (게스트)' })
+  @ApiParam({
+    name: 'music_id',
+    description: '음악 ID',
+    example: '650',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '조회 성공(음악 데이터 반환) (게스트용)',
+    type: MusicInfo,
+  })
+  @Get(':music_id/guest')
+  async getMusicInfoGuest(
+    @Param('music_id') musicId: number,
+  ): Promise<MusicInfo> {
+    const music = await this.musicService.getMusicGuest(musicId);
+    return music;
+  }
+
   @ApiOperation({ summary: '특정 아티스트 정보와 음악 조회' })
+  @ApiBearerAuth()
   @ApiParam({
     name: 'artist_id',
     description: '아티스트 ID',
@@ -98,6 +119,7 @@ export class MusicController {
     type: Artist,
   })
   @Get('artist/:artist_id')
+  @UseGuards(JwtAuthGuard)
   async getMusicWithArtist(
     @Request() req: UserRequest,
     @Param('artist_id') artistId: number,
@@ -109,7 +131,27 @@ export class MusicController {
     return music;
   }
 
+  @ApiOperation({ summary: '특정 아티스트 정보와 음악 조회 (게스트)' })
+  @ApiParam({
+    name: 'artist_id',
+    description: '아티스트 ID',
+    example: '7',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '조회 성공(아티스트와 해당 아티스트의 음악 데이터 반환)',
+    type: Artist,
+  })
+  @Get('artist/:artist_id/guest')
+  async getMusicWithArtistGuest(
+    @Param('artist_id') artistId: number,
+  ): Promise<Artist> {
+    const music = await this.musicService.getMusicWithArtistGuest(artistId);
+    return music;
+  }
+
   @ApiOperation({ summary: '테스터 API - 곡 수정' })
+  @ApiBearerAuth()
   @ApiParam({
     name: 'music_id',
     description: '음악 ID',
@@ -149,6 +191,7 @@ export class MusicController {
   }
 
   @ApiOperation({ summary: '음악에 유저의 좋아요 추가' })
+  @ApiBearerAuth()
   @ApiParam({
     name: 'music_id',
     description: '음악 ID',
@@ -156,6 +199,7 @@ export class MusicController {
   })
   @Put(':music_id/like')
   @HttpCode(204)
+  @UseGuards(JwtAuthGuard)
   async likeMusic(
     @Request() req: UserRequest,
     @Param('music_id') musicId: number,
@@ -164,6 +208,7 @@ export class MusicController {
   }
 
   @ApiOperation({ summary: '음악에 유저의 좋아요 삭제' })
+  @ApiBearerAuth()
   @ApiParam({
     name: 'music_id',
     description: '음악 ID',
@@ -175,6 +220,7 @@ export class MusicController {
   })
   @Delete(':music_id/like')
   @HttpCode(204)
+  @UseGuards(JwtAuthGuard)
   async hateMusic(
     @Request() req: UserRequest,
     @Param('music_id') musicId: number,
@@ -183,6 +229,7 @@ export class MusicController {
   }
 
   @ApiOperation({ summary: '해당 음악 댓글 조회 (10개 단위, 최신순)' })
+  @ApiBearerAuth()
   @ApiParam({
     name: 'music_id',
     description: '음악 ID',
@@ -201,6 +248,7 @@ export class MusicController {
     type: MusicCommentInfo,
   })
   @Get(':music_id/comment')
+  @UseGuards(JwtAuthGuard)
   async getMusicComments(
     @Request() req: UserRequest,
     @Param('music_id') musicId: number,
@@ -214,7 +262,38 @@ export class MusicController {
     return musicComments;
   }
 
+  @ApiOperation({ summary: '해당 음악 댓글 조회 (10개 단위, 최신순) (게스트)' })
+  @ApiParam({
+    name: 'music_id',
+    description: '음악 ID',
+    example: '252',
+  })
+  @ApiQuery({
+    name: 'index',
+    description:
+      '조회할 index, 비울 시 기본값 : 0 (처음부터 검색), 만약 2라면 20~30번째 댓글 가져옴. 0번이 가장 최신 댓글',
+    required: false,
+  })
+  @ApiResponse({
+    status: 200,
+    description: '조회 성공 (10개 단위로 반환)',
+    isArray: true,
+    type: MusicCommentInfo,
+  })
+  @Get(':music_id/comment/guest')
+  async getMusicCommentsGuest(
+    @Param('music_id') musicId: number,
+    @Query('index') index?: number,
+  ): Promise<MusicCommentInfo[]> {
+    const musicComments = await this.musicService.getMusicCommentsGuest(
+      musicId,
+      index,
+    );
+    return musicComments;
+  }
+
   @ApiOperation({ summary: '해당 음악에 댓글 작성' })
+  @ApiBearerAuth()
   @ApiParam({
     name: 'music_id',
     description: '음악 ID',
@@ -233,6 +312,7 @@ export class MusicController {
     description: '(대댓글 작성 시) 해당 댓글이 서버에 존재하지 않음',
   })
   @Post(':music_id/comment')
+  @UseGuards(JwtAuthGuard)
   async addMusicComment(
     @Request() req: UserRequest,
     @Param('music_id') musicId: number,
@@ -267,6 +347,7 @@ export class MusicController {
   }
 
   @ApiOperation({ summary: '댓글 삭제' })
+  @ApiBearerAuth()
   @ApiParam({
     name: 'music_id',
     description: '음악 ID',
@@ -293,6 +374,7 @@ export class MusicController {
   })
   @UseGuards(MusicCommentAuthGuard)
   @Delete(':music_id/comment/:comment_id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(204)
   async deleteMusicComment(
     @Param('music_id') musicId: number,
@@ -308,6 +390,7 @@ export class MusicController {
   }
 
   @ApiOperation({ summary: '댓글 수정' })
+  @ApiBearerAuth()
   @ApiParam({
     name: 'music_id',
     description: '음악 ID',
@@ -334,6 +417,7 @@ export class MusicController {
   })
   @UseGuards(MusicCommentAuthGuard)
   @Patch(':music_id/comment/:comment_id')
+  @UseGuards(JwtAuthGuard)
   async editMusicComment(
     @Param('music_id') musicId: number,
     @Param('comment_id') commentId: number,
@@ -347,6 +431,7 @@ export class MusicController {
   }
 
   @ApiOperation({ summary: '댓글에 좋아요 추가' })
+  @ApiBearerAuth()
   @ApiParam({
     name: 'music_id',
     description: '음악 ID',
@@ -377,6 +462,7 @@ export class MusicController {
   }
 
   @ApiOperation({ summary: '댓글에 좋아요 삭제' })
+  @ApiBearerAuth()
   @ApiParam({
     name: 'music_id',
     description: '음악 ID',
@@ -398,6 +484,7 @@ export class MusicController {
   })
   @Delete(':music_id/comment/:comment_id/like')
   @HttpCode(204)
+  @UseGuards(JwtAuthGuard)
   async hateMusicComment(
     @Request() req: UserRequest,
     @Param('music_id') musicId: number,
@@ -430,6 +517,7 @@ export class MusicController {
   }
 
   @ApiOperation({ summary: '음악 태그 추가' })
+  @ApiBearerAuth()
   @ApiParam({
     name: 'music_id',
     description: '음악 ID',
@@ -443,6 +531,7 @@ export class MusicController {
     description: '해당 음악 id가 유효하지 않음',
   })
   @Put(':music_id/tag')
+  @UseGuards(JwtAuthGuard)
   async voteMusicTag(
     @Request() req: UserRequest,
     @Param('music_id') musicId: number,

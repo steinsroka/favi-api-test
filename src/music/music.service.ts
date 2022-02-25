@@ -47,7 +47,7 @@ export class MusicService {
     @InjectRepository(MusicTagInfo)
     private readonly musicTagInfoRepository: Repository<MusicTagInfo>,
     @InjectRepository(ArtistLike)
-    private readonly artistLikeRepository : Repository<ArtistLike>,
+    private readonly artistLikeRepository: Repository<ArtistLike>,
   ) {}
 
   async getMusic(musicId: number, user?: User): Promise<MusicInfo> {
@@ -60,11 +60,24 @@ export class MusicService {
     return music;
   }
 
+  /**
+   * socialLog에서 music 데이터를 가져오기 위한 메서드
+   */
   async getMusic2(musicId: number, user?: User): Promise<MusicInfo> {
     const music = await this.musicInfoRepository.findOneOrFail({ id: musicId });
     music.artists = await this.getMusicArtists(musicId);
     return music;
   }
+
+  /**
+   * 인증하지 않은 상태에서 music 데이터를 가져오기 위한 메서드
+   */
+  async getMusicGuest(musicId: number): Promise<MusicInfo> {
+    const music = await this.musicInfoRepository.findOneOrFail({ id: musicId });
+    music.artists = await this.getMusicArtists(musicId);
+    return music;
+  }
+
   async addMusic(
     title: string,
     composer: string,
@@ -123,32 +136,58 @@ export class MusicService {
     }
     return musicInfos;
   }
+
   async getMusicWithArtist(artistId: number, user?: User): Promise<Artist> {
-    const artist : any = await this.artistRepository.findOneOrFail({
+    const artist: any = await this.artistRepository.findOneOrFail({
       where: { id: artistId },
     });
-    
-    const artistLikedCount : number = await this.artistLikeRepository.count({
-      where : {likedArtist : artist}
+
+    const artistLikedCount: number = await this.artistLikeRepository.count({
+      where: { likedArtist: artist },
     });
 
     const musicWithLikes: MusicWithLikeDto[] = await this.artistRepository
       .createQueryBuilder('a')
       .select('m.*')
-      .addSelect('if(isnull(l.userId),false, true)', 'myLike')
+      //.addSelect('if(isnull(l.userId),false, true)', 'myLike')
       .innerJoin('music_artists_artist', 'ma', 'a.id = ma.artistId')
       .innerJoin(Music, 'm', 'm.id = ma.musicId')
-      .leftJoin(MusicLike, 'l', 'l.userId= :userId and l.musicId=m.id', {
-        userId: user.id,
-      })
+      // .leftJoin(MusicLike, 'l', 'l.userId= :userId and l.musicId=m.id', {
+      //   userId: user.id,
+      // })
       .where('a.id = :artistId', { artistId: artistId })
       .getRawMany();
 
-    musicWithLikes.map((item) => {
-      item.myLike == 0 ? (item.myLike = false) : (item.myLike = true);
-      return item;
+    // musicWithLikes.map((item) => {
+    //   item.myLike == 0 ? (item.myLike = false) : (item.myLike = true);
+    //   return item;
+    // });
+
+    artist.LikedUserCount = artistLikedCount;
+    artist.musics = musicWithLikes;
+
+    return artist;
+  }
+
+  /**
+   * mylike가 검색되지 않는 쿼리
+   */
+  async getMusicWithArtistGuest(artistId: number): Promise<Artist> {
+    const artist: any = await this.artistRepository.findOneOrFail({
+      where: { id: artistId },
     });
 
+    const artistLikedCount: number = await this.artistLikeRepository.count({
+      where: { likedArtist: artist },
+    });
+
+    const musicWithLikes: MusicWithLikeDto[] = await this.artistRepository
+      .createQueryBuilder('a')
+      .select('m.*')
+      .innerJoin('music_artists_artist', 'ma', 'a.id = ma.artistId')
+      .innerJoin(Music, 'm', 'm.id = ma.musicId')
+      .where('a.id = :artistId', { artistId: artistId })
+      .getRawMany();
 
     artist.LikedUserCount = artistLikedCount;
     artist.musics = musicWithLikes;
@@ -229,7 +268,7 @@ export class MusicService {
     const musicComment = await this.musicCommentInfoRepository.findOne({
       id: musicCommentId,
     });
-    if(!musicComment){
+    if (!musicComment) {
       return null;
     }
     musicComment.tags = await this.getMusicCommentTags(musicComment.id);
@@ -267,6 +306,23 @@ export class MusicService {
         ? await this.isExistMusicCommentLike(musicComments[i].id, user)
         : null;
     }
+    return musicComments;
+  }
+
+  async getMusicCommentsGuest(musicId: number, index?: number) {
+    // 10개씩 가져옴
+    const stride = 10;
+    // index 정의되어 있지 않으면 index = 0
+    if (isNaN(index)) {
+      index = 0;
+    }
+
+    const musicComments = await this.musicCommentInfoRepository.find({
+      where: { musicId: musicId },
+      order: { timestamp: 'DESC' },
+      skip: index * stride,
+      take: stride,
+    });
     return musicComments;
   }
 
@@ -317,16 +373,20 @@ export class MusicService {
       musicId: musicId,
     });
     // 대댓글 먼저 삭제
-    await this.musicCommentRepository.createQueryBuilder()
-    .delete()
-    .where("parentId = :parentId and musicId = :musicId", {parentId: DeleteComment.id, musicId : musicId })
-    .execute();
+    await this.musicCommentRepository
+      .createQueryBuilder()
+      .delete()
+      .where('parentId = :parentId and musicId = :musicId', {
+        parentId: DeleteComment.id,
+        musicId: musicId,
+      })
+      .execute();
 
     // 그 뒤 댓글 삭제
     return this.musicCommentRepository.delete({
-      id : commentId,
-      musicId : musicId
-    })
+      id: commentId,
+      musicId: musicId,
+    });
   }
 
   async updateMusicComment(

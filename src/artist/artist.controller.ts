@@ -49,9 +49,11 @@ export class ArtistController {
   @HttpCode(204)
   async likeArtist(
     @Request() req: UserRequest,
+    //@Req() req: UserRequest,
+    // 둘다 동작함 마찬가지로 res = respose
     @Param('artist_id') artistId: number,
   ): Promise<void> {
-    console.log(artistId);
+    console.log(`this is log${artistId}`);
     await this.artistService.addArtistLike(artistId, req.user);
   }
 

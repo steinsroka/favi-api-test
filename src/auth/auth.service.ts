@@ -42,12 +42,27 @@ export class AuthService {
     return user;
   }
 
+  /**
+   * 유저가 로그인 할때 토큰 생성
+   * 유저가 요청을 보낼 때 그 요청 안에 있는 Header에 토큰을 넣어서 요청을 보내고, 요청안에 payload가 있음
+   * payload안에 유저 이름을 넣어주고 토큰이 유효한지 서버에서 secret text를 이용해서 알아냄
+   * payload안에 유저 이름을 이용해서 DB의 유저이름에 해당하는 정보를 가져올 수 있었음
+   *
+   * 1. user name, secret text 전송(request)
+   * 2. server에서 user information을 포함한 token을 생성
+   * 3. token을 클라이언트로 돌려줌(response의 header안에 넣어줌)
+   * 4. 클라이언트는 토큰을 쿠키에 저장함 (로그인 끝)
+   * 5. 토큰과 함께 서버에 새로운 request (유저로서 보내는 request)
+   * 6. 서버는 토큰을 decode하여 유저 정보를 알 수 있도록 함.
+   *
+   * Passport 모듈로 5,6번 과정을 쉽게 처리
+   */
   async login(user: User) {
-    const payload: JwtPayloadDto = { userId: user.id };
+    const payload: JwtPayloadDto = { userId: user.id }; // 유저토큰 생성(secret + payload)
 
     return {
       message: 'success',
-      token: this.jwtService.sign(payload),
+      token: this.jwtService.sign(payload), // accessToken 생성
     };
   }
 

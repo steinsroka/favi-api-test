@@ -14,11 +14,15 @@ export class TagSearchDto {
   index: string;
 
   @IsOptional()
-  size:number = 5;
+  // size: number = 5;
+  size = 5;
 
+  // @IsIn([0, 1])
+  // @IsOptional()
+  // tag_response: number = 1;
   @IsIn([0, 1])
   @IsOptional()
-  tag_response:number = 1;
+  tag_response = 1;
 
   @IsOptional()
   @IsEnum(BPM)

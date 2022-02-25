@@ -31,24 +31,49 @@ export class SearchService {
     size: number,
     bpm: BPM,
   ): Promise<TagSearchResultDto[]> {
-    return (
-      this.musicTagInfoRepository
-        .createQueryBuilder()
-        .select(
-          `SUM(CASE WHEN name IN("${tags.join('","')}") THEN 1 ELSE 0 END)`,
-          'match',
-        )
-        .addSelect('musicId', 'musicId')
-        .where('`rank` <= 3')
-        // .andWhere(bpm!==undefined?`'bpm' = ${bpm}`:'1 = 1')
-        .groupBy('musicId')
-        .orderBy('`match`', 'DESC')
-        .addOrderBy(`RAND(${seed})`)
-        .take(size)
-        .skip(index * size)
-        .getRawMany()
-    );
-    // .andWhere(`'bpm' = ${bpm}`)
+    console.log(typeof tags, tags.length);
+    if (typeof tags == 'string') {
+      return (
+        this.musicTagInfoRepository
+          .createQueryBuilder()
+          .select(
+            // `SUM(CASE WHEN name IN("${tags.join('","')}") THEN 1 ELSE 0 END)`,
+            `SUM(CASE WHEN name IN("${tags}") THEN 1 ELSE 0 END)`,
+            'match',
+          )
+          .addSelect('musicId', 'musicId')
+          .where('`rank` <= 3')
+          // .andWhere(bpm!==undefined?`'bpm' = ${bpm}`:'1 = 1')
+          .groupBy('musicId')
+          .orderBy('`match`', 'DESC')
+          .addOrderBy(`RAND(${seed})`)
+          .take(size)
+          .skip(index * size)
+          .getRawMany()
+      );
+      // .andWhere(`'bpm' = ${bpm}`)
+    } else {
+      return (
+        this.musicTagInfoRepository
+          .createQueryBuilder()
+          .select(
+            `SUM(CASE WHEN name IN("${tags.join('","')}") THEN 1 ELSE 0 END)`,
+            // `SUM(CASE WHEN name IN("${tags}") THEN 1 ELSE 0 END)`,
+            'match',
+          )
+          .addSelect('musicId', 'musicId')
+          .where('`rank` <= 3')
+          // .andWhere(bpm!==undefined?`'bpm' = ${bpm}`:'1 = 1')
+          .groupBy('musicId')
+          .orderBy('`match`', 'DESC')
+          .addOrderBy(`RAND(${seed})`)
+          .take(size)
+          .skip(index * size)
+          .getRawMany()
+      );
+      // .andWhere(`'bpm' = ${bpm}`)
+
+    }
   }
   getBeatsMatchedTag(
     tags: Tag[],

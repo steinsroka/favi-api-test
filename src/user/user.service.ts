@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   HttpException,
   Injectable,
   InternalServerErrorException,
@@ -119,6 +120,20 @@ export class UserService {
   }
 
   saveUser(user: User): Promise<User> {
+    /**
+     *  이미 있는 우ㅠ저를 다시 생성하면 그냥 500에러를 던져버리는데,
+     *  trycatch에서 잡아주지 않으면 에러가 Controller레벨로 가기 때문
+     *  여기서는 controller의 Body에서 pipe로 중복을 걸러주고있다.
+     */
+    // try {
+    //   this.userRepository.save(user);
+    // } catch (error) {
+    //   if (error.cpde === '23505') {
+    //     throw new ConflictException('Existing username');
+    //   } else {
+    //     throw new InternalServerErrorException();
+    //   }
+    // }
     return this.userRepository.save(user);
   }
 
@@ -524,7 +539,7 @@ export class UserService {
     const blockingUserRawData = await this.userBlockRepository
       .createQueryBuilder('b')
       .select('b.blockedUserId')
-      .addSelect('u.name',"nickname")
+      .addSelect('u.name', 'nickname')
       .innerJoin(User, 'u', 'b.blockedUserId = u.id')
       .where('b.blockingUserId = :currentUserId', { currentUserId: user.id })
       .getRawMany();

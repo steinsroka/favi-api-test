@@ -10,6 +10,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 declare const module: any;
 
 async function bootstrap() {
+  console.log('왜 로그가 안찍힐까');
   if (
     process.env.NODE_ENV !== 'production' &&
     process.env.NODE_ENV !== 'develop'
