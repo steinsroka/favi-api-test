@@ -74,6 +74,7 @@ export class MusicService {
    */
   async getMusicGuest(musicId: number): Promise<MusicInfo> {
     const music = await this.musicInfoRepository.findOneOrFail({ id: musicId });
+    music.tags = await this.getMusicTags(musicId);
     music.artists = await this.getMusicArtists(musicId);
     return music;
   }

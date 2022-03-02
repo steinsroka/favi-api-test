@@ -184,6 +184,41 @@ export class UserService {
     });
   }
 
+  /**
+   * 게스트 상태에서 socialLog 조회 가능하도록
+   */
+  async getNearUsersGuest(): Promise<number[]> {
+    const tags = await this.getRandomTags();
+    const nearUsers = await createQueryBuilder()
+      .select('t.userId', 'userId')
+      .addSelect(`MAX(t.weight)`, 'weight')
+      .addSelect('MAX(socialLog.timestamp)', 'recentSocialLogTimestamp')
+      .from(
+        (qb) =>
+          qb
+            .select('userTagInfo.userId', 'userId')
+            .addSelect(`SUM(${'`name`'} IN("${tags.join('","')}"))`, 'weight')
+            .from(UserTagInfo, 'userTagInfo')
+            .where('`rank` <= 3')
+            .groupBy('userTagInfo.userId')
+            .orderBy('weight', 'DESC'),
+        't',
+      )
+      .leftJoin(SocialLog, 'socialLog', 't.userId = socialLog.userId')
+      .groupBy('t.userId')
+      .orderBy('t.weight', 'DESC')
+      .addOrderBy('recentSocialLogTimestamp', 'DESC')
+      .limit(10)
+      .getRawMany();
+
+    const ret: number[] = [];
+    for (const i of nearUsers) {
+      ret.push(i.userId);
+    }
+
+    return ret;
+  }
+
   async getNearUsers(userId: number): Promise<number[]> {
     const users = await this.getUserTags(userId);
     const tags = [];
@@ -218,6 +253,26 @@ export class UserService {
     }
 
     return ret;
+  }
+
+  /**
+   * 가장 많이 태그된 상위 3개의 태그를 [] 형태로 불러오는 메소드
+   */
+  async getRandomTags(): Promise<string[]> {
+    const popularTags: MusicTagInfo[] = await createQueryBuilder()
+      .select('name')
+      .from(MusicTagInfo, 'musicTagInfo')
+      .groupBy('name')
+      .orderBy('COUNT(name)', 'DESC')
+      .limit(3)
+      .getRawMany();
+
+    const tags: string[] = [];
+    for (const i of popularTags) {
+      tags.push(i.name);
+    }
+    console.log(tags);
+    return tags;
   }
 
   async getSocialLogs(userIds: number[], index = 0): Promise<SocialLog[]> {

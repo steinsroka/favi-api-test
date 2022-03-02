@@ -88,10 +88,7 @@ user_id 가 중복으로 사용되고, user-auth.guard.ts 에서도 의미없는
   status: 401,
   description: 'JWT 토큰 만료, 혹은 유저가 해당 권한이 없음',
 })
-@ApiBearerAuth()
 @Controller('user/:user_id')
-@UsePipes(ValidateUserIdPipe)
-@UseGuards(JwtAuthGuard, UserAuthGuard)
 export class UserController {
   constructor(
     private readonly userService: UserService,
@@ -116,6 +113,9 @@ export class UserController {
       'JWT 토큰이 없거나 만료됨, 도는 권한이 없는 다른 사용자 데이터 요청함',
   })
   @Get()
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   async getUser(@Param('user_id') user_id: number): Promise<UserInfo> {
     const user = await this.userService.getUserInfo(user_id);
     return user;
@@ -139,6 +139,9 @@ export class UserController {
     isArray: true,
     type: Music,
   })
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   @Get('liked_musics')
   async getUserLikedMusics(
     @Param('user_id') userId: number,
@@ -162,6 +165,9 @@ export class UserController {
     isArray: true,
     type: Artist,
   })
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   @Get('liked_artists')
   async getUserLikedArtists(
     @Param('user_id') userId: number,
@@ -185,6 +191,9 @@ export class UserController {
     isArray: true,
     type: UserLikedAlbumDto,
   })
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   @Get('liked_albums')
   async getUserLikedAlbums(@Param('user_id') userId: number) {
     return await this.userService.getUserLikedAlbums(userId);
@@ -218,6 +227,9 @@ export class UserController {
     isArray: true,
     type: UserLikedAlbumDto,
   })
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   @Get('comment')
   async getUserComment(
     @Param('user_id') userId: number,
@@ -243,6 +255,9 @@ export class UserController {
     description: 'JWT 토큰 만료, 혹은 권한이 없는 유저 삭제 요청함',
   })
   @Delete()
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   @HttpCode(204)
   async deleteUser(@Param('user_id') userId: number): Promise<void> {
     await this.userService.deleteUser(userId);
@@ -272,6 +287,9 @@ export class UserController {
     status: 401,
     description: 'JWT 토큰 만료, 혹은 권한이 없는 유저 삭제 요청함',
   })
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   @Patch()
   async updateUser(
     @Param('user_id') userId: number,
@@ -312,6 +330,9 @@ export class UserController {
     description: '테스터의 테스트 기간이 만료되었거나, 유저가 테스터가 아님',
   })
   @Get('tester')
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   @UseGuards(TestUserGuard)
   async getTesterMusics(
     @Req() req: UserRequest,
@@ -339,6 +360,9 @@ export class UserController {
     description: '테스터의 테스트 기간이 만료되었거나, 유저가 테스터가 아님',
   })
   @Get('tester/proceed')
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   @UseGuards(TestUserGuard)
   async getTesterProceedCount(
     @Req() req: UserRequest,
@@ -359,6 +383,9 @@ export class UserController {
     type: Album,
   })
   @Post('album')
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   async addAlbum(
     @Param('user_id') userId: number,
     @Body() addAlbumDto: AddAlbumDto,
@@ -382,6 +409,9 @@ export class UserController {
     description: 'API 요청 성공 (해당 사용자의 모든 앨범 반환)',
     type: Album,
   })
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   @Get('album')
   async getAlbum(
     @Param('user_id') userId: number,
@@ -411,6 +441,9 @@ export class UserController {
     description: '앨범 ID가 유효하지 않음',
   })
   @Get('album/:album_id')
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   @UsePipes(ValidateAlbumIdPipe)
   @UseGuards(AlbumOwnerGuard)
   async getMusicInAlbum(
@@ -447,6 +480,9 @@ export class UserController {
     description: '앨범 ID 혹은 음악 ID가 유효하지 않음',
   })
   @Post('album/:album_id/:music_id')
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   @UsePipes(ValidateAlbumIdPipe)
   @UsePipes(ValidateMuiscIdPipe)
   @UseGuards(AlbumOwnerGuard)
@@ -484,6 +520,9 @@ export class UserController {
     description: '앨범 ID가 유효하지 않음',
   })
   @Patch('album/:album_id')
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   @UsePipes(ValidateAlbumIdPipe)
   @UseGuards(AlbumOwnerGuard)
   async updateAlbum(
@@ -514,6 +553,9 @@ export class UserController {
     description: '앨범 ID가 유효하지 않음',
   })
   @Delete('album/:album_id')
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   @UsePipes(ValidateAlbumIdPipe)
   @UseGuards(AlbumOwnerGuard)
   @HttpCode(204)
@@ -549,6 +591,9 @@ export class UserController {
     description: '앨범 ID 혹은 음악 ID가 유효하지 않음',
   })
   @Delete('album/:album_id/:music_id')
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   @UsePipes(ValidateAlbumIdPipe)
   @UsePipes(ValidateMuiscIdPipe)
   @UseGuards(AlbumOwnerGuard)
@@ -579,6 +624,9 @@ export class UserController {
     required: false,
   })
   @Get('social')
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   async getUserSocialLogs(
     @Request() req: UserRequest,
     @Param('user_id') user_id: number,
@@ -622,8 +670,52 @@ export class UserController {
         case 'music_comment':
           const musicCommentLog = new UserSocialLogMusicComment();
           musicCommentLog.user = user;
-          musicCommentLog.musicComment =
-            await this.musicService.getMusicComment(socialLog.id, req.user);
+          musicCommentLog.musicComment = await this.musicService.getMusicComment(
+            socialLog.id,
+            req.user,
+          );
+          musicCommentLog.music = await this.musicService.getMusic2(
+            musicCommentLog.musicComment.musicId,
+            req.user,
+          );
+          musicCommentLog.timestamp = socialLog.timestamp;
+          result.push(musicCommentLog);
+          break;
+      }
+    }
+
+    return { users: userInfos, result: result };
+  }
+
+  @ApiOperation({ summary: '소셜 로그 요청(게스트)' })
+  @ApiQuery({
+    name: 'index',
+    description: '가져올 Index',
+    example: '0',
+  })
+  @Get('social/guest')
+  async getUserSocialLogsGuest(
+    @Request() req: UserRequest,
+    @Query('index') index?: number,
+  ) {
+    // 특정 유저 지정 안할 시 주변사람 10명 뽑아옴
+    const users: number[] = await this.userService.getNearUsersGuest();
+
+    const socialLogs = await this.userService.getSocialLogs(users, index);
+    const result: UserSocialLog[] = [];
+    const userInfos: UserInfo[] = [];
+
+    for (const socialLog of socialLogs) {
+      const user = userInfos.find((value) => value.id === socialLog.userId);
+
+      switch (socialLog.type) {
+        case 'music_comment':
+          const musicCommentLog = new UserSocialLogMusicComment();
+          musicCommentLog.user = user;
+          musicCommentLog.musicComment = await this.musicService.getMusicComment(
+            socialLog.id,
+            req.user,
+          );
           musicCommentLog.music = await this.musicService.getMusic2(
             musicCommentLog.musicComment.musicId,
             req.user,
@@ -658,6 +750,9 @@ export class UserController {
   })
   @UsePipes(ValidateFollowingUserIdPipe)
   @Get('/:following_user/follow')
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   async getFollowingList(
     @Request() req: UserRequest,
     @Param('user_id') userId: number,
@@ -687,6 +782,9 @@ export class UserController {
   })
   @UsePipes(ValidateFollowingUserIdPipe)
   @Put('/:following_user/follow')
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   @HttpCode(204)
   async userFollow(
     @Request() req: UserRequest,
@@ -717,6 +815,9 @@ export class UserController {
   })
   @UsePipes(ValidateFollowingUserIdPipe)
   @Delete('/:following_user/follow')
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   @HttpCode(204)
   async hateFollow(
     @Request() req: UserRequest,
@@ -741,6 +842,9 @@ export class UserController {
     description: '유저 ID나 blocking_user ID가 유효하지 않음',
   })
   @Get('/block')
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   async getBlockingList(
     @Request() req: UserRequest,
     @Param('user_id') userId: number,
@@ -769,6 +873,9 @@ export class UserController {
   })
   @UsePipes(ValidateBlockingUserPipe)
   @Put('/:blocking_user/block')
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   @HttpCode(204)
   async userBlock(
     @Request() req: UserRequest,
@@ -799,6 +906,9 @@ export class UserController {
   })
   @UsePipes(ValidateBlockingUserPipe)
   @Delete('/:blocking_user/block')
+  @ApiBearerAuth()
+  @UsePipes(ValidateUserIdPipe)
+  @UseGuards(JwtAuthGuard, UserAuthGuard)
   @HttpCode(204)
   async userUnBlock(
     @Request() req: UserRequest,
@@ -806,5 +916,11 @@ export class UserController {
     @Param('blocking_user') blockingUser: number,
   ): Promise<void> {
     await this.userService.deleteUserBlock(blockingUser, req.user);
+  }
+
+  @ApiOperation({ summary: '랜덤태그가져오기' })
+  @Get('testapi')
+  async getRandomTagCount() {
+    return await this.userService.getRandomTags();
   }
 }

@@ -337,10 +337,11 @@ export class MusicController {
     );
 
     // Tag는 Promise로 async하게 insert
-    const addMusicPromise: Promise<InsertResult>[] | undefined =
-      addMusicCommentDto.tags?.map((value: Tag) =>
-        this.musicService.addMusicTag(musicId, value, req.user, comment.id),
-      );
+    const addMusicPromise:
+      | Promise<InsertResult>[]
+      | undefined = addMusicCommentDto.tags?.map((value: Tag) =>
+      this.musicService.addMusicTag(musicId, value, req.user, comment.id),
+    );
     await Promise.all(addMusicPromise ?? []);
 
     return new Message('success');

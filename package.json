@@ -1,7 +1,7 @@
 {
   "name": "favi-api",
   "version": "0.0.1",
-  "description": "",
+  "description": "Favi의 백엔드 API 서버입니다.",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
@@ -101,5 +101,18 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  }
+  },
+  "main": ".eslintrc.js",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/steinsroka/favi-api-test.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/steinsroka/favi-api-test/issues"
+  },
+  "homepage": "https://github.com/steinsroka/favi-api-test#readme"
 }
